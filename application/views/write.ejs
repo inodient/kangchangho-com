@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <% include partials/include.ejs %>
+
+  <!-- include summernote css/js-->
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
+
+  <script src="/write.js"></script>
+
+  <title>Kang Chang Ho . com</title>
+</head>
+
+
+
+<body>
+  <% include partials/front_nav.ejs %>
+
+  <hr class="page-divider">
+
+  <div class="doc">
+    <header>
+      <div class="site-title">
+        <a class="content-anchor"><span class="site-title-name site-title-span">姜昌昊</span><span class="site-title-com site-title-span"> . COM</span></a>
+      </div>
+      <nav class="site-nav navbar">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            <% for( var i=0; i<menu.length; i++ ){ %>
+              <% if( i < menu.length-1 && menu[i].group_value === menu[i+1].group_value ){ %>
+                <% var group_value = menu[i].group_value %>
+                <% if( menu[i].active == "active" ){ %>
+                  <li class="navbar-item active">
+                <% } else { %>
+                  <li class="navbar-item">
+                <% } %>
+                    <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %><i style="padding-left: 10px" class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <ul class="dropdown-menu">
+                      <% i++; %>
+                      <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
+                        <% if( menu[i].active == "active" ){ %>
+                          <li class="navbar-item-inner active">
+                        <% } else { %>
+                          <li class="navbar-item-inner">
+                        <% } %>
+                            <a class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                        <% if( i < parseInt(menu.length)-2 && menu[i].group_value != menu[i+1].group_value ){ break; }%>
+                        <% i++; %>
+                      <% } %>
+                    </ul>
+                </li>
+              <% } else { %>
+                <li class="navbar-item"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+              <% } %>
+            <% } %>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <div class="page-content">
+      <div class="container-fluid content-container">
+        <div class="col-lg-9 col-md-9 write-container">
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">TYPE</h5>
+            <label class="radio-inline"><input type="radio" name="write-type" value="content" checked>CONTENT</label>
+            <label class="radio-inline"><input type="radio" name="write-type" value="announce">ANNOUNCE</label>
+          </div>
+
+          <div class="section-end"></div>
+
+          <div class="write-sub-container for-content">
+            <h5 class="title before-line">MAIN IMAGE</h5>
+            <form id="id_main_image_upload_form" class="form-inline" action="/upload" method="post" enctype="multipart/form-data">
+              <div class="input-group">
+                <input id="id_temp_main_image_name" type="text" class="input_important form-control file-input" readonly>
+                <label class="input-group-btn">
+                    <span id="id_save_main_image" class="btn_important">
+                        UPLOAD <input type="file" style="display: none;" name="uploadFileForm">
+                    </span>
+                </label>
+              </div>
+            </form>
+            <center>
+              <figure class="write-image-vertical">
+                <img id="id_temp_main_image"  src="/default_vertical.png" />
+              </figure>
+            </center>
+          </div>
+
+          <hr class="small-section-end">
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">CAROUSEL IMAGE</h5>
+            <form id="id_carousel_image_upload_form" class="form-inline" action="/upload" method="post" enctype="multipart/form-data">
+              <div class="input-group">
+                <input id="id_temp_carousel_image_name" type="text" class="input_important form-control file-input" readonly>
+                <label class="input-group-btn">
+                    <span id="id_save_carousel_image" class="btn_important">
+                        UPLOAD <input type="file" style="display: none;" name="uploadFileForm">
+                    </span>
+                </label>
+              </div>
+            </form>
+            <center>
+              <figure class="write-image-horizontal">
+                <img id="id_temp_carousel_image" src="/default_horizontal.png" />
+              </figure>
+            </center>
+          </div>
+
+          <hr class="small-section-end">
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">category</h5>
+            <select id="selected_category" class="select_important_inverse">
+              <% for( var i=0; i<category.length; i++ ){ %>
+                <% if( category[i].depth === 0 ){ %>
+                  <option value="<%- category[i].id %>"><%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                <% } else { %>
+                  <option value="<%- category[i].id %>"> &nbsp;>&nbsp; <%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                <% } %>
+              <% } %>
+            </select>
+            <div class="align-right">
+              <button class="btn_important" data-toggle="modal" data-target="#add_category_modal">Add Category</button>
+            </div>
+            <div id="add_category_modal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h5 class="title before-line">menu</h5>
+                    <select id="selected_category_modal" class="select_important_inverse">
+                      <% for( var i=0; i<category.length; i++ ){ %>
+                        <% if( category[i].depth === 0 ){ %>
+                          <option value="<%- category[i].id %>"><%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                        <% } else { %>
+                          <option value="<%- category[i].id %>"> &nbsp;>&nbsp; <%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                        <% } %>
+                      <% } %>
+                    </select>
+                    <hr>
+                    <h5 class="title before-line">category - en</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_category_en"/>
+                    <hr>
+                    <h5 class="title before-line">category - kor</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_category_ko"/>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="btn_add_category" class="btn_important">ADD</button>
+                    <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">writer</h5>
+            <select id="selected_writer" class="select_important_inverse">
+              <% for( var i=0; i<writer.length; i++ ){ %>
+                <option value="<%- writer[i].id %>" data-description-en="<%- writer[i].description_en %>" data-description-ko="<%- writer[i].description_ko %>" ><%- writer[i].name_en %>&nbsp;|&nbsp;<%- writer[i].name_ko %></option>
+              <% } %>
+            </select>
+            <div class="align-right">
+              <button class="btn_important" data-toggle="modal" data-target="#add_writer_modal" >Add Writer</button>
+            </div>
+            <div id="add_writer_modal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h5 class="title before-line">writer</h5>
+                    <select class="select_important_inverse">
+                      <% for( var i=0; i<writer.length; i++ ){ %>
+                        <option value="<%- writer[i].id %>" data-description-en="<%- writer[i].description_en %>" data-description-ko="<%- writer[i].description_ko %>" ><%- writer[i].name_en %>&nbsp;|&nbsp;<%- writer[i].name_ko %></option>
+                      <% } %>
+                    </select>
+                    <hr>
+                    <h5 class="title before-line">writer - en</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_writer_en"/>
+                    <hr>
+                    <h5 class="title before-line">writer - kor</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_writer_ko"/>
+                    <hr>
+                    <h5 class="title before-line">email</h5>
+                    <input type="email" class="input_embrassed form-control" id="id_input_add_writer_email"/>
+                    <hr>
+                    <h5 class="title before-line">description - en</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_writer_description_en"/>
+                    <hr>
+                    <h5 class="title before-line">description - ko</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_writer_description_ko"/>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="btn_add_writer" class="btn_important">ADD</button>
+                    <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">TITLE - KO</h5>
+            <input type="text" id="id_title_ko" class="input_embrassed form-control"/>
+          </div>
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">TITLE - EN</h5>
+            <input type="text" id="id_title_en" class="input_embrassed form-control"/>
+          </div>
+
+          <hr class="small-section-end">
+
+          <div class="write-sub-container for-announce">
+            <h5 class="title before-line">ANNOUNCE TYPE</h5>
+            <select id="selected_announce_type" class="select_important_inverse">
+              <% for( var i=0; i<announceType.length; i++ ){ %>
+                <option value="<%- announceType[i].id %>"><%- announceType[i].display_name %></option>
+              <% } %>
+            </select>
+          </div>
+
+          <hr class="small-section-end">
+
+          <div class="write-sub-container for-announce">
+            <h5 class="title before-line">ADD CONTENTS</h5>
+            <table id="table_add_content" class="table table-responsive table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>TITLE</th>
+                  <th>CATEGORY_ID</th>
+                  <th>CATEGORY</th>
+                  <!-- <th>hashes</th> -->
+                  <th>CREATE_DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <div class="align-right">
+                <button class="btn_important" data-toggle="modal" data-target="#add_content_modal">ADD</button>
+            </div>
+            <div id="add_content_modal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h5 class="title before-line">CONTENTS LIST</h5>
+                    <select id="selected_content_modal" class="select_important_inverse">
+                      <option value="" selected disabled hidden>Choose here</option>
+                      <% for( var i=0; i<announceContentList.length; i++ ){ %>
+                        <option value="<%- announceContentList[i].content_id %>"
+                          data-title-ko="<%- announceContentList[i].title_ko %>"
+                          data-title-en="<%- announceContentList[i].title_en %>"
+                          data-category-id="<%- announceContentList[i].category_id %>"
+                          data-category-ko="<%- announceContentList[i].category_ko %>"
+                          data-category-en="<%- announceContentList[i].category_en %>"
+                          data-hashes="<%- announceContentList[i].hashes %>"
+                          data-create-date="<%- ( ( announceContentList[i].create_date ).toISOString() ).split("T")[0] %>"
+                          data-savedfilename="<%- announceContentList[i].savedFileName %>"
+                          >
+                          <%- announceContentList[i].title_ko %>&nbsp;|&nbsp;<%- announceContentList[i].title_en %>
+                        </option>
+                      <% } %>
+                    </select>
+                    <hr>
+                    <h5 class="title before-line">CONTENT INFO</h5>
+                    <ul>
+                      <li>id : <span id="span_id"></span></li>
+                      <li>title_ko : <span id="span_title_ko"></span></li>
+                      <li>title_en : <span id="span_title_en"></span></li>
+                      <li>category_id : <span id="span_category_id"></span></li>
+                      <li>category_ko : <span id="span_category_ko"></span></li>
+                      <li>category_en : <span id="span_category_en"></span></li>
+                      <li>hashes : <span id="span_hashes"></span></li>
+                      <li>create_date : <span id="span_create_date"></span></li>
+                    </ul>
+                    <hr>
+                    <h5 class="title before-line">IMAGE</h5>
+                    <img id="selected_content_image_carousel" src="" />
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="btn_add_content" class="btn_important">ADD</button>
+                    <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="write-sub-container for-announce">
+            <h5 class="title before-line">ADD SEARCH CONDITION</h5>
+            <table id="table_add_search_condition" class="table table-responsive table-condensed">
+              <thead>
+                <tr>
+                  <th>CATEGORY_ID</th>
+                  <th>CATEGORY</th>
+                  <th>SEARCH CONDITION</th>
+                  <th>SEARCH TEXT</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <div class="align-right">
+              <button class="btn_important" data-toggle="modal" data-target="#add_sesarch_condition_modal">ADD</button>
+            </div>
+            <div id="add_sesarch_condition_modal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h5 class="title before-line">SEARCH CATEGORY</h5>
+                    <select id="selected_search_condition_modal" class="select_important_inverse">
+                      <option value="" selected disabled hidden>Choose here</option>
+                      <% for( var i=0; i<announceCategory.length; i++ ){ %>
+                        <option value="<%- announceCategory[i].id %>"><%- announceCategory[i].display_name %></option>
+                      <% } %>
+                    </select>
+                    <hr>
+                    <h5 class="title before-line">SEARCH CONDITION</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_search_condition"/>
+                    <h5 class="title before-line">SEARCH TEXT</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_search_text"/>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="btn_add_search_condition" class="btn_important">ADD</button>
+                    <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="write-sub-container for-content">
+            <h5 class="title before-line">CONTENT - KO</h5>
+            <div id="editor-content-ko"><p>CONTENT - KO</p></div>
+          </div>
+
+          <div class="write-sub-container for-content">
+            <h5 class="title before-line">CONTENT - EN</h5>
+            <div id="editor-content-en"><p>CONTENT - EN</p></div>
+          </div>
+
+          <hr class="small-section-end">
+
+          <div class="write-sub-container for-content">
+            <h5 class="title before-line">COMMENT - KO</h5>
+            <div id="editor-comment-ko"><p>COMMENT - KO</p></div>
+          </div>
+
+          <div class="write-sub-container for-content">
+            <h5 class="title before-line">COMMENT - EN</h5>
+            <div id="editor-comment-en"><p>COMMENT - EN</p></div>
+          </div>
+
+          <hr class="small-section-end for-content">
+
+          <div class="write-sub-container for-content">
+            <h5 class="title before-line">HASHES</h5>
+            <input type="text" id="id_hashes" class="input_embrassed form-control"/>
+          </div>
+
+          <div class="write-sub-container align-right">
+            <button id="btn_save" class="btn_important">SUBMIT</button>
+            <button id="btn_preview" class="btn_important">PREVIEW</button>
+            <button id="btn_important" class="btn_important">CANCEL</button>
+          </div>
+
+          <div id="preview_content_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+
+                  <% include partials/preview_content_modal.ejs %>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="preview_announce_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+
+                  <% include partials/preview_announce_modal.ejs %>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-3 banner-container">
+          <form>
+            <div class="input-group">
+              <input type="text" class="input_important form-control" placeholder="keyword">
+              <div class="input-group-btn">
+                <button class="btn btn_important" type="submit">
+                  SEARCH
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <hr>
+
+          <button class="btn btn_important_banner" style="border-radius: 0px;">
+            YOUTUBE
+            <br>
+            <span class="btn_important_banner_describe">kangchangho.com channel</span>
+          </button>
+
+          <button class="btn btn_important_banner" style="border-radius: 0px;">
+            summer-mvc
+            <br>
+            <span class="btn_important_banner_describe">Open Source Project</span>
+          </button>
+
+          <hr>
+
+          <article>
+            <h4 class="title after-line-block-center">HASH RANKING</h4>
+            <div class="banner-table table table-responsive small-section-end">
+              <table class="hash-ranking table table-hover table-condensed">
+
+                <% for( var i=0; i<hashRanking.length; i++ ){ %>
+                  <tr>
+                    <td class="ranking"><%- hashRanking[i].rank %></td>
+                    <td class="hashed"><%- hashRanking[i].text %></td>
+                    <td class="changed">-</td>
+                  </tr>
+                <% } %>
+              </table>
+            </div>
+          </article>
+
+          <hr class="small-section-end">
+
+          <article>
+            <h4 class="title after-line-block-center">MOST RECENT</h4>
+            <div class="banner-list">
+              <ul>
+
+                <% for( var i=0; i<recentContents.length; i++ ){ %>
+                  <li>
+                    <div class="row">
+                      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                        <figure>
+                          <img src="<%- recentContents[i].savedFileName %>" />
+                          <figcaption>
+                            <div>view</div>
+                            </figcation>
+                        </figure>
+
+                      </div>
+                      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                        <h4 class="content-title"><a href="/content?id=<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
+                        <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                      </div>
+                    </div>
+                  </li>
+                <% } %>
+              </ul>
+            </div>
+          </article>
+
+          <hr class="small-section-end">
+
+          <article>
+            <h4 class="title after-line-block-center">FILTER</h4>
+            <select class="select_important">
+              <option value="2017-12">2017년 12월</option>
+              <option value="2017-12">2017년 12월</option>
+              <option value="2017-12">2017년 12월</option>
+              <option value="2017-12">2017년 12월</option>
+              <option value="2017-12">2017년 12월</option>
+            </select>
+          </article>
+
+          <hr class="small-section-end">
+
+          <article>
+            <h4 class="title after-line-block-center">MOST VIEWED</h4>
+            <div class="banner-list">
+              <ul>
+
+                <% for( var i=0; i<mostViewedContents.length; i++ ){ %>
+
+                  <li>
+                    <div class="row">
+                      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                        <figure>
+                          <img src="<%- mostViewedContents[i].savedFileName %>" />
+                          <figcaption>
+                            <div></div>
+                            </figcation>
+                        </figure>
+
+                      </div>
+                      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                        <h4 class="content-title"><a href="/content?id=<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
+                        <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                      </div>
+                    </div>
+                  </li>
+
+                <% } %>
+
+              </ul>
+            </div>
+
+          </article>
+
+          <hr class="small-section-end">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% include partials/footer.ejs %>
+
+</body>
+
+</html>

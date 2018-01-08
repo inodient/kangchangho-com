@@ -1,0 +1,812 @@
+
+
+
+
+
+/* Global - Start */
+
+
+/* -----> Global properties Start -- */
+html {
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14.5px;
+  margin: auto;
+}
+/* -----> Global properties End -- */
+
+
+
+
+
+/* -----> Page spacing properties Start -- */
+.page-divider {
+  margin: 1px 0 20px 0;
+}
+
+.section-divider-weaken {
+  border-color: #555555;
+}
+
+.line-end {
+  margin-bottom: 30px;
+}
+
+.small-section-end {
+  margin-bottom: 60px;
+}
+
+.section-end {
+  margin-bottom: 120px;
+}
+
+.doc-end {
+  margin-bottom: 240px;
+}
+/* -----> Page spacing properties End -- */
+
+
+
+
+
+/* -----> Default HTML element properties Start -- */
+
+/* 01. input - Start */
+.input_embrassed {
+  background: #ffffff;
+  border: 1px solid #333;
+  color: #333333;
+}
+
+.input_important {
+    display: inline-block;
+    margin: 18px 0 18px;
+    height: 39px;
+
+    font-size: 12.5px;
+    border-radius: 1px;
+}
+/* 01. input - End */
+
+/* 02. button - Start */
+.btn_important {
+    display: inline-block;
+    margin: 18px 0 18px;
+    padding: 10px 20px;
+
+    background: #333;
+    border: 1px solid #333;
+    color: #ffffff;
+
+    font-size: 12.5px;
+    border-radius: 1px;
+}
+
+.btn_important:hover {
+    background: #000000;
+    border: 1px solid #525252;
+    color: #ffffff;
+}
+/* 02. button - End */
+
+/* 03. button Inverse - Start */
+.btn_important_inverse {
+    display: inline-block;
+    margin: 18px 0 18px;
+    padding: 10px 20px;
+
+    background: #ffffff;
+    border: 1px solid #333;
+    color: #333333;
+
+    font-size: 12.5px;
+    font-weight: 800;
+    border-radius: 1px;
+    text-transform: uppercase;
+}
+
+.btn_important_inverse:hover {
+    background: #ffffff;
+    padding: -1px;
+    border: 2px solid #525252;
+    color: #333333;
+}
+/* 03. button Inverse - End */
+
+/* 04. button Banner - Start */
+.btn_important_banner {
+  display: inline-block;
+  margin: 18px 0 18px;
+
+  background: #333;
+  border: 1px solid #333;
+  color: #ffffff;
+
+  font-size: 16.5px;
+  border-radius: 1px;
+
+  width: 100%;
+  height: 100px;
+  max-height: 100px;
+}
+
+.btn_important_banner:hover {
+  background: black;
+  border: 1px solid #525252;
+  color: #ffffff;
+}
+
+.btn_important_banner_describe {
+  font-size: 12.5px;
+  font-weight: normal;
+}
+/* 04. button Banner - End */
+
+/* 05. button Banner Inverse - Start */
+.btn_important_banner_inverse {
+  display: inline-block;
+  margin: 18px 0 18px;
+
+  background: #ffffff;
+  border: 1px solid #333;
+  color: #000000;
+
+  font-size: 14.5px;
+  border-radius: 1px;
+
+  width: 100%;
+  height: 100px;
+  max-height: 100px;
+  font-weight: bold;
+}
+
+.btn_important_banner_inverse:hover {
+  background: #ffffff;
+  border: 2px solid #525252;
+  color: #333333;
+}
+
+.btn_important_banner_inverse_describe {
+  font-size: 12.5px;
+  font-weight: bold;
+}
+/* 05. button Banner Inverse - End */
+
+/* 06. Select - Start */
+.select_important {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+
+  display: inline-block;
+  margin: 18px 0 18px;
+  padding: 10px 20px;
+  width: 100%;
+  height: 40px;
+
+  background: #333;
+  border: 1px solid #333;
+  color: #ffffff;
+
+  font-size: 12px;
+  border-radius: 0;
+
+  background: black no-repeat right 1rem center url(/arrow_background.png);
+}
+/* 06. Select - End */
+
+/* 07. Select Inverse - Start */
+.select_important_inverse {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+
+  display: inline-block;
+  margin: 0 0 41px;
+  padding: 10px 20px;
+  width: 100%;
+  height: 40px;
+
+  background: #ffffff;
+  border: 1px solid #333;
+  color: #333333;
+
+  font-size: 12px;
+  border-radius: 0;
+
+  background: #ffffff no-repeat right 1rem center url(/arrow_background_inverse.png);
+}
+/* 07. Select Inverse - End */
+
+/* 08. Figure - Start */
+figure *, figure *::before, figure *::after{
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
+
+  -webkit-transition: all 0.3s ease-in-out;
+          transition: all 0.3s ease-in-out;
+}
+
+figure{
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+figcaption{
+  position: absolute;
+  left: 0; right: 0;
+  top: 0; bottom: 0;
+  text-align: center;
+  font-size: 14.5px;
+  font-weight: 100;
+  width: 101%;
+  display: table;
+}
+
+figcaption div{
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  opacity: 0;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+figcaption div:after{
+  position: absolute;
+  content: "";
+  left: 0; right: 0;
+  bottom: 40%;
+  text-align: center;
+  margin: auto;
+  width: 0%;
+  height: 1px;
+  background: #ffffff;
+}
+
+figure img{
+  max-width: 100%;
+  -webkit-transition: all 0.5s linear;
+          transition: all 0.5s linear;
+  -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+}
+
+figure:hover figcaption{
+  cursor: pointer;
+  background: rgba(128,128,128,0.5);
+}
+
+figcaption:hover div{
+  opacity: 1;
+  top: 0;
+}
+
+figcaption:hover div:after{
+  width: 55%;
+}
+
+figure:hover img{
+  -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+}
+/* 08. Figure - End */
+
+/* 09. Content Anchor - Start */
+.content-anchor {
+  color: #111111;
+  text-decoration: none;
+}
+
+.content-anchor:hover {
+  color: #888888;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.content-anchor-reverse {
+  color: #111111;
+  padding: 3.5px;
+}
+
+.content-anchor-reverse:hover {
+  text-decoration: none;
+  background: black;
+  color: #ffffff;
+  cursor: pointer;
+}
+/* 09. Content Anchor - End */
+
+
+/* 10. Underline - Start */
+.before-underline::before {
+
+}
+
+.after-line-block-center::after {
+  content: '';
+  display: block;
+  width: 5rem;
+  height: 2px;
+  background: black;
+  margin: 1rem auto 0;
+  margin-top: 30px;
+}
+
+.after-line-block::after {
+  content: '';
+  display: block;
+  width: 5rem;
+  height: 2px;
+  background: black;
+  margin-top: 30px;
+}
+/* 10. Underline - End */
+
+
+/* -----> Default HTML element properties End -- */
+
+/* -----> Content Element properties Start -- */
+h2 {
+  margin-bottom: 50px;
+  font-weight: 800;
+}
+
+h3 {
+  margin-bottom: 50px;
+  font-weight: 800;
+}
+
+h4 {
+  text-transform: uppercase;
+  margin-bottom: 50px;
+  font-weight: 800;
+}
+
+h5 {
+  margin-bottom: 50px;
+  font-weight: 800;
+}
+/* -----> Content Element properties End -- */
+
+/* Global - End */
+
+
+
+
+
+/* sns-share - Start */
+.sns-share {
+  height: 35px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.sns-share ul {
+  float: right;
+}
+
+.sns-share a {
+  color: #999999 !important;
+}
+
+.sns-share a:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  cursor: pointer;
+}
+/* sns-share - End */
+
+
+
+
+/* doc - Start */
+.doc {
+  max-width: 1100px;
+  margin: auto;
+}
+/* doc - End */
+
+
+
+
+/* header - Start */
+.site-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.site-title .content-anchor:hover {
+  color: #111111;
+}
+
+
+.site-title-name {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.site-title-com {
+  font-size: 35px;
+}
+
+.site-title-span:hover {
+  cursor: pointer;
+}
+
+.site-nav {
+  margin: auto;
+  border-top: 1px solid #ededed;
+  border-bottom: 1px solid #ededed;
+  margin-bottom: 30px;
+}
+
+.site-nav .navbar-nav {
+  float:none;
+  margin:0 auto;
+  display: block;
+  text-align: center;
+}
+
+.site-nav .navbar-nav > li {
+  display: inline-block;
+  float:none;
+}
+
+.site-nav .navbar-nav > li > a {
+  color: black;
+}
+
+.site-nav .navbar-nav > li > a:hover {
+  background-color: black;
+  color: #ffffff;
+  cursor: pointer;
+}
+/* header - End */
+
+
+
+
+/* Page Content - Start */
+.page-content {
+  max-width: 1100px;
+  margin: auto;
+  margin-top: 35px;
+  margin-bottom: 35px;
+}
+
+.content-container {
+  margin-left: 0px;
+  margin-right: 0px;
+
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.carousel-container {
+  margin-bottom: 50px;
+}
+
+.article-list-container {
+  margin-left: 0px;
+  padding-left: 0px;
+  padding-right: 30px;
+}
+
+.article-container {
+  padding-top: 30px;
+  padding-left: 0px;
+  padding-right: 30px;
+}
+
+.banner-container {
+  margin-right: 0px;
+  padding-right: 0px;
+  padding-left: 30px;
+}
+
+@media (max-width: 1100px) {
+  .content-container, .article-list-container, .banner-container {
+    margin: 15px;
+  }
+}
+
+
+
+
+.announce-carousel {
+  max-width: 1100px;
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.announce-carousel figcaption{
+  height: 400px;
+  background: rgba(64,64,64,0.20);
+}
+
+.announce-carousel figcaption div{
+  opacity: 1;
+}
+
+.announce-carousel figcaption div .category{
+  color: #ffffff;
+}
+
+.announce-carousel figcaption div .category::before{
+  background: #ffffff;
+}
+
+.announce-carousel figure img{
+  max-width: 100%;
+  -webkit-transition: all 0.5s linear;
+          transition: all 0.5s linear;
+  -webkit-transform: scale3d(1, 1, 1);
+          transform: scale3d(1, 1, 1);
+}
+
+.announce-carousel figure:hover figcaption{
+  cursor: pointer;
+  background: rgba(64,64,64,0.45);
+}
+
+.announce-carousel figure:hover figcaption a{
+  cursor: pointer;
+  opacity: 1;
+}
+
+.announce-carousel .carousel-control{
+  max-width: 80px;
+  opacity: 0;
+  background-image: none;
+}
+
+.announce-carousel-indicators {
+  padding: 15px;
+}
+
+.announce-carousel-indicators .carousel-indicators {
+  position: relative;
+  bottom: 0px;
+}
+
+.announce-carousel-indicators .carousel-indicators li {
+  background-color: lightgray;
+}
+
+.announce-carousel-indicators .carousel-indicators li.active {
+  background-color: black;
+}
+
+
+
+
+article {
+  margin-bottom: 60px;
+}
+
+
+
+
+.inner-announce figcaption{
+  background: rgba(64,64,64,0.20);
+}
+
+.inner-announce figcaption div{
+  opacity: 1;
+}
+
+.inner-announce figcaption div .category{
+  color: #ffffff;
+}
+
+.inner-announce figcaption div .category::before{
+  background: #ffffff;
+}
+
+
+
+
+
+.content-anchor.category {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.content-anchor.category:before {
+  box-sizing: inherit;
+  vertical-align: middle;
+  display: inline-block;
+  content: '';
+  width: 2.5rem;
+  margin-right: .5rem;
+  height: 1px;
+  background: #777777;
+}
+
+.list-title {
+  margin-bottom: 20px;
+}
+
+  .content-summary .title {
+    margin-bottom: 20px;
+  }
+
+/* .content-anchor.title {
+  color: #000000;
+}
+
+.content-anchor.title:hover {
+  color: #777777;
+} */
+
+.date, .writer-text {
+  font-size: 12px;
+  color: #777777;
+}
+
+.writer {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.summary {
+  line-height: 1.8em;
+  margin-top: 20px;
+  color: #777777;
+}
+
+
+
+
+
+
+.content-body .content-text {
+  line-height: 1.65em;
+  margin-top: 20px;
+  color: #777777;
+}
+
+.content-embrassed {
+  padding: 35px;
+  background-color: #eceeef;
+  color: #000000;
+  line-height: 1.65em;
+}
+
+.content-hashed {
+  text-align: center;
+}
+
+.content-hashed .hashed-list {
+  text-align: center;
+  list-style: none;
+}
+
+.content-hashed .hashed-list .hashed-list-item {
+  display: inline;
+  padding-right: 15px;
+}
+
+.content-footer {
+
+}
+
+.content-footer .writer {
+  font-size: 16.5px;
+  font-weight: 800;
+}
+
+
+
+
+.banner-container .title {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* .banner-title:after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: black;
+  margin: 1rem auto 0;
+} */
+
+
+
+
+
+
+.banner-table .hash-ranking {
+  font-size: 12.5px;
+}
+
+.banner-table .hash-ranking tr:hover td:hover {
+  cursor: pointer;
+}
+
+.banner-table .hash-ranking td:hover {
+  cursor: pointer;
+}
+
+
+
+
+
+
+.banner-list ul {
+  list-style: none;
+  padding-left: 0px;
+}
+
+.banner-list ul li {
+  padding-top: 15px;
+}
+
+.banner-list .left{
+  padding-right: 0px;
+}
+
+.banner-list .right{
+  padding-left: 10px;
+  vertical-align: top;
+}
+
+.banner-list .right .content-title{
+  margin-top: 0px;
+  font-weight: 600;
+  line-height: 1.4em;
+  font-size: 15px;  margin-bottom: 15px;
+
+}
+
+
+/* Page Content - End */
+
+
+
+
+/* footer - Start */
+.footer-background {
+  background-color: black;
+  color: #ededed;
+  text-align:center;
+  margin-bottom: 0px;
+}
+
+.footer-heading .title {
+  margin-bottom: 12.5px;
+}
+
+.footer-heading .description {
+  padding-bottom: 20px;
+  font-size: 17px;
+  color: #a0a0a0;
+}
+
+.footer-body {
+  max-width:500px;
+  margin:auto;
+  padding-bottom:50px;
+}
+
+.footer-footer {
+  max-width: 1200px;
+  margin: auto;
+  color: #a0a0a0
+}
+
+.footer-footer .copyright {
+  font-size: 17px;
+  padding-top: 25px;
+}
+
+/* footer - End */

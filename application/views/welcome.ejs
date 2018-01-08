@@ -1,79 +1,287 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	
-	<link rel="icon" href="data:;base64,iVBORw0KGgo=">
-	<meta charset="utf-8">
-	
-	<title>Kang Chang Ho dot Com</title>
-</head>
-<body>
-	<div style="height:25px; border-bottom: 1px solid #ededed;"></div>
-	<div style="max-width: 1200px; margin: auto; padding-top: 20px; padding-bottom: 20px; border-bottom: 1px solid #ededed; text-align:center; font-family: Noto Sans KR">
-		<span style="font-size:50px;">KANG CHANG HO . COM</span>
-	</div>
-	<header class="navbar" style="text-align: center; max-width:1200px; margin: auto; border-bottom: 1px solid #ededed;">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" style="margin-left: 10px" class="pull-left navbar-toggle" data-toggle="collapse" data-target="#top_menu">
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		        </button>
-			</div>
-			<div class="collapse navbar-collapse" id="top_menu">
-				<ul class="nav navbar-nav" style="float:none;">
-					<li style="float:none; display:inline-block;"><a style="color: black;">About</a></li>
-					<li style="float:none; display:inline-block;"><a style="color: black;">Essay</a></li>
-					<li style="float:none; display:inline-block;"><a style="color: black;">Monthly Prj.</a></li>
-					<li style="float:none; display:inline-block;"><a style="color: black;">Workspace</a></li>
-					<li style="float:none; display:inline-block;"><a style="color: black;">Developer</a></li>
-				</ul>
-			</div>
-			
-			<style>
-				
-				.navbar-nav>li>a:hover {
-					background-color: black !important;
-					color: #ffffff !important;
-				}
-			</style>
-			
-		</div>
-	</header>
-	
-	<div style="height: 150vh;">
 
-	</div>
-	
-	
-	<footer style="background-color: black">
-		<div class="jumbotron" style="background-color: black; color: #ededed; text-align:center">
-			<h2 style="padding-bottom: 20px;">
-				SUBSCRIBE NEWS LETTER
-			</h2>
-			<form style="max-width:400px; margin:auto; padding-bottom:50px;">
-			  <div class="input-group">
-			    <input type="text" class="form-control" placeholder="email" style="border-radius: 0px;">
-			    <div class="input-group-btn">
-			      <button class="btn btn-default" type="submit"  style="border-radius: 0px;">
-			      	SUBSCRIBE
-			      </button>
-			    </div>
-			  </div>
-			</form>
-			
-			<div style="max-width: 1200px; margin: auto; color: #a0a0a0">
-				<p style="font-size: 17px;" >
-					Copyright(c) 2018 MONTHLY KANGCHANGHO<br>
-					Created and Maintained by Ino Kang [Changho Kang].
-				</p>
-			</div>
-		</div>
-	</footer>	
-	
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <% include partials/include.ejs %>
+
+    <title>Kang Chang Ho . com</title>
+</head>
+
+
+
+<body>
+  <% include partials/front_nav.ejs %>
+    <hr class="page-divider">
+    <div class="doc">
+
+      <header>
+        <div class="site-title">
+          <a class="content-anchor"><span class="site-title-name site-title-span">姜昌昊</span><span class="site-title-com site-title-span"> . COM</span></a>
+        </div>
+        <nav class="site-nav navbar">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav">
+              <% for( var i=0; i<menu.length; i++ ){ %>
+                <% if( i < menu.length-1 && menu[i].group_value === menu[i+1].group_value ){ %>
+                  <% var group_value = menu[i].group_value %>
+                  <% if( menu[i].active == "active" ){ %>
+                    <li class="navbar-item active">
+                  <% } else { %>
+                    <li class="navbar-item">
+                  <% } %>
+                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %><i style="padding-left: 10px" class="fa fa-angle-down" aria-hidden="true"></i></a>
+                      <ul class="dropdown-menu">
+                        <% i++; %>
+                        <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
+                          <% if( menu[i].active == "active" ){ %>
+                            <li class="navbar-item-inner active">
+                          <% } else { %>
+                            <li class="navbar-item-inner">
+                          <% } %>
+                              <a class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                          <% if( i < parseInt(menu.length)-2 && menu[i].group_value != menu[i+1].group_value ){ break; }%>
+                          <% i++; %>
+                        <% } %>
+                      </ul>
+                  </li>
+                <% } else { %>
+                  <li class="navbar-item"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                <% } %>
+              <% } %>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+
+      <div class="page-content">
+        <div class="container-fluid content-container">
+
+          <div class="carousel-container">
+            <div id="announce" class="announce-carousel carousel slide" data-ride="carousel">
+
+              <div class="carousel-inner">
+
+                <% for( var i=0; i<mainAnnounces.length; i++ ){ %>
+
+                  <div class="item <% if( i == 0 ){ %> active <% } %>">
+                    <figure class="announce-figure">
+                      <img src="<%- mainAnnounces[i].savedFileName %>" />
+                      <figcaption data-announce-id="<%- mainAnnounces[i].announce_id %>" data-announce-type="<%- mainAnnounces[i].type_id %>">
+                        <div>
+                          <a class="content-anchor category" data-category-id=""><%- mainAnnounces[i].category_text %></a>
+                          <h3><%- mainAnnounces[i].title %></h3>
+                        </div>
+
+                        <!-- ARROW -->
+                        <a class="left carousel-control" href="#announce" data-slide="prev">
+                          <span class="glyphicon glyphicon-chevron-left"></span>
+                          <span class="sr-only">PREVIOUS</span>
+                        </a>
+
+                        <a class="right carousel-control" href="#announce" data-slide="next">
+                          <span class="glyphicon glyphicon-chevron-right"></span>
+                          <span class="sr-only">NEXT</span>
+                        </a>
+
+                        </figcation>
+                    </figure>
+                  </div>
+
+                <% } %>
+
+              </div>
+            </div>
+
+            <div class="announce-carousel-indicators">
+              <ol class="carousel-indicators">
+                <% for( var i=0; i<mainAnnounces.length; i++ ){ %>
+                  <% if( i === 0 ){ %>
+                    <li data-target="#announce" data-slide-to="<%- i %>" class="active"></li>
+                  <% } else { %>
+                    <li data-target="#announce" data-slide-to="<%- i %>"></li>
+                  <% } %>
+                <% } %>
+              </ol>
+            </div>
+          </div>
+
+          <div class="col-lg-9 col-md-9 article-list-container">
+
+
+            <% for( var i=0; i<pageList.length; i++ ){ %>
+              <% if( pageList[i].type === "announce" ){ %>
+                <article class="inner-announce">
+                  <figure>
+                    <img src="<%- pageList[i].savedFileName %>" />
+                    <figcaption>
+                      <div>
+                        <a class="content-anchor category"><%- pageList[i].category %></a>
+                        <h3><%- pageList[i].title %></h3>
+                      </div>
+                      </figcation>
+                  </figure>
+                </article>
+              <% } else if( pageList[i].type === "content" ){ %>
+                <article class="content-summary">
+                  <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                      <figure>
+                        <img src="<%- pageList[i].savedFileName %>" />
+                        <figcaption>
+                          <div data-href="/content?id=<%- pageList[i].id %>">View Post</div>
+                          </figcation>
+                      </figure>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                      <a class="content-anchor category before-line"><%- pageList[i].category %></a>
+                      <h3 class="title"><a class="content-anchor title"><%- pageList[i].title %></a></h3>
+                      <span class="date"><%- ( ( pageList[i].create_date ).toISOString() ).split("T")[0] %></span><span class="writer-text">&nbsp;&nbsp;&nbsp;BY&nbsp;&nbsp;</span><a class="content-anchor writer">Kang Chang Ho</a>
+                      <p class="summary"><%- pageList[i].content %></p>
+                      <button class="btn_important" onclick="location.href='/content?id=<%- pageList[i].id %>'">VIEW POST</button>
+                    </div>
+                  </div>
+                </article>
+              <% } %>
+            <% } %>
+
+          </div>
+
+          <div class="col-lg-3 col-md-3 banner-container">
+            <form>
+              <div class="input-group">
+                <input type="text" class="input_important form-control" placeholder="keyword">
+                <div class="input-group-btn">
+                  <button class="btn btn_important" type="submit">
+                    SEARCH
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <hr>
+
+            <button class="btn btn_important_banner" style="border-radius: 0px;">
+              YOUTUBE
+              <br>
+              <span class="btn_important_banner_describe">kangchangho.com channel</span>
+            </button>
+
+            <button class="btn btn_important_banner" style="border-radius: 0px;">
+              summer-mvc
+              <br>
+              <span class="btn_important_banner_describe">Open Source Project</span>
+            </button>
+
+            <hr>
+
+            <article>
+              <h4 class="title after-line-block-center">HASH RANKING</h4>
+              <div class="banner-table table table-responsive small-section-end">
+                <table class="hash-ranking table table-hover table-condensed">
+
+                  <% for( var i=0; i<hashRanking.length; i++ ){ %>
+                    <tr>
+                      <td class="ranking"><%- hashRanking[i].rank %></td>
+                      <td class="hashed"><%- hashRanking[i].text %></td>
+                      <td class="changed">-</td>
+                    </tr>
+                  <% } %>
+                </table>
+              </div>
+            </article>
+
+            <hr class="small-section-end">
+
+            <article>
+              <h4 class="title after-line-block-center">MOST RECENT</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<recentContents.length; i++ ){ %>
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="<%- recentContents[i].savedFileName %>" />
+                            <figcaption>
+                              <div>view</div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content?id=<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+                  <% } %>
+                </ul>
+              </div>
+            </article>
+
+            <hr class="small-section-end">
+
+            <article>
+              <h4 class="title after-line-block-center">FILTER</h4>
+              <select class="select_important">
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+              </select>
+            </article>
+
+            <hr class="small-section-end">
+
+            <article>
+              <h4 class="title after-line-block-center">MOST VIEWED</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<mostViewedContents.length; i++ ){ %>
+
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="<%- mostViewedContents[i].savedFileName %>" />
+                            <figcaption>
+                              <div>&#8594;</div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content?id=<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+
+                  <% } %>
+
+                </ul>
+              </div>
+
+            </article>
+
+            <hr class="small-section-end">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% include partials/footer.ejs %>
+
 </body>
+
 </html>

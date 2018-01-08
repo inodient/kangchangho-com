@@ -49,12 +49,44 @@
             "view": "index.ejs"
         },
         {
+            "id": "welcome_last",
+            "path": "/welcome_last",
+            "controllerJS": "controller_welcome.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "welcome_last.ejs"
+        },
+        {
             "id": "welcome",
             "path": "/welcome",
             "controllerJS": "controller_welcome.js",
             "controlFunction": "control",
             "viewPath": "",
             "view": "welcome.ejs"
+        },
+        {
+            "id": "content",
+            "path": "/content",
+            "controllerJS": "controller_content.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "content.ejs"
+        },
+        {
+            "id": "write",
+            "path": "/write",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "addcategory",
+            "path": "/addcategory",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
         },
         {
             "id": "annotation_example_01",
@@ -97,6 +129,46 @@
             "controlFunction": "control",
             "viewPath": "",
             "view": "index.ejs"
+        },
+        {
+            "id": "addcategory",
+            "path": "/addcategory",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "addwriter",
+            "path": "/addwriter",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_writer",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "uploadimage",
+            "path": "/uploadimage",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_image",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "uploadcontent",
+            "path": "/uploadcontent",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_content",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "uploadannounce",
+            "path": "/uploadannounce",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_announce",
+            "viewPath": "",
+            "view": "write.ejs"
         }
     ]
 }

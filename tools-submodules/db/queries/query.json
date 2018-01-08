@@ -1,22 +1,156 @@
 [
   {
-    "id" : "getMySqlVersion",
-    "queryString" : "select version() "
+    "id" : "getMenuList",
+    "queryString" : "SELECT id, name, display_name_ko, display_name_en, display_icon, type, event, direction, parent_id, group_value, depth, sequence, enable, description FROM TB_MENU ORDER BY group_value, DEPTH, SEQUENCE"
   },
   {
-    "id" : "getAccessLog",
-    "queryString" : "select * from connectionInfo where connectionTime > ? and connectionTime < ? "
+    "id" : "getWriterList",
+    "queryString" : "select id, name_en, name_ko, description_en, description_ko from TB_WRITER "
+  },
+
+
+  {
+    "id" : "addCategory",
+    "queryString" : "INSERT INTO TB_MENU (name, display_name_ko, display_name_en, display_icon, type, event, direction, parent_id, group_value, depth, sequence, enable, description, create_date) VALUES (?,?,?, '', 'href', '/', 'center', ?, (select * from (select max(group_value) from TB_MENU where id = ?) _group_value ), (select * from (select max(depth+1) from TB_MENU where id = ?) _depth ), (select * from (select IFNULL( max(sequence+1), 0) from TB_MENU ) _sequence), 'Y', NULL, NOW() )"
   },
   {
-  	"id" : "insertAccessLog",
-  	"queryString" : "insert into connectionInfo values ( ?, ?, ?, ?, ?, ? )"
+    "id" : "getLastCategoryIndex",
+    "queryString" : "select max(id) as lastId from TB_MENU"
+  },
+
+
+  {
+    "id" : "addWriter",
+    "queryString" : "INSERT INTO TB_WRITER (name_en, name_ko, email, description_en, description_ko, create_time) VALUES ( ?, ?, ?, ?, ?, NOW() )"
   },
   {
-  	"id" : "updateAccessLog",
-  	"queryString" : "update connectionInfo set userId = ? where param = ? "
+    "id" : "getLastWriterIndex",
+    "queryString" : "select max(id) as lastId from TB_WRITER"
+  },
+
+
+  {
+    "id" : "addContent",
+    "queryString" : "INSERT INTO TB_CONTENT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?) "
   },
   {
-  	"id" : "deleteAccessLog",
-  	"queryString" : "delete from connectionInfo where param like ? "
+    "id" : "getInsertedContentId",
+    "queryString" : "SELECT MAX(id) as _ID FROM TB_CONTENT WHERE category = ? and writer = ? and title_ko = ? and title_en = ? and content_ko = ? and content_en = ? and comment_ko = ? and comment_en = ? and image_main = ? and image_carousel = ? "
+  },
+  {
+    "id" : "addHash",
+    "queryString" : "INSERT INTO TB_HASH_KV (text, create_date) VALUES ( ?, NOW() ) ON DUPLICATE KEY UPDATE hit_count = hit_count + 10"
+  },
+  {
+    "id" : "getInsertedHashId",
+    "queryString" : "SELECT MAX(id) as _ID FROM TB_HASH_KV WHERE text = ? "
+  },
+  {
+    "id" : "addContentHashLink",
+    "queryString" : "INSERT INTO TB_CONTENT_HASH_LINK (content_id, hash_id) VALUES ( ?, ? ) ON DUPLICATE KEY UPDATE link_count = link_count + 1 "
+  },
+  {
+    "id" : "addImage",
+    "queryString" : "INSERT INTO TB_CONTENT_IMAGE (type, savedDate, originalFileName, savedFileName, savedPath, encoding, mimetype) VALUES (?, NOW(), ?, ?, ?, ?, ?)"
+  },
+  {
+    "id" : "setImageType",
+    "queryString" : "UPDATE TB_CONTENT_IMAGE SET type = ? WHERE savedFileName = ? "
+  },
+  {
+    "id" : "getUpdatedImageId",
+    "queryString" : "SELECT ID FROM TB_CONTENT_IMAGE WHERE savedFileName = ? "
+  },
+
+
+  {
+    "id" : "getMenuListByLang",
+    "queryString" : "select id, name, case when ? = 'en' then display_name_en else display_name_ko end as display_name, display_icon, type, event, direction, parent_id, group_value, depth, sequence, enable, description, case when id = ( select category from TB_CONTENT where id = ? ) or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ( select category from TB_CONTENT where id = ? ) ) ) then 'active' else 'normal' end as active from TB_MENU ORDER BY group_value, DEPTH, SEQUENCE"
+  },
+  {
+    "id" : "getContentMaster",
+    "queryString" : "select id, category, writer, create_date, case when ? = 'en' then title_en else title_ko end as title, case when ? = 'en' then content_en else content_ko end as content, case when ? = 'en' then comment_en else comment_ko end as comment, image_main, image_carousel, hit_count from TB_CONTENT where id = ? "
+  },
+  {
+    "id" : "increaseContentHitCount",
+    "queryString" : "update TB_CONTENT set hit_count = hit_count + ? where id = ? "
+  },
+  {
+    "id" : "getContentCategory",
+    "queryString" : "select id, name, case when ? = 'en' then display_name_en else display_name_ko end as display_name, display_icon, type, event, direction, parent_id, group_value, depth, sequence, enable, description, create_date from TB_MENU where id = ( select category from TB_CONTENT where id = ? )"
+  },
+  {
+    "id" : "getContentHash",
+    "queryString" : "select id, text, hit_count, create_date from TB_HASH_KV where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id = ? ) "
+  },
+  {
+    "id" : "getContentImage",
+    "queryString" : "select id, type, savedDate, originalFileName, savedFileName, savedPath, encoding, mimetype from TB_CONTENT_IMAGE where id = ( select image_main from TB_CONTENT where id = ? ) or id = ( select image_carousel from TB_CONTENT where id = ? ) "
+  },
+  {
+    "id" : "getContentWriter",
+    "queryString" : "select id, case when ? = 'en' then name_en else name_ko end as name, case when ? = 'en' then description_en else description_ko end as description, email, create_time from TB_WRITER where id = ( select writer from TB_CONTENT where id = ?) "
+  },
+  {
+    "id" : "getHashRanking",
+    "queryString" : "select rank, id, text, hit_count, create_date from (select id, text, hit_count, create_date, case when @prev_value = hit_count then @vRank when @prev_value := hit_count then @vRank := @vRank + 1 end as rank from TB_HASH_KV, (select @vRank := 0, @prev_value := null) AS r order by hit_count desc, create_date desc limit 10 )  AS CNT "
+  },
+  {
+    "id" : "getRecentContents",
+    "queryString" : "select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, con.hit_count from TB_CONTENT con, TB_CONTENT_IMAGE image where con.image_main = image.id order by create_date desc, hit_count desc limit 3 "
+  },
+  {
+    "id" : "getMostViewedContents",
+    "queryString" : "select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, con.hit_count from TB_CONTENT con, TB_CONTENT_IMAGE image where con.image_main = image.id order by hit_count desc, create_date desc limit 5 "
+  },
+  {
+    "id" : "getRelatedContents",
+    "queryString" : "select con.id, case when ? = 'en' then con.title_en else con.title_ko end as title, con.create_date, hash.id as hash_id, hash.text, hash.hit_count, hash.create_date as hash_create_date, link.content_id, link.hash_id, link.link_count, image.savedFileName, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category, case when ? = 'en' then author.name_en else author.name_ko end as writer, author.email, case when ? = 'en' then con.content_en else con.content_ko end as content from TB_CONTENT con, TB_HASH_KV hash, TB_CONTENT_HASH_LINK link, TB_CONTENT_IMAGE image, TB_MENU menu, TB_WRITER author where hash.id = link.hash_id and link.content_id = con.id and con.image_main = image.id and con.category = menu.id and con.writer = author.id group by link.content_id order by hash.hit_count desc, con.create_date desc limit 6"
+  },
+
+
+
+
+  {
+    "id" : "getAnnounceType",
+    "queryString" : "select id, display_name from TB_ANNOUNCE_TYPE order by id"
+  },
+  {
+    "id" : "getAnnounceContentList",
+    "queryString" : "select con.id as content_id, con.title_en, con.title_ko, menu.id as category_id, menu.display_name_en as category_en, menu.display_name_ko as category_ko, GROUP_CONCAT( hash.text SEPARATOR ', ' ) as hashes, con.create_date, image.savedFileName from TB_CONTENT con, TB_HASH_KV hash, TB_CONTENT_HASH_LINK link, TB_CONTENT_IMAGE image, TB_MENU menu, TB_WRITER author where hash.id = link.hash_id and link.content_id = con.id and con.image_carousel = image.id and con.category = menu.id and con.writer = author.id group by con.id order by con.id desc, con.create_date desc"
+  },
+  {
+    "id" : "getAnnounceCategory",
+    "queryString" : "select id, display_name from TB_ANNOUNCE_SEARCH_CATEGORY order by id"
+  },
+  {
+    "id" : "addAnnounce",
+    "queryString" : "INSERT INTO TB_ANNOUNCE (type, title_en, title_ko, writer, category, on_main, announce_image, create_date) VALUES (?, ?, ?, ?, ?, ?, (select * from (select id from TB_CONTENT_IMAGE where savedFileName = ?) image ), now() ) "
+  },
+  {
+    "id" : "getInsertedAnnounceId",
+    "queryString" : "select max(id) as _ID from TB_ANNOUNCE "
+  },
+  {
+    "id" : "addAnnonceContent",
+    "queryString" : "INSERT INTO TB_ANNOUNCE_LIST (announce_id, seq, content_id, content_category_id, create_date) VALUES (?, ?, ?, ?, now() ) "
+  },
+  {
+    "id" : "addAnnounceSearch",
+    "queryString" : "INSERT INTO TB_ANNOUNCE_SEARCH (announce_id, search_category_id, search_condition, search_text, create_date) VALUES (?, ?, ?, ?, NOW() ) "
+  },
+
+
+
+
+
+  {
+    "id" : "getMainAnnounces",
+    "queryString" : "select announce.id as announce_id, announce.type as type_id, announce_type.display_name as type_text, case when ? = 'en' then announce.title_en else announce.title_ko end as title, writer, announce.category as category_id, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category_text,  announce_image as image_id,image.savedFileName as savedFileName from TB_ANNOUNCE announce, TB_ANNOUNCE_TYPE announce_type, TB_MENU menu, TB_CONTENT_IMAGE image where on_main = 1 and announce.type = announce_type.id and announce.category = menu.id and announce.announce_image = image.id order by announce_id "
+  },
+  {
+    "id" : "getPageList",
+    "queryString" : "select * from ( select con.id as id, 'content' as type, '' as announce_type_id, '' as announce_type_text, case when ? = 'en' then con.title_en else con.title_ko end as title, con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category, case when ? = 'en' then con.content_en else con.content_ko end as content, image.savedFileName from TB_CONTENT con, TB_CONTENT_IMAGE image, TB_MENU menu where con.image_main = image.id and con.category = menu.id  union all select announce.id as id, 'announce' as type, announce.type as annonce_type_id, announce_type.display_name as announce_type_text, case when ? = 'en' then announce.title_en else announce.title_ko end as title, announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,  '', image.savedFileName as savedFileName from TB_ANNOUNCE announce, TB_ANNOUNCE_TYPE announce_type, TB_MENU menu, TB_CONTENT_IMAGE image where announce.type = announce_type.id and announce.category = menu.id and announce.announce_image = image.id ) page_list order by create_date desc limit 20"
   }
+
 ]

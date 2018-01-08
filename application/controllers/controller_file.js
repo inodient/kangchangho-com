@@ -7,6 +7,7 @@ exports.control = function( req, res ){
 
     fileHandler.uploadFile( req, "test-upload-folder" )
     .then( function(results){
+
       var message = "** Uploaded File(s) **\n" + results.originalFileName;
       logger.debug( message );
       resolve( setModel(req, res, message) );
