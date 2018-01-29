@@ -1,7 +1,14 @@
-exports.selectAnnounceCategory = function( connection ){
+const dbExecutorAnnounce = require( require("path").join( __runningPath, "application", "model", "dbExecutor_announce.js" ) );
+
+
+
+
+
+exports.getMainAnnounces = function( connection, lang ){
   return new Promise( function(resolve, reject){
-    getAnnounceCategory( connection )
+    dbExecutorAnnounce.getMainAnnounces( connection, lang )
     .then( function( results ){
+      resolve( {"mainAnnounces" : results} );
       resolve( results );
     } )
     .catch( function( err ){
@@ -10,11 +17,36 @@ exports.selectAnnounceCategory = function( connection ){
   } );
 }
 
-exports.selectAnnounceType = function( connection ){
+
+
+
+
+
+exports.getPageListOfAnnounce = function( connection, lang, announceId ){
   return new Promise( function(resolve, reject){
-    getAnnounceType( connection )
+    dbExecutorAnnounce.getPageListOfAnnounce( connection, lang, announceId )
     .then( function( results ){
-      resolve( results );
+
+      var pageObject = {};
+
+      if( results.length > 0 ){
+        var totalListCount = ( (results)[0] ).total_count;
+        var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+        var currentPage = 1;
+
+        pageObject =  {"pageList": results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": currentPage};
+      } else{
+        pageObject =  {"pageList": results, "totalListCount": 0, "totalPageCount": 0, "currentPage": 0};
+      }
+
+      extractContents( pageObject.pageList, lang )
+      .then( function( parsedPageList ){
+        pageObject.pageList = parsedPageList;
+        resolve( pageObject );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
     } )
     .catch( function( err ){
       reject( err );
@@ -22,11 +54,106 @@ exports.selectAnnounceType = function( connection ){
   } );
 }
 
-exports.insertAnnounce = function( connection, parameter ){
+exports.getPageListOfAnnounceByIndex = function( connection, lang, announceId, parameter ){
   return new Promise( function(resolve, reject){
-    addAnnounce( connection, parameter )
+    getPagingRange( parameter )
+    .then( function( pageInfo ){
+
+      var pageRange = pageInfo.pageRange;
+      var offset = ( ( parseInt( pageRange[0] ) - 1 ) * 8 );
+      var length = ( parseInt( pageRange[pageRange.length-1] ) - parseInt( pageRange[0] ) + 1 ) * 8;
+
+      pageInfo.offset = offset;
+      pageInfo.length = length;
+
+      dbExecutorAnnounce.getPageListOfAnnounceByIndex( connection, lang, announceId, pageInfo )
+      .then( function( results ){
+
+        logger.debug( results );
+
+        pageInfo.totalListCount = ( (results)[0] ).total_count;
+        pageInfo.totalPageCount = pageInfo.totalListCount % 8 == 0 ? pageInfo.totalListCount / 8 : parseInt( (pageInfo.totalListCount / 8) ) + 1 ;
+        pageInfo.currentPage = pageInfo.calledPage;
+        pageInfo.pageList = results;
+
+        extractContents( pageInfo.pageList, lang )
+        .then( function( parsedPageList ){
+
+          pageInfo.pageList = parsedPageList;
+
+          logger.debug( pageInfo );
+
+          resolve( pageInfo );
+
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getAnnounceText = function( connection, lang, announceId ){
+  return new Promise( function(resolve, reject){
+    dbExecutorAnnounce.getAnnounceText( connection, lang, announceId )
+    .then( function( results ){
+      resolve( {"searchText":results} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
+
+
+
+
+exports.getAnnounceCategory = function( connection ){
+  return new Promise( function(resolve, reject){
+    dbExecutorAnnounce.getAnnounceCategory( connection )
+    .then( function( results ){
+      resolve( {"announceCategory":results} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getAnnounceType = function( connection ){
+  return new Promise( function(resolve, reject){
+    dbExecutorAnnounce.getAnnounceType( connection )
+    .then( function( results ){
+      resolve( {"announceType":results}  );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
+
+
+exports.addAnnounce = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    dbExecutorAnnounce.addAnnounce( connection, parameter )
     .then( function(){
-      getInsertedAnnounceId( connection )
+      dbExecutorAnnounce.getInsertedAnnounceId( connection )
       .then( function( results ){
 
         var announceId = results.announceId;
@@ -40,7 +167,7 @@ exports.insertAnnounce = function( connection, parameter ){
 
         Promise.all( promises )
         .then( function(){
-          resolve( announceId );
+          resolve( {"announceId": announceId} );
         } )
         .catch( function( __err ){
           reject( __err );
@@ -56,101 +183,18 @@ exports.insertAnnounce = function( connection, parameter ){
   } );
 }
 
-exports.selectMainAnnounces = function( connection, lang ){
-  return new Promise( function(resolve, reject){
-    getMainAnnounces( connection, lang )
-    .then( function( results ){
-      resolve( results );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
 
 
-
-
-function getAnnounceCategory( connection ){
-  return new Promise( function(resolve, reject){
-		var params = [];
-		var queryId = "getAnnounceCategory";
-
-		mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-			resolve( {"announceCategory":queryResults.results} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
-	} );
-}
-
-function getAnnounceType( connection ){
-  return new Promise( function(resolve, reject){
-		var params = [];
-		var queryId = "getAnnounceType";
-
-		mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-			resolve( {"announceType":queryResults.results} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
-	} );
-}
-
-function addAnnounce( connection, parameter ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "addAnnounce";
-
-    params.push( parameter.announceType );
-    params.push( parameter.title_en );
-    params.push( parameter.title_ko );
-    params.push( parameter.sel_writer );
-    params.push( parameter.sel_category );
-    params.push( 0 );
-    params.push( parameter.image_carousel );
-
-    mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-			resolve( {"status":"succeed"} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
-  } );
-}
-
-function getInsertedAnnounceId( connection ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getInsertedAnnounceId";
-
-    mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-      resolve( {"announceId" : ( (queryResults.results)[0] )._ID} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
-  } );
-}
 
 function addAnnounceContentList( connection, parameter, announceId ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "addAnnonceContentList";
-
     var promises = [];
     var contentList = parameter.announceContentList;
     var categoryList = parameter.announceContentCategoryList;
 
     if( contentList && categoryList && contentList.length > 0 && categoryList.length > 0 ){
       for( var i=0; i<contentList.length; i++ ){
-        promises.push( addAnnounceContent(connection, announceId, i, contentList[i], categoryList[i] ) );
+        promises.push( dbExecutorAnnounce.addAnnounceContent(connection, announceId, i, contentList[i], categoryList[i] ) );
       }
     }
 
@@ -161,42 +205,19 @@ function addAnnounceContentList( connection, parameter, announceId ){
     .catch( function(err){
       reject( err );
     } );
-  } );
-}
-
-function addAnnounceContent( connection, announceId, seq, contentId, contentCategoryId ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "addAnnonceContent";
-
-    params.push( announceId );
-    params.push( seq );
-    params.push( contentId );
-    params.push( contentCategoryId );
-
-    mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-      resolve( {"status" : "succeed"} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
   } );
 }
 
 function addAnnounceSearchList( connection, parameter, announceId ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "addAnnonceContentList";
-
     var promises = [];
     var categoryList = parameter.announceCategoryList;
     var searchCondition = parameter.announceCategoryCondition;
     var searchText = parameter.announceCategoryText;
 
-    if( categoryList && searchCondition && searchText && categoryList.length > 0 && searchCondition.length > 0 && searchTest.length > 0 ){
+    if( categoryList && searchCondition && searchText && categoryList.length > 0 && searchCondition.length > 0 && searchText.length > 0 ){
       for( var i=0; i<categoryList.length; i++ ){
-        promises.push( addAnnounceSearch(connection, announceId, categoryList[i], searchCondition[i], searchText[i] ) );
+        promises.push( dbExecutorAnnounce.addAnnounceSearch(connection, announceId, categoryList[i], searchCondition[i], searchText[i] ) );
       }
     }
 
@@ -210,40 +231,97 @@ function addAnnounceSearchList( connection, parameter, announceId ){
   } );
 }
 
-function addAnnounceSearch( connection, announceId, searchCategoryId, searchCondition, searchText ){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function extractContents( pageList, lang ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "addAnnounceSearch";
+    var promises = [];
 
-    params.push( announceId );
-    params.push( searchCategoryId );
-    params.push( searchCondition );
-    params.push( searchText );
+    for( var i=0; i<pageList.length; i++ ){
+      promises.push( extractContentText( ( pageList[i] ).content, lang ) );
+    }
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-      resolve( {"status" : "succeed"} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
+    Promise.all( promises )
+    .then( function(){
+      var argv = arguments[0];
+
+      for( var i=0; i<argv.length; i++ ){
+        ( pageList[i] ).content = argv[i];
+      }
+
+      resolve( pageList );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
   } );
 }
 
-function getMainAnnounces( connection, lang ){
+function extractContentText( contentHTML, lang ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getMainAnnounces";
+    try {
+      const cheerio = require( "cheerio" );
+      const $ = cheerio.load( contentHTML );
 
-    params.push( lang );
-    params.push( lang );
+      var contentText = "";
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( {"mainAnnounces" : queryResults.results} );
-    } )
-    .catch( function( err ){
+      $("*").each( function(){
+        contentText += " " + $(this).text();
+      } );
+
+      var targetTextLength = 200;
+      if( lang === "en" ){
+        targetTextLength = 200;
+      } else if( lang === "ko" ){
+        targetTextLength = 150;
+      }
+
+      if( contentText.length > targetTextLength ){
+        contentText = contentText.substring( 0, targetTextLength - 4 );
+        var lastIndex = contentText.lastIndexOf( " " );
+        contentText = contentText.substring( 0, lastIndex + 1 ) + "...";
+      }
+
+      resolve( contentText );
+    } catch( err ){
       reject( err );
-    } );
+    }
+  } );
+}
+
+function getPagingRange( parameters ){
+  return new Promise( function(resolve, reject){
+    var totalPageCount = parseInt( parameters.totalPageCount );
+    var releasedPages = parameters.releasedPages;
+    var calledPage = parseInt( parameters.calledPage );
+
+    var pageRange = [];
+    for( var i=calledPage-2; i<=calledPage+2; i++ ){
+
+      if( i > 0 && i <= totalPageCount ){
+
+        if( releasedPages.indexOf( i.toString() ) < 0 ){
+          pageRange.push( i );
+        }
+      }
+    }
+
+    parameters.pageRange = pageRange;
+
+    resolve( parameters );
   } );
 }

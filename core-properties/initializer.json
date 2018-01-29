@@ -6,15 +6,6 @@
       "files" : [ "context_dispatcher.json", "initializer.json" ]
     },
     {
-      "folder" : "/application/controllers",
-      "files" : [ "controller_basic.js",
-                  "controller_post.js",
-                  "controller_ajax.js",
-                  "controller_cookie_session.js",
-                  "controller_db.js",
-                  "controller_file.js" ]
-    },
-    {
       "folder" : "/application/views",
       "files" : [ "index.ejs", "error.html" ]
     },

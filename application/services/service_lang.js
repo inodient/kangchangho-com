@@ -6,10 +6,7 @@ exports.setDefaultLang = function( req, res ){
 
       if( result === "undefined" ){
         var lang = getBrowserDefaultLang( req );
-        logger.debug( "default lang : " , lang );
-
         connHandler.setCookie( "lang", lang );
-
         resolve( lang );
       }
 
@@ -33,7 +30,6 @@ function getBrowserDefaultLang( req ){
   try{
     var lang = req.headers["accept-language"];
     lang = ( ( ( ( ( lang.split(";") )[0] ).split(",") )[0] ).split("-") )[0];
-
     return lang;
   } catch( err ){
     throw err;

@@ -1,0 +1,1033 @@
+<?xml version='1.0'?>
+  <queries>
+    <query id='getMenuList'>
+      <![CDATA[
+        SELECT id, name, display_name_ko, display_name_en, display_icon, type, event, direction, parent_id, group_value, depth, sequence, enable, description
+          FROM TB_MENU
+        ORDER BY group_value, DEPTH, SEQUENCE
+      ]]>
+    </query>
+
+    <query id='getWriterList'>
+      <![CDATA[
+        select id, name_en, name_ko, description_en, description_ko
+          from TB_WRITER
+      ]]>
+    </query>
+
+    <query id='addCategory'>
+      <![CDATA[
+        INSERT INTO TB_MENU (name, display_name_ko, display_name_en, display_icon, type, event, direction, parent_id, group_value, depth, sequence, enable, description, create_date)
+        VALUES (?,
+                ?,
+                ?,
+                '',
+                'href',
+                '/',
+                'center',
+                ?,
+                (select * from (select max(group_value) from TB_MENU where id = ?) _group_value ),
+                (select * from (select max(depth+1) from TB_MENU where id = ?) _depth ),
+                (select * from (select IFNULL( max(sequence+1), 0) from TB_MENU ) _sequence),
+                'Y',
+                NULL,
+                NOW() )
+      ]]>
+    </query>
+
+    <query id='getLastCategoryIndex'>
+      <![CDATA[
+        select max(id) as lastId from TB_MENU
+      ]]>
+    </query>
+
+    <query id='addWriter'>
+      <![CDATA[
+        INSERT INTO TB_WRITER (name_en, name_ko, email, description_en, description_ko, create_time)
+        VALUES ( ?, ?, ?, ?, ?, NOW() )
+      ]]>
+    </query>
+
+    <query id='getLastWriterIndex'>
+      <![CDATA[
+        select max(id) as lastId from TB_WRITER
+      ]]>
+    </query>
+
+    <query id='addContent'>
+      <![CDATA[
+        INSERT INTO TB_CONTENT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel)
+        VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)
+      ]]>
+    </query>
+
+    <query id='getInsertedContentId'>
+      <![CDATA[
+        SELECT MAX(id) as _ID
+          FROM TB_CONTENT
+         WHERE category = ?
+           and writer = ?
+           and title_ko = ?
+           and title_en = ?
+           and content_ko = ?
+           and content_en = ?
+           and comment_ko = ?
+           and comment_en = ?
+           and image_main = ?
+           and image_carousel = ?
+      ]]>
+    </query>
+
+    <query id='addHash'>
+      <![CDATA[
+        INSERT INTO TB_HASH_KV (text, create_date)
+        VALUES ( ?, NOW() )
+            ON DUPLICATE KEY UPDATE hit_count = hit_count + 5
+      ]]>
+    </query>
+
+    <query id='getInsertedHashId'>
+      <![CDATA[
+        SELECT MAX(id) as _ID FROM TB_HASH_KV WHERE text = ?
+      ]]>
+    </query>
+
+    <query id='addContentHashLink'>
+      <![CDATA[
+        INSERT INTO TB_CONTENT_HASH_LINK (content_id, hash_id)
+        VALUES ( ?, ? )
+            ON DUPLICATE KEY UPDATE link_count = link_count + 1
+      ]]>
+    </query>
+
+    <query id='addImage'>
+      <![CDATA[
+        INSERT INTO TB_CONTENT_IMAGE (type, savedDate, originalFileName, savedFileName, savedPath, encoding, mimetype)
+        VALUES (?, NOW(), ?, ?, ?, ?, ?)
+      ]]>
+    </query>
+
+    <query id='setImageType'>
+      <![CDATA[
+        UPDATE TB_CONTENT_IMAGE
+           SET type = ?
+         WHERE savedFileName = ?
+      ]]>
+    </query>
+
+    <query id='getUpdatedImageId'>
+      <![CDATA[
+        SELECT ID
+          FROM TB_CONTENT_IMAGE
+         WHERE savedFileName = ?
+      ]]>
+    </query>
+
+    <query id='getMenuListByLang'>
+      <![CDATA[
+        select
+          id,
+          name,
+          case when ? = 'en' then display_name_en
+              else display_name_ko
+          end as display_name,
+          display_icon,
+          type,
+          event,
+          direction,
+          parent_id,
+          group_value,
+          depth,
+          sequence,
+          enable,
+          description,
+          case when ( id = ( select category from TB_CONTENT where id = ? )
+                   or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ( select category from TB_CONTENT where id = ? ) ) ) )
+                   or ( ( id = ? ) or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ? ) ) )  then 'active' else 'normal' end as active
+                   from TB_MENU ORDER BY group_value, DEPTH, SEQUENCE
+      ]]>
+    </query>
+
+    <query id='getContentMaster'>
+      <![CDATA[
+        select id,
+               category,
+               writer,
+               create_date,
+               case when ? = 'en' then title_en
+                    else title_ko end as title,
+               case when ? = 'en' then content_en
+                    else content_ko end as content,
+               case when ? = 'en' then comment_en
+                    else comment_ko end as comment,
+               image_main,
+               image_carousel,
+               hit_count
+          from TB_CONTENT
+         where id = ?
+      ]]>
+    </query>
+
+    <query id='increaseContentHitCount'>
+      <![CDATA[
+        update TB_CONTENT
+           set hit_count = hit_count + ?
+         where id = ?
+      ]]>
+    </query>
+
+    <query id='getContentCategory'>
+      <![CDATA[
+        select id,
+               name,
+               case when ? = 'en' then display_name_en
+                    else display_name_ko end as display_name,
+               display_icon,
+               type,
+               event,
+               direction,
+               parent_id,
+               group_value,
+               depth,
+               sequence,
+               enable,
+               description,
+               create_date
+          from TB_MENU
+         where id = ( select category from TB_CONTENT where id = ? )
+      ]]>
+    </query>
+
+    <query id='getContentHash'>
+      <![CDATA[
+        select id, text, hit_count, create_date
+          from TB_HASH_KV
+         where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id = ? )
+      ]]>
+    </query>
+
+    <query id='getContentImage'>
+      <![CDATA[
+        select id, type, savedDate, originalFileName, savedFileName, savedPath, encoding, mimetype
+          from TB_CONTENT_IMAGE
+         where id = ( select image_main from TB_CONTENT where id = ? )
+            or id = ( select image_carousel from TB_CONTENT where id = ? )
+      ]]>
+    </query>
+
+    <query id='getContentWriter'>
+      <![CDATA[
+        select id, case when ? = 'en' then name_en else name_ko end as name, case when ? = 'en' then description_en else description_ko end as description, email, create_time
+          from TB_WRITER
+         where id = ( select writer from TB_CONTENT where id = ?)
+      ]]>
+    </query>
+
+    <query id='getHashRanking'>
+      <![CDATA[
+        select rank, id, text, hit_count, create_date
+          from ( select id, text, hit_count, create_date, case when @prev_value = hit_count then @vRank when @prev_value := hit_count then @vRank := @vRank + 1 end as rank
+                   from TB_HASH_KV, (select @vRank := 0, @prev_value := null) AS r
+                  order by hit_count desc, create_date desc limit 10 ) AS CNT
+      ]]>
+    </query>
+
+    <query id='getRecentContents'>
+      <![CDATA[
+        select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, con.hit_count
+          from TB_CONTENT con, TB_CONTENT_IMAGE image
+         where con.image_main = image.id
+         order by create_date desc, hit_count desc limit 3
+      ]]>
+    </query>
+
+    <query id='getMostViewedContents'>
+      <![CDATA[
+        select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, con.hit_count
+          from TB_CONTENT con, TB_CONTENT_IMAGE image
+         where con.image_main = image.id
+         order by hit_count desc, create_date desc limit 5
+      ]]>
+    </query>
+
+    <query id='getRelatedContents'>
+      <![CDATA[
+        select con.id,
+               case when ? = 'en' then con.title_en
+                    else con.title_ko end as title,
+               con.create_date,
+               hash.id as hash_id,
+               hash.text,
+               hash.hit_count,
+               hash.create_date as hash_create_date,
+               link.content_id,
+               link.hash_id,
+               link.link_count,
+               image.savedFileName,
+               case when ? = 'en' then menu.display_name_en
+                    else menu.display_name_ko end as category,
+               case when ? = 'en' then author.name_en
+                    else author.name_ko end as writer,
+               author.email,
+               case when ? = 'en' then con.content_en
+                    else con.content_ko end as content
+          from TB_CONTENT con, TB_HASH_KV hash, TB_CONTENT_HASH_LINK link, TB_CONTENT_IMAGE image, TB_MENU menu, TB_WRITER author
+         where hash.id = link.hash_id
+           and link.content_id = con.id
+           and con.image_main = image.id
+           and con.category = menu.id
+           and con.writer = author.id
+         group by link.content_id, hash.id, link_count
+         order by hash.hit_count desc, con.create_date desc limit 6
+      ]]>
+    </query>
+
+
+
+    <query id='getAnnounceType'>
+      <![CDATA[
+        select id, display_name from TB_ANNOUNCE_TYPE order by id
+      ]]>
+    </query>
+
+    <query id='getAnnounceContentList'>
+      <![CDATA[
+        select con.id as content_id,
+          con.title_en,
+          con.title_ko,
+          con.create_date,
+          menu.id as category_id,
+          menu.display_name_en as category_en,
+          menu.display_name_ko as category_ko,
+          image.savedFileName,
+          hashInfo.hashes
+        from TB_CONTENT con
+        LEFT JOIN TB_MENU menu ON con.category = menu.id
+        LEFT JOIN TB_CONTENT_IMAGE image ON con.image_carousel = image.id
+        LEFT JOIN
+          (
+            select GROUP_CONCAT( hash.text SEPARATOR ', ' ) as hashes, link.content_id from TB_HASH_KV hash
+            LEFT JOIN TB_CONTENT_HASH_LINK link ON hash.id = link.hash_id
+            GROUP BY link.content_id
+          ) hashInfo
+        ON hashInfo.content_id = con.id
+      ]]>
+    </query>
+
+    <query id='getAnnounceCategory'>
+      <![CDATA[
+        select id, display_name
+          from TB_ANNOUNCE_SEARCH_CATEGORY
+         order by id
+      ]]>
+    </query>
+
+    <query id='addAnnounce'>
+      <![CDATA[
+        INSERT INTO TB_ANNOUNCE (type, title_en, title_ko, writer, category, on_main, announce_image, create_date)
+        VALUES (?, ?, ?, ?, ?, ?, (select * from (select id from TB_CONTENT_IMAGE where savedFileName = ?) image ), now() )
+      ]]>
+    </query>
+
+    <query id='getInsertedAnnounceId'>
+      <![CDATA[
+        select max(id) as _ID from TB_ANNOUNCE
+      ]]>
+    </query>
+
+    <query id='addAnnonceContent'>
+      <![CDATA[
+        INSERT INTO TB_ANNOUNCE_LIST (announce_id, seq, content_id, content_category_id, create_date)
+        VALUES (?, ?, ?, ?, now() )
+      ]]>
+    </query>
+
+    <query id='addAnnounceSearch'>
+      <![CDATA[
+        INSERT INTO TB_ANNOUNCE_SEARCH (announce_id, search_category_id, search_condition, search_text, create_date)
+        VALUES (?, ?, ?, ?, NOW() )
+      ]]>
+    </query>
+
+    <query id='getMainAnnounces'>
+      <![CDATA[
+        select announce.id as announce_id,
+               announce.type as type_id,
+               announce_type.display_name as type_text,
+               case when ? = 'en' then announce.title_en
+                    else announce.title_ko end as title,
+               writer,
+               announce.category as category_id,
+               case when ? = 'en' then menu.display_name_en
+                    else menu.display_name_ko end as category_text,
+               announce_image as image_id,
+               image.savedFileName as savedFileName
+          from TB_ANNOUNCE announce,
+               TB_ANNOUNCE_TYPE announce_type,
+               TB_MENU menu,
+               TB_CONTENT_IMAGE image
+         where on_main = 1
+           and announce.type = announce_type.id
+           and announce.category = menu.id
+           and announce.announce_image = image.id
+         order by announce_id
+      ]]>
+    </query>
+
+    <query id='getPageList'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+            from
+              ( select con.id as id, 'content' as type,
+                    '' as announce_type_id, '' as announce_type_text,
+                    case when ? = 'en' then con.title_en else con.title_ko end as title,
+                    con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                    menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                    image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                    writer.email as writer_email
+                 from TB_CONTENT con
+                 LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                 LEFT JOIN TB_MENU menu ON con.category = menu.id
+                 LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+
+                union all
+
+                select announce.id as id, 'announce' as type,
+                       announce.type as annonce_type_id,
+                       announce_type.display_name as announce_type_text,
+                       case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                       announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                       menu.id as category_id, '',
+                       image.savedFileName as savedFileName, writer.id as writer_id,
+                       case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                       writer.email as writer_email
+                from TB_ANNOUNCE announce
+                LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+              ) page_list, (SELECT @rownum :=0) AS R
+          order by create_date desc ) total
+          limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListByIndex'>
+      <![CDATA[
+      select
+        total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+        total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+        total.category_id, total.content, total.savedFileName, @rownum as total_count
+      from
+        ( select
+            page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+            page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+            page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+          from
+            ( select con.id as id, 'content' as type,
+                  '' as announce_type_id, '' as announce_type_text,
+                  case when ? = 'en' then con.title_en else con.title_ko end as title,
+                  con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                  menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                  image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                  writer.email as writer_email
+               from TB_CONTENT con
+               LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+               LEFT JOIN TB_MENU menu ON con.category = menu.id
+               LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+
+              union all
+
+              select announce.id as id, 'announce' as type,
+                     announce.type as annonce_type_id,
+                     announce_type.display_name as announce_type_text,
+                     case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                     announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                     menu.id as category_id, '',
+                     image.savedFileName as savedFileName, writer.id as writer_id,
+                     case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                     writer.email as writer_email
+              from TB_ANNOUNCE announce
+              LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+              LEFT JOIN TB_MENU menu ON announce.category = menu.id
+              LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+              LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+            ) page_list, (SELECT @rownum :=0) AS R
+        order by create_date desc ) total
+        limit ?, ?
+      ]]>
+    </query>
+
+    <query id='getPageListWithSearchWord'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where case when ? = 'en' then con.title_en like ?
+                          else con.title_ko like ? end
+                      or case when ? = 'en' then writer.name_en like ?
+                              else writer.name_ko like ? end
+                      or case when ? = 'en' then con.content_en like ?
+                              else con.content_ko like ? end
+                      or case when ? = 'en' then con.comment_en like ?
+                              else con.comment_ko like ? end
+
+                  union all
+
+                  select announce.id as id, 'announce' as type,
+                         announce.type as annonce_type_id,
+                         announce_type.display_name as announce_type_text,
+                         case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                         announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                         menu.id as category_id, '',
+                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                         writer.email as writer_email
+                  from TB_ANNOUNCE announce
+                  LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                  LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                  LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                  LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                  where case when ? = 'en' then announce.title_en like ?
+                         else announce.title_ko like ? end
+                     or case when ? = 'en' then writer.name_en like ?
+                             else writer.name_ko like ? end
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListWithSearchWordByIndex'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where case when ? = 'en' then con.title_en like ?
+                          else con.title_ko like ? end
+                      or case when ? = 'en' then writer.name_en like ?
+                              else writer.name_ko like ? end
+                      or case when ? = 'en' then con.content_en like ?
+                              else con.content_ko like ? end
+                      or case when ? = 'en' then con.comment_en like ?
+                              else con.comment_ko like ? end
+
+                  union all
+
+                  select announce.id as id, 'announce' as type,
+                         announce.type as annonce_type_id,
+                         announce_type.display_name as announce_type_text,
+                         case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                         announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                         menu.id as category_id, '',
+                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                         writer.email as writer_email
+                  from TB_ANNOUNCE announce
+                  LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                  LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                  LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                  LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                  where case when ? = 'en' then announce.title_en like ?
+                         else announce.title_ko like ? end
+                     or case when ? = 'en' then writer.name_en like ?
+                             else writer.name_ko like ? end
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit ?, ?
+      ]]>
+    </query>
+
+    <query id='getPageListWithCategory'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where menu.id = ?
+
+                  union all
+
+                  select announce.id as id, 'announce' as type,
+                         announce.type as annonce_type_id,
+                         announce_type.display_name as announce_type_text,
+                         case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                         announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                         menu.id as category_id, '',
+                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                         writer.email as writer_email
+                  from TB_ANNOUNCE announce
+                  LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                  LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                  LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                  LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                  where menu.id = ?
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListWithCategoryByIndex'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where menu.id = ?
+
+                  union all
+
+                  select announce.id as id, 'announce' as type,
+                         announce.type as annonce_type_id,
+                         announce_type.display_name as announce_type_text,
+                         case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                         announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                         menu.id as category_id, '',
+                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                         writer.email as writer_email
+                  from TB_ANNOUNCE announce
+                  LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                  LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                  LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                  LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                  where menu.id = ?
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit ?, ?
+      ]]>
+    </query>
+
+    <query id='getPageListWithWriter'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where writer.id = ?
+
+                  union all
+
+                  select announce.id as id, 'announce' as type,
+                         announce.type as annonce_type_id,
+                         announce_type.display_name as announce_type_text,
+                         case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                         announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                         menu.id as category_id, '',
+                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                         writer.email as writer_email
+                  from TB_ANNOUNCE announce
+                  LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                  LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                  LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                  LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                  where writer.id = ?
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListWithWriterByIndex'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where writer.id = ?
+
+                  union all
+
+                  select announce.id as id, 'announce' as type,
+                         announce.type as annonce_type_id,
+                         announce_type.display_name as announce_type_text,
+                         case when ? = 'en' then announce.title_en else announce.title_ko end as title,
+                         announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                         menu.id as category_id, '',
+                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                         writer.email as writer_email
+                  from TB_ANNOUNCE announce
+                  LEFT JOIN TB_ANNOUNCE_TYPE announce_type ON announce.type = announce_type.id
+                  LEFT JOIN TB_MENU menu ON announce.category = menu.id
+                  LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
+                  LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                  where writer.id = ?
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit ?, ?
+      ]]>
+    </query>
+
+    <query id='getPageListWithHash'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where con.id in ( select distinct(content_id) from TB_CONTENT_HASH_LINK where hash_id = ? )
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListWithHashByIndex'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where con.id in ( select distinct(content_id) from TB_CONTENT_HASH_LINK where hash_id = ? )
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit ?, ?
+      ]]>
+    </query>
+
+    <query id='getPageListOfAnnounce'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where con.id in ( select content_id from TB_ANNOUNCE_LIST where announce_id = ? order by seq )
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListOfAnnounceByIndex'>
+      <![CDATA[
+        select
+          total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+          total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+          total.category_id, total.content, total.savedFileName, @rownum as total_count
+        from
+          ( select
+              page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+              page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              from
+                ( select con.id as id, 'content' as type,
+                      '' as announce_type_id, '' as announce_type_text,
+                      case when ? = 'en' then con.title_en else con.title_ko end as title,
+                      con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
+                      menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
+                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      writer.email as writer_email
+                   from TB_CONTENT con
+                   LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
+                   LEFT JOIN TB_MENU menu ON con.category = menu.id
+                   LEFT JOIN TB_WRITER writer ON con.writer = writer.id
+                   where con.id in ( select content_id from TB_ANNOUNCE_LIST where announce_id = ? order by seq )
+
+            ) page_list, (SELECT @rownum :=0) AS R
+         order by create_date desc ) total
+        limit ?, ?
+      ]]>
+    </query>
+
+    <query id='increaseHashHitCount'>
+      <![CDATA[
+        Update TB_HASH_KV
+           set hit_count = hit_count + 10
+         where id = ?
+      ]]>
+    </query>
+
+    <query id='getCategoryText'>
+      <![CDATA[
+        select case when ? = 'en' then display_name_en
+                    else display_name_ko end as search_text,
+               id
+          from TB_MENU
+         where id = ?
+      ]]>
+    </query>
+
+    <query id='getWriterText'>
+      <![CDATA[
+        select case when ? = 'en' then name_en
+                    else name_ko end as search_text,
+               id,
+               email
+          from TB_WRITER
+         where id = ?
+      ]]>
+    </query>
+
+    <query id='getHashText'>
+      <![CDATA[
+        select text as search_text,
+               id,
+               hit_count
+          from TB_HASH_KV
+         where id = ?
+      ]]>
+    </query>
+
+    <query id='getAnnounceText'>
+      <![CDATA[
+        select case when ? = 'en' then title_en
+                    else title_ko end as search_text,
+               id
+          from TB_ANNOUNCE
+         where id = ?
+      ]]>
+    </query>
+
+
+    <query id='getCategoryHashes'>
+      <![CDATA[
+        select id, text, hit_count
+          from TB_HASH_KV
+         where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id in ( select id from TB_CONTENT where category = ? ) )
+         order by hit_count desc
+      ]]>
+    </query>
+
+    <query id='getWriterHashes'>
+      <![CDATA[
+        select id, text, hit_count
+          from TB_HASH_KV
+         where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id in ( select id from TB_CONTENT where writer = ? ) )
+         order by hit_count desc
+      ]]>
+    </query>
+
+    <query id='getHashHashes'>
+      <![CDATA[
+        select id, text, hit_count
+          from TB_HASH_KV
+         where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id in  ( select content_id from TB_CONTENT_HASH_LINK where hash_id = ? ) )
+         order by hit_count desc
+      ]]>
+    </query>
+
+    <query id='getSearchHashes'>
+      <![CDATA[
+        select id, text, hit_count
+          from TB_HASH_KV
+         where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id in ( select distinct( con.id ) from TB_CONTENT con, TB_WRITER writer where case when ? = 'en' then con.title_en like ? else con.title_ko like ? end or case when ? = 'en' then writer.name_en like ? else writer.name_ko like ? end or case when ? = 'en' then con.content_en like ? else con.content_ko like ? end and con.writer = writer.id ) )
+         order by hit_count desc
+      ]]>
+    </query>
+
+    <query id='getAnnounceHashes'>
+      <![CDATA[
+        select id, text, hit_count
+          from TB_HASH_KV
+         where id in ( select distinct(hash_id) from TB_CONTENT_HASH_LINK where content_id in ( select content_id from TB_ANNOUNCE_LIST where announce_id = ? ) )
+         order by hit_count desc
+      ]]>
+    </query>
+
+
+    <query id='getHeaderInfo'>
+      <![CDATA[
+        select
+        	id,
+        	type,
+        	sequence,
+        	case when ? = 'en' then display_name_en
+        		 else display_name_ko end as display_name,
+        	event
+        from TB_STD
+        where type = 'window_title' or type = 'header_title'
+        order by type, sequence
+      ]]>
+    </query>
+
+    <query id='getFooterInfo'>
+      <![CDATA[
+        select
+        	id,
+        	type,
+        	sequence,
+        	case when ? = 'en' then display_name_en
+        		 else display_name_ko end as display_name,
+        	event
+        from TB_STD
+        where type = 'footer'
+        order by type, sequence
+      ]]>
+    </query>
+
+  </queries>

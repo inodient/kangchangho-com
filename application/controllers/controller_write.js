@@ -1,12 +1,10 @@
+const staticService = require( require("path").join( __runningPath, "application", "services", "service_static.js" ) );
 const menuService = require( require("path").join( __runningPath, "application", "services", "service_menu.js" ) );
-const categoryService = require( require("path").join( __runningPath, "application", "services", "service_category.js" ) );
-const writerService = require( require("path").join( __runningPath, "application", "services", "service_writer.js" ) );
-const hashService = require( require("path").join( __runningPath, "application", "services", "service_hash.js" ) );
-const imageService = require( require("path").join( __runningPath, "application", "services", "service_image.js" ) );
-const langService = require( require("path").join( __runningPath, "application", "services", "service_lang.js" ) );
 const contentService = require( require("path").join( __runningPath, "application", "services", "service_content.js" ) );
+const writerService = require( require("path").join( __runningPath, "application", "services", "service_writer.js" ) );
 const announceService = require( require("path").join( __runningPath, "application", "services", "service_announce.js" ) );
-const bannerService = require( require("path").join( __runningPath, "application", "services", "service_banner.js" ) );
+const imageService = require( require("path").join( __runningPath, "application", "services", "service_image.js" ) );
+const hashService = require( require("path").join( __runningPath, "application", "services", "service_hash.js" ) );
 
 
 
@@ -14,32 +12,35 @@ const bannerService = require( require("path").join( __runningPath, "application
 exports.control = function( req, res, connection ){
 	return new Promise( function(resolve, reject){
 
-		langService.setDefaultLang( req, res )
-    .then( function( lang ){
-      var contentId = req.query[ "id" ];
+		var targetId = req.params.id;
+
+    staticService.getStaticInfo( req, res, connection, targetId )
+    .then( function( staticInfo ){
+      var lang = staticInfo.lang;
       var promises = [];
 
-  		promises.push( menuService.getMenuListByLang( connection, contentId, lang ) );
 			promises.push( menuService.getMenuList( connection ) );
       promises.push( writerService.getWriterList( connection )  );
-			promises.push( contentService.selectAnnounceContentList( connection )  );
-			promises.push( announceService.selectAnnounceCategory( connection ) );
-			promises.push( announceService.selectAnnounceType( connection ) );
-			promises.push( bannerService.getBanner( connection, lang ) );
+			promises.push( contentService.getAnnounceContentList( connection )  );
+			promises.push( announceService.getAnnounceCategory( connection ) );
+			promises.push( announceService.getAnnounceType( connection ) );
 
-  		Promise.all( promises )
-  		.then( function(){
-  			var argv = arguments[0];
+      Promise.all( promises )
+      .then( function(){
+        var argv = arguments[0];
 
-        var modelObject = Object.assign( argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6] );
+				logger.debug( argv[0] );
+				logger.debug( argv[1] );
+				logger.debug( argv[2] );
+				logger.debug( argv[3] );
 
-        logger.debug( modelObject );
+        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4] ) );
 
-  			resolve( modelObject );
-  		} )
-  		.catch( function(err){
-  			reject( err );
-  		} );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } )
+
     } )
     .catch( function( err ){
       reject( err );
@@ -48,11 +49,15 @@ exports.control = function( req, res, connection ){
 }
 
 
+
+
+
+
 exports.control_add_category = function( req, res, connection ){
 	return new Promise( function(resolve, reject){
-		categoryService.insertCategory( req, connection )
+		menuService.addCategory( req, connection )
 		.then( function( results ){
-			resolve( {lastId : results.lastId} );
+			resolve( results );
 		} )
 		.catch( function( err ){
 			reject( err );
@@ -60,12 +65,11 @@ exports.control_add_category = function( req, res, connection ){
 	} );
 }
 
-
 exports.control_add_writer = function( req, res, connection ){
 	return new Promise( function(resolve, reject){
-		writerService.insertWriter( req, connection )
+		writerService.addWriter( req, connection )
 		.then( function( results ){
-			resolve( {lastId: results.lastId} );
+			resolve( results );
 		} )
 		.catch( function(err){
 			reject( err );
@@ -74,11 +78,15 @@ exports.control_add_writer = function( req, res, connection ){
 }
 
 
+
+
+
+
 exports.control_upload_image = function( req, res, connection ){
   return new Promise( function(resolve, reject){
-    imageService.insertImage( req, connection )
-		.then( function( _savedFileName ){
-			resolve( {savedFileName: _savedFileName} );
+    imageService.addImage( req, connection )
+		.then( function( results ){
+			resolve( results );
 		} )
 		.catch( function( err ){
 			reject( err );
@@ -86,13 +94,8 @@ exports.control_upload_image = function( req, res, connection ){
   } );
 }
 
-
 exports.control_upload_content = function( req, res, connection ){
   return new Promise( function(resolve, reject){
-
-		logger.debug( req.body );
-    logger.debug( "control_upload_content" );
-
 		var promises = [];
 
 		promises.push( imageService.setImageType( connection, "main", req.body.image_main ) );
@@ -106,20 +109,18 @@ exports.control_upload_content = function( req, res, connection ){
 			req.body.image_main = argv[0];
 			req.body.image_carousel = argv[1];
 
-			contentService.insertContent( connection, req.body )
+			contentService.addContent( connection, req.body )
 			.then( function( contentId ){
 
 				var _promises = [];
 				var hashesList = req.body.hashesList;
 
 				for( var i=0; i<hashesList.length; i++ ){
-					_promises.push( hashService.insertHash( connection, contentId, hashesList[i] ) );
+					_promises.push( hashService.addHash( connection, contentId, hashesList[i] ) );
 				}
 
 				Promise.all( _promises )
 				.then( function(){
-					logger.debug( "contentId :", contentId );
-
 					resolve( {"contentId": contentId} );
 				} )
 				.catch( function( __err ){
@@ -140,14 +141,9 @@ exports.control_upload_content = function( req, res, connection ){
 
 exports.control_upload_announce = function( req, res, connection ){
 	return new Promise( function(resolve, reject){
-
-		logger.debug( req.body );
-    logger.debug( "control_upload_announce" );
-
-		announceService.insertAnnounce( connection, req.body )
+		announceService.addAnnounce( connection, req.body )
 		.then( function( results ){
-			logger.debug( "announceId", results );
-			resolve( {"announceId": results} );
+			resolve( results );
 		} )
 		.catch( function( err ){
 			reject( err );

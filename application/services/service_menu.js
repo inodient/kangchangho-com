@@ -1,11 +1,47 @@
-exports.getMenuList = function( connection ){
-  return new Promise( function(resolve, reject){
-		var params = [];
-		var queryId = "getMenuList";
+const dbExecutorMenu = require( require("path").join( __runningPath, "application", "model", "dbExecutor_menu.js" ) );
 
-		mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-			resolve( {"category":queryResults.results} );
+
+
+// STATIC - START
+exports.getMenuListByLang = function( connection, contentId, lang, targetId ){
+  return new Promise( function(resolve, reject){
+		dbExecutorMenu.getMenuListByLang( connection, contentId, lang, targetId )
+		.then( function( results ){
+      resolve( {"menu":results}  );
+		} )
+		.catch( function(err){
+			reject( err );
+		} );
+	} );
+}
+// STATIC - END
+
+
+
+
+// SEARCH - START
+exports.getCategoryText = function( connection, lang, targetId ){
+  return new Promise( function(resolve, reject){
+		dbExecutorMenu.getCategoryText( connection, lang, targetId )
+		.then( function( results ){
+      resolve( {"searchText":results} );
+		} )
+		.catch( function(err){
+			reject( err );
+		} );
+	} );
+}
+// SEARCH - END
+
+
+
+
+// WRITE - START
+exports.getMenuList = function( connection, lang, targetId ){
+  return new Promise( function(resolve, reject){
+		dbExecutorMenu.getMenuList( connection, lang, targetId )
+		.then( function( results ){
+      resolve( {"category":results} );
 		} )
 		.catch( function(err){
 			reject( err );
@@ -13,21 +49,25 @@ exports.getMenuList = function( connection ){
 	} );
 }
 
-exports.getMenuListByLang = function( connection, contentId, lang ){
+exports.addCategory = function( req, connection ){
   return new Promise( function(resolve, reject){
-		var params = [];
-		var queryId = "getMenuListByLang";
 
-    params.push( lang );
-    params.push( contentId );
-    params.push( contentId );
+		dbExecutorMenu.addCategory( connection, req.body )
+		.then( function(){
+			var argv = arguments[0];
 
-		mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-			resolve( {"menu":queryResults.results} );
+			dbExecutorMenu.getLastCategoryIndex( connection )
+			.then( function( results ){
+				resolve( {lastId : results[0].lastId} );
+			} )
+			.catch( function( _err ){
+				reject( _err );
+			} );
 		} )
 		.catch( function(err){
 			reject( err );
 		} );
 	} );
 }
+
+// WRITE - END

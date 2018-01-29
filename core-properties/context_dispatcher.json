@@ -1,64 +1,8 @@
 {
     "GET": [
         {
-            "id": "index",
-            "path": "/",
-            "controllerJS": "controller_basic.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "ajaxRequest",
-            "path": "/ajaxRequest",
-            "controllerJS": "controller_ajax.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "setCookie",
-            "path": "/setCookie",
-            "controllerJS": "controller_cookie_session.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "setSession",
-            "path": "/setSession",
-            "controllerJS": "controller_cookie_session.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "getData",
-            "path": "/getData",
-            "controllerJS": "controller_db.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "download",
-            "path": "/download",
-            "controllerJS": "controller_file.js",
-            "controlFunction": "control_download",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "welcome_last",
-            "path": "/welcome_last",
-            "controllerJS": "controller_welcome.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "welcome_last.ejs"
-        },
-        {
             "id": "welcome",
-            "path": "/welcome",
+            "path": "/",
             "controllerJS": "controller_welcome.js",
             "controlFunction": "control",
             "viewPath": "",
@@ -71,6 +15,14 @@
             "controlFunction": "control",
             "viewPath": "",
             "view": "content.ejs"
+        },
+        {
+            "id": "announce",
+            "path": "/announce",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_announce",
+            "viewPath": "",
+            "view": "list.ejs"
         },
         {
             "id": "write",
@@ -89,47 +41,113 @@
             "view": ""
         },
         {
-            "id": "annotation_example_01",
-            "path": "/annotation-example-01",
-            "controllerJS": "controller_basic.js",
-            "controlFunction": "control",
+            "id": "category",
+            "path": "/category",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_category",
             "viewPath": "",
-            "view": "index.ejs"
+            "view": "list.ejs"
         },
         {
-            "id": "annotation_example_02",
-            "path": "/annotation-example-02",
-            "controllerJS": "controller_basic.js",
-            "controlFunction": "control_",
+            "id": "writer",
+            "path": "/writer",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_writer",
             "viewPath": "",
-            "view": "index.ejs"
+            "view": "list.ejs"
+        },
+        {
+            "id": "hash",
+            "path": "/hash",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_hash",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "search",
+            "path": "/search",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_word",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+
+        {
+            "id": "welcome",
+            "path": "/:id",
+            "controllerJS": "controller_welcome.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "welcome.ejs"
+        },
+        {
+            "id": "content",
+            "path": "/content/:id",
+            "controllerJS": "controller_content.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "content.ejs"
+        },
+        {
+            "id": "announce",
+            "path": "/announce/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_announce",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "write",
+            "path": "/write/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "addcategory",
+            "path": "/addcategory/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "category",
+            "path": "/category/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_category",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "writer",
+            "path": "/writer/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_writer",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "hash",
+            "path": "/hash/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_hash",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "search",
+            "path": "/search/:searchword",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_word",
+            "viewPath": "",
+            "view": "list.ejs"
         }
+
     ],
     "POST": [
-        {
-            "id": "indexPost",
-            "path": "/",
-            "controllerJS": "controller_post.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "upload",
-            "path": "/upload",
-            "controllerJS": "controller_file.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
-        {
-            "id": "ajaxRequest",
-            "path": "/ajaxRequest2",
-            "controllerJS": "controller_ajax.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "index.ejs"
-        },
         {
             "id": "addcategory",
             "path": "/addcategory",
@@ -169,6 +187,144 @@
             "controlFunction": "control_upload_announce",
             "viewPath": "",
             "view": "write.ejs"
+        },
+        {
+            "id": "getotherpages",
+            "path": "/getotherpages",
+            "controllerJS": "controller_welcome.js",
+            "controlFunction": "control_other_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getothercategorypages",
+            "path": "/getothercategorypages",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_category_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherwriterpages",
+            "path": "/getotherwriterpages",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_writer_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherhashpages",
+            "path": "/getotherhashpages",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_hash_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getothersearchpages",
+            "path": "/getothersearchpages",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_search_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherannouncepages",
+            "path": "/getotherannouncepages",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_announce_pages",
+            "viewPath": "",
+            "view": ""
+        },
+
+
+        {
+            "id": "addcategory",
+            "path": "/addcategory/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "addwriter",
+            "path": "/addwriter/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_writer",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "uploadimage",
+            "path": "/uploadimage/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_image",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "uploadcontent",
+            "path": "/uploadcontent/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_content",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "uploadannounce",
+            "path": "/uploadannounce/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_announce",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "getotherpages",
+            "path": "/getotherpages/:id",
+            "controllerJS": "controller_welcome.js",
+            "controlFunction": "control_other_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherwriterpages",
+            "path": "/getotherwriterpages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_writer_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherhashpages",
+            "path": "/getotherhashpages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_hash_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getothersearchpages",
+            "path": "/getothersearchpages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_search_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherannouncepages",
+            "path": "/getotherannouncepages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_announce_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "search",
+            "path": "/search/:searchword",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_word",
+            "viewPath": "",
+            "view": "list.ejs"
         }
     ]
 }

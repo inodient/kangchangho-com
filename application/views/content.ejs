@@ -9,7 +9,7 @@
 
   <% include partials/include.ejs %>
 
-    <title>Kang Chang Ho . com</title>
+    <title><%- windowTitle %> - <%- contentMaster[0].title %></title>
 </head>
 
 
@@ -21,7 +21,7 @@
 
       <header>
         <div class="site-title">
-          <a class="content-anchor"><span class="site-title-name site-title-span">姜昌昊</span><span class="site-title-com site-title-span"> . COM</span></a>
+          <a class="content-anchor"><span class="site-title-name site-title-span"><%- (headerTitle[0]).displayName %></span><span class="site-title-com site-title-span">&nbsp;<%- (headerTitle[1]).displayName %></span></a>
         </div>
         <nav class="site-nav navbar">
           <div class="container-fluid">
@@ -34,7 +34,7 @@
                   <% } else { %>
                     <li class="navbar-item">
                   <% } %>
-                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %><i style="padding-left: 10px" class="fa fa-angle-down" aria-hidden="true"></i></a>
+                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %><i style="padding-left: 10px" class="fa fa-angle-down" aria-hidden="true"></i></a>
                       <ul class="dropdown-menu">
                         <% i++; %>
                         <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
@@ -43,14 +43,18 @@
                           <% } else { %>
                             <li class="navbar-item-inner">
                           <% } %>
-                              <a class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                              <a class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
                           <% if( i < parseInt(menu.length)-2 && menu[i].group_value != menu[i+1].group_value ){ break; }%>
                           <% i++; %>
                         <% } %>
                       </ul>
                   </li>
                 <% } else { %>
-                  <li class="navbar-item"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% if( menu[i].active == "active" ){ %>
+                    <li class="navbar-item active"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% } else { %>
+                    <li class="navbar-item"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% } %>
                 <% } %>
               <% } %>
             </ul>
@@ -68,16 +72,16 @@
               <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                   <div class="content-body section-end">
-                    <center><a class="content-anchor category"><%- contentCategory[0].display_name %></a></center>
+                    <center><a href="/category/<%- contentCategory[0].id %>" class="content-anchor category"><%- contentCategory[0].display_name %></a></center>
                     <center>
                       <h2 class="after-line-block-center"><%- contentMaster[0].title %></h2></center>
 
                     <center class="paragraph-end"><span class="date"><%- ( ( contentMaster[0].create_date ).toISOString() ).split("T")[0] %></span></center>
                     <center class="small-section-end">
                       <% if( contentImage[0].type === "main" ){ %>
-                        <img class="content-image" src="<%- contentImage[0].savedFileName %>" />
+                        <img class="content-image" src="/<%- contentImage[0].savedFileName %>" />
                       <% } else { %>
-                        <img class="content-image" src="<%- contentImage[1].savedFileName %>" />
+                        <img class="content-image" src="/<%- contentImage[1].savedFileName %>" />
                       <% } %>
                     </center>
 
@@ -96,9 +100,11 @@
                       <% if( i % 5 == 0 ){ %>
                         <% index = i * 5; %>
                           <ul class="hashed-list" id="id_hashed_list_<%- index %>">
-                              <li class="hashed-list-item"><a class="content-anchor-reverse">#<%- contentHash[i].text %></a></li>
+                              <li class="hashed-list-item"><a href="/hash/<%- contentHash[i].id %>" class="content-anchor-reverse">#<%- contentHash[i].text %></a></li>
+                      <% } else if( i % 5 == 4 || i == contentHash.length - 1){ %>
+                          <li class="hashed-list-item"><a href="/hash/<%- contentHash[i].id %>" class="content-anchor-reverse">#<%- contentHash[i].text %></a></li></ul>
                       <% } else { %>
-                          <li class="hashed-list-item"><a class="content-anchor-reverse">#<%- contentHash[i].text %></a></li>
+                          <li class="hashed-list-item"><a href="/hash/<%- contentHash[i].id %>" class="content-anchor-reverse">#<%- contentHash[i].text %></a></li>
                       <% } %>
                     <% } %>
                   </div>
@@ -126,12 +132,12 @@
 
                       <div class="col-lg-4 col-md-4 col-sm-4 thumb-article">
                         <figure>
-                          <img class="thumb-image" src="<%- relatedContents[i].savedFileName %>" />
+                          <img class="thumb-image" src="/<%- relatedContents[i].savedFileName %>" />
                           <figcaption>
-                            <div data-href="/content?id=<%- relatedContents[i].id %>">View Post</div>
+                            <div data-href="/content/<%- relatedContents[i].id %>">View Post</div>
                             </figcation>
                         </figure>
-                        <center><a href="/content?id=<%- relatedContents[i].id %>" class="content-anchor"><h4><%- relatedContents[i].title %></h4></a></center>
+                        <center><a href="/content/<%- relatedContents[i].id %>" class="content-anchor"><h4><%- relatedContents[i].title %></h4></a></center>
                       </div>
 
                     <% } %>
@@ -145,26 +151,22 @@
           </div>
 
           <div class="col-lg-3 col-md-3 banner-container">
-            <form>
-              <div class="input-group">
-                <input type="text" class="input_important form-control" placeholder="keyword">
-                <div class="input-group-btn">
-                  <button class="btn btn_important" type="submit">
-                    SEARCH
-                  </button>
-                </div>
+            <div class="input-group">
+              <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
+              <div class="input-group-btn">
+                <button id="btn_search" class="btn_important">SEARCH</button>
               </div>
-            </form>
+            </div>
 
             <hr>
 
-            <button class="btn btn_important_banner" style="border-radius: 0px;">
+            <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
               YOUTUBE
               <br>
               <span class="btn_important_banner_describe">kangchangho.com channel</span>
             </button>
 
-            <button class="btn btn_important_banner" style="border-radius: 0px;">
+            <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
               summer-mvc
               <br>
               <span class="btn_important_banner_describe">Open Source Project</span>
@@ -179,9 +181,9 @@
 
                   <% for( var i=0; i<hashRanking.length; i++ ){ %>
                     <tr>
-                      <td class="ranking"><%- hashRanking[i].rank %></td>
-                      <td class="hashed"><%- hashRanking[i].text %></td>
-                      <td class="changed">-</td>
+                      <td class="ranking" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
+                      <td class="hashed" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].text %></td>
+                      <!-- <td class="changed">-</td> -->
                     </tr>
                   <% } %>
                 </table>
@@ -200,15 +202,15 @@
                       <div class="row">
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
                           <figure>
-                            <img src="<%- recentContents[i].savedFileName %>" />
-                            <figcaption>
-                              <div>view</div>
+                            <img src="/<%- recentContents[i].savedFileName %>" />
+                            <figcaption data-href="/content/<%- recentContents[i].id %>" >
+                              <div></div>
                               </figcation>
                           </figure>
 
                         </div>
                         <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
-                          <h4 class="content-title"><a href="/content?id=<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
+                          <h4 class="content-title"><a href="/content/<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
                           <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
                         </div>
                       </div>
@@ -244,15 +246,15 @@
                       <div class="row">
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
                           <figure>
-                            <img src="<%- mostViewedContents[i].savedFileName %>" />
-                            <figcaption>
-                              <div>&#8594;</div>
+                            <img src="/<%- mostViewedContents[i].savedFileName %>" />
+                            <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
+                              <div></div>
                               </figcation>
                           </figure>
 
                         </div>
                         <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
-                          <h4 class="content-title"><a href="/content?id=<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
+                          <h4 class="content-title"><a href="/content/<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
                           <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
                         </div>
                       </div>
@@ -272,7 +274,37 @@
       </div>
     </div>
 
-    <% include partials/footer.ejs %>
+    <footer style="background-color: black">
+      <div class="jumbotron footer-background">
+        <div class="footer-heading">
+          <h2 class="title">NEWS LETTER</h2>
+          <div class="description">
+            Please subscribe Kangchangho.com News Letter.
+          </div>
+        </div>
+
+        <form class="footer-body">
+          <div class="input-group">
+            <input type="text" class="input_important form-control" placeholder="email">
+            <div class="input-group-btn">
+              <button class="btn btn_important" type="submit">
+                SUBSCRIBE
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="footer-footer">
+          <hr class="color-weaken">
+          <p class="copyright">
+            Copyright(c) 2018 MONTHLY KANGCHANGHO
+            <br> Created and Maintained by Ino Kang [Changho Kang].
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <a class="back-to-top"></a>
 
 </body>
 

@@ -522,7 +522,7 @@ $(document).ready(function() {
           var results = arguments[0]
 
           alert( "success " + results.contentId ); // show response from the php script.
-          $(location).attr( "href", "/content?id=" + results.contentId );
+          $(location).attr( "href", "/content/" + results.contentId );
         }
       } );
 
@@ -546,7 +546,7 @@ $(document).ready(function() {
         {
           var announceId = arguments[0].announceId;
           alert( "success " + announceId ); // show response from the php script.
-          // $(location).attr( "href", "/content?id=" + results.announceId );
+          $(location).attr( "href", "/announce/" + announceId );
         }
       } );
 

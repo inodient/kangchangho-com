@@ -1,102 +1,216 @@
-exports.selectContent = function( connection, contentId, lang ){
-  return new Promise( function(resolve, reject){
-    getContent( connection, contentId, lang )
-    .then( function( results ){
-      resolve( results );
-    } )
-    .catch( function(err){
-      reject( err );
-    } );
-  } );
-}
+const dbExecutorContent = require( require("path").join( __runningPath, "application", "model", "dbExecutor_content.js" ) );
+const dbExecutorMenu = require( require("path").join( __runningPath, "application", "model", "dbExecutor_menu.js" ) );
+const dbExecutorHash = require( require("path").join( __runningPath, "application", "model", "dbExecutor_hash.js" ) );
+const dbExecutorImage = require( require("path").join( __runningPath, "application", "model", "dbExecutor_image.js" ) );
+const dbExecutorWriter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_writer.js" ) );
 
-exports.insertContent = function( connection, req ){
-  return new Promise( function(resolve, reject){
-    addContent( connection, req )
-    .then( function( contentId ){
-      resolve( contentId );
-    } )
-    .catch( function(err){
-      reject( err );
-    } );
-  } );
-}
 
-exports.selectRecentContents = function( connection, lang ){
-  return new Promise( function(resolve, reject){
-    getRecentContentList( connection, lang )
-    .then( function( results ){
-      resolve( results );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
 
-exports.selectMostViewedContents = function( connection, lang ){
+
+exports.getContent = function( connection, contentId, lang ){
   return new Promise( function(resolve, reject){
-    getMostViewedContentList( connection, lang )
-    .then( function( results ){
-      resolve( results );
+
+    var promises = [];
+
+    promises.push( dbExecutorContent.getContentMaster( connection, contentId, lang ) );
+    promises.push( dbExecutorMenu.getContentCategory( connection, contentId, lang ) );
+    promises.push( dbExecutorHash.getContentHash( connection, contentId, lang ) );
+    promises.push( dbExecutorImage.getContentImage( connection, contentId, lang ) );
+    promises.push( dbExecutorWriter.getContentWriter( connection, contentId, lang ) );
+    promises.push( dbExecutorContent.getRelatedContents( connection, lang ) );
+    promises.push( dbExecutorContent.increaseContentHitCount( connection, 10, contentId ) );
+
+    Promise.all( promises )
+    .then( function(){
+      var argv = arguments[0];
+
+      resolve( {
+        "contentMaster": argv[0],
+        "contentCategory": argv[1],
+        "contentHash": argv[2],
+        "contentImage": argv[3],
+        "contentWriter": argv[4],
+        "relatedContents": argv[5]
+      } );
+
     } )
     .catch( function( err ){
       reject( err );
     } );
+
   } );
 }
 
-exports.updateContentHitCount = function( connection, contentId ){
+
+
+
+
+
+exports.getPageList = function( connection, lang, currentPage ){
   return new Promise( function(resolve, reject){
-    increaseContentHitCount( connection, 10, contentId )
+    dbExecutorContent.getPageList( connection, lang )
     .then( function( results ){
 
-      if( results.status == "succeed" ){
-        resolve( {"status": "succeed"} );
-      } else {
-        reject( {"status" : "error occured"} );
-      }
-    } )
-    .catch( function(err){
-      reject( err );
-    } );
-  } );
-}
+      var totalListCount = ( (results)[0] ).total_count;
+      var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+      var currentPage = 1;
 
-exports.selectRelatedContents = function( connection, lang ){
-  return new Promise( function(resolve, reject){
-    getRelatedContents( connection, lang )
-    .then( function( results ){
-      resolve( results );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
+      var pageObject = {"pageList": results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": currentPage};
 
-exports.selectAnnounceContentList = function( connection ){
-  return new Promise( function(resolve, reject){
-    getAnnounceContentList( connection )
-    .then( function( results ){
-      resolve( results );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
-
-exports.selectPageList = function( connection, lang ){
-  return new Promise( function(resolve, reject){
-    getPageList( connection, lang )
-    .then( function( results ){
-
-      var promises = [];
-
-      extractContents( results.pageList )
+      extractContents( pageObject.pageList, lang )
       .then( function( parsedPageList ){
-        resolve( {"pageList" : parsedPageList} );
+        pageObject.pageList = parsedPageList;
+        resolve( pageObject );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
+
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getPageListByIndex = function( connection, lang, parameter ){
+  return new Promise( function(resolve, reject){
+    getPagingRange( parameter )
+    .then( function( pageInfo ){
+
+      var pageRange = pageInfo.pageRange;
+      var offset = ( ( parseInt( pageRange[0] ) - 1 ) * 8 );
+      var length = ( parseInt( pageRange[pageRange.length-1] ) - parseInt( pageRange[0] ) + 1 ) * 8;
+
+      pageInfo.offset = offset;
+      pageInfo.length = length;
+
+      dbExecutorContent.getPageListByIndex( connection, lang, pageInfo )
+      .then( function( results ){
+
+        pageInfo.totalListCount = ( (results)[0] ).total_count;
+        pageInfo.totalPageCount = pageInfo.totalListCount % 8 == 0 ? pageInfo.totalListCount / 8 : parseInt( (pageInfo.totalListCount / 8) ) + 1 ;
+        pageInfo.currentPage = pageInfo.calledPage;
+        pageInfo.pageList = results;
+
+        extractContents( pageInfo.pageList, lang )
+        .then( function( parsedPageList ){
+          pageInfo.pageList = parsedPageList;
+          resolve( pageInfo );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
+exports.getPageListWithSearchWord = function( connection, lang, searchWord ){
+  return new Promise( function(resolve, reject){
+    dbExecutorContent.getPageListWithSearchWord( connection, lang, "%" + searchWord + "%" )
+    .then( function( results ){
+
+      if( results.length > 0 ){
+        var totalListCount = ( (results)[0] ).total_count;
+        var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+        var currentPage = 1;
+
+        var pageObject = {"pageList": results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": currentPage};
+
+        extractContents( pageObject.pageList, lang )
+        .then( function( parsedPageList ){
+          pageObject.pageList = parsedPageList;
+          resolve( pageObject );
+        } )
+        .catch( function( _err ){
+          reject( _err );
+        } );
+
+      } else{
+        resolve( {"pageList": results, "totalListCount": 0, "totalPageCount": 0, "currentPage": 0} );
+      }
+
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getPageListWithSearchWordByIndex = function( connection, lang, searchWord, parameter ){
+  return new Promise( function(resolve, reject){
+    getPagingRange( parameter )
+    .then( function( pageInfo ){
+
+      var pageRange = pageInfo.pageRange;
+      var offset = ( ( parseInt( pageRange[0] ) - 1 ) * 8 );
+      var length = ( parseInt( pageRange[pageRange.length-1] ) - parseInt( pageRange[0] ) + 1 ) * 8;
+
+      pageInfo.offset = offset;
+      pageInfo.length = length;
+
+      dbExecutorContent.getPageListWithSearchWordByIndex( connection, lang, "%" + searchWord + "%", pageInfo )
+      .then( function( results ){
+
+        var totalListCount = ( (results)[0] ).total_count;
+        var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+
+        pageInfo.totalListCount = totalListCount;
+        pageInfo.totalPageCount = totalPageCount;
+        pageInfo.currentPage = parameter.calledPage;
+        pageInfo.pageList = results;
+
+        extractContents( pageInfo.pageList, lang )
+        .then( function( parsedPageList ){
+          pageInfo.pageList = parsedPageList;
+          resolve( pageInfo );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
+
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
+
+exports.getPageListWithCategory = function( connection, lang, targetId ){
+  return new Promise( function(resolve, reject){
+    dbExecutorContent.getPageListWithCategory( connection, lang, targetId )
+    .then( function( results ){
+
+      var totalListCount = ( (results)[0] ).total_count;
+      var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+      var currentPage = 1;
+
+      pageObject =  {"pageList": results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": currentPage};
+
+      extractContents( pageObject.pageList, lang )
+      .then( function( parsedPageList ){
+        pageObject.pageList = parsedPageList;
+        resolve( pageObject );
       } )
       .catch( function( _err ){
         reject( _err );
@@ -108,57 +222,73 @@ exports.selectPageList = function( connection, lang ){
   } );
 }
 
-
-
-
-
-function getContent( connection, contentId, lang ){
+exports.getPageListWithCategoryByIndex = function( connection, lang, targetId, parameter ){
   return new Promise( function(resolve, reject){
+    getPagingRange( parameter )
+    .then( function( pageInfo ){
 
-    var promises = [];
+      var pageRange = pageInfo.pageRange;
+      var offset = ( ( parseInt( pageRange[0] ) - 1 ) * 8 );
+      var length = ( parseInt( pageRange[pageRange.length-1] ) - parseInt( pageRange[0] ) + 1 ) * 8;
 
-    promises.push( getContentMaster( connection, contentId, lang ) );
-    promises.push( getContentCategory( connection, contentId, lang ) );
-    promises.push( getContentHash( connection, contentId, lang ) );
-    promises.push( getContentImage( connection, contentId, lang ) );
-    promises.push( getContentWriter( connection, contentId, lang ) );
+      pageInfo.offset = offset;
+      pageInfo.length = length;
 
-    Promise.all( promises )
-    .then( function(){
-      var argv = arguments[0];
+      dbExecutorContent.getPageListWithCategoryByIndex( connection, lang, targetId, pageInfo )
+      .then( function( results ){
 
-      resolve( {
-        "contentMaster": argv[0],
-        "contentCategory": argv[1],
-        "contentHash": argv[2],
-        "contentImage": argv[3],
-        "contentWriter": argv[4]
+        var totalListCount = ( (results)[0] ).total_count;
+        var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+        var currentPage = parameter.calledPage;
+
+        pageInfo.totalListCount = totalListCount;
+        pageInfo.totalPageCount = totalPageCount;
+        pageInfo.currentPage = currentPage;
+        pageInfo.pageList = results;
+
+        extractContents( pageInfo.pageList, lang )
+        .then( function( parsedPageList ){
+          pageInfo.pageList = parsedPageList;
+          resolve( pageInfo );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
       } );
-
     } )
-    .catch( function( err ){
+    .catch( function(err){
       reject( err );
     } );
-
   } );
 }
 
 
 
 
-function getContentMaster( connection, contentId, lang ){
+
+exports.getPageListWithWriter = function( connection, lang, targetId ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getContentMaster";
+    dbExecutorContent.getPageListWithWriter( connection, lang, targetId )
+    .then( function( results ){
 
-    params.push( lang );
-    params.push( lang );
-    params.push( lang );
-    params.push( contentId );
+      var totalListCount = ( (results)[0] ).total_count;
+      var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+      var currentPage = 1;
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( queryResults.results );
+      var pageInfo = {"pageList": results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": currentPage};
+
+      extractContents( pageInfo.pageList, lang )
+      .then( function( parsedPageList ){
+        pageInfo.pageList = parsedPageList;
+        resolve( pageInfo );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
     } )
     .catch( function( err ){
       reject( err );
@@ -166,34 +296,73 @@ function getContentMaster( connection, contentId, lang ){
   } );
 }
 
-function getContentCategory( connection, contentId, lang ){
+exports.getPageListWithWriterByIndex = function( connection, lang, targetId, parameter ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getContentCategory";
+    getPagingRange( parameter )
+    .then( function( pageInfo ){
 
-    params.push( lang );
-    params.push( contentId );
+      var pageRange = parameter.pageRange;
+      var offset = ( ( parseInt( pageRange[0] ) - 1 ) * 8 );
+      var length = ( parseInt( pageRange[pageRange.length-1] ) - parseInt( pageRange[0] ) + 1 ) * 8;
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( queryResults.results );
+      pageInfo.offset = offset;
+      pageInfo.length = length;
+
+      dbExecutorContent.getPageListWithWriterByIndex( connection, lang, targetId, pageInfo )
+      .then( function( results ){
+
+        var totalListCount = ( (results)[0] ).total_count;
+        var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+        var currentPage = parameter.calledPage;
+
+        pageInfo.totalListCount = totalListCount;
+        pageInfo.totalPageCount = totalPageCount;
+        pageInfo.currentPage = currentPage;
+        pageInfo.pageList = results;
+
+        extractContents( pageInfo.pageList, lang )
+        .then( function( parsedPageList ){
+          pageInfo.pageList = parsedPageList;
+          resolve( pageInfo );
+        } )
+        .catch( function( _err ){
+          reject( _err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
     } )
-    .catch( function( err ){
+    .catch( function(err){
       reject( err );
     } );
   } );
 }
 
-function getContentHash( connection, contentId, lang ){
+
+
+
+
+exports.getPageListWithHash = function( connection, lang, targetId ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getContentHash";
+    dbExecutorContent.getPageListWithHash( connection, lang, targetId )
+    .then( function( results ){
 
-    params.push( contentId );
+      var totalListCount = ( (results)[0] ).total_count;
+      var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+      var currentPage = 1;
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( queryResults.results );
+      var pageInfo =  {"pageList": results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": currentPage};
+
+      extractContents( pageInfo.pageList, lang )
+      .then( function( parsedPageList ){
+        pageInfo.pageList = parsedPageList;
+        resolve( pageInfo );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
     } )
     .catch( function( err ){
       reject( err );
@@ -201,36 +370,59 @@ function getContentHash( connection, contentId, lang ){
   } );
 }
 
-function getContentImage( connection, contentId, lang ){
+exports.getPageListWithHashByIndex = function( connection, lang, targetId, parameter ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getContentImage";
+    getPagingRange( parameter )
+    .then( function( pageInfo ){
 
-    params.push( contentId );
-    params.push( contentId );
+      var pageRange = parameter.pageRange;
+      var offset = ( ( parseInt( pageRange[0] ) - 1 ) * 8 );
+      var length = ( parseInt( pageRange[pageRange.length-1] ) - parseInt( pageRange[0] ) + 1 ) * 8;
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( queryResults.results );
+      pageInfo.offset = offset;
+      pageInfo.length = length;
+
+      dbExecutorContent.getPageListWithHashByIndex( connection, lang, targetId, pageInfo )
+      .then( function( results ){
+
+        var totalListCount = ( (results)[0] ).total_count;
+        var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+        var currentPage = parameter.calledPage;
+
+        pageInfo.totalListCount = totalListCount;
+        pageInfo.totalPageCount = totalPageCount;
+        pageInfo.currentPage = currentPage;
+        pageInfo.pageList = results;
+
+        extractContents( pageInfo.pageList, lang )
+        .then( function( parsedPageList ){
+          pageInfo.pageList = parsedPageList;
+          resolve( pageInfo );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
     } )
-    .catch( function( err ){
+    .catch( function(err){
       reject( err );
     } );
   } );
 }
 
-function getContentWriter( connection, contentId, lang ){
+
+
+
+
+exports.getAnnounceContentList = function( connection ){
   return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getContentWriter";
-
-    params.push( lang );
-    params.push( lang );
-    params.push( contentId );
-
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( queryResults.results );
+    dbExecutorContent.getAnnounceContentList( connection )
+    .then( function( results ){
+      resolve( {"announceContentList": results} );
     } )
     .catch( function( err ){
       reject( err );
@@ -242,169 +434,350 @@ function getContentWriter( connection, contentId, lang ){
 
 
 
-function addContent( connection, parameter ){
-	return new Promise( function(resolve, reject){
-		var params = [];
-		var queryId = "addContent";
 
-		params.push( parameter.sel_category );
-		params.push( parameter.sel_writer );
-		params.push( parameter.title_ko );
-		params.push( parameter.title_en );
-		params.push( parameter.content_ko );
-		params.push( parameter.content_en );
-		params.push( parameter.comment_ko );
-		params.push( parameter.comment_en );
-		params.push( parameter.image_main );
-		params.push( parameter.image_carousel );
+exports.addContent = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    dbExecutorContent.addContent( connection, parameter )
+    .then( function(){
 
-		mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-
-			getInsertedContentId( connection, params )
-			.then( function( contentId ){
-				resolve( contentId );
+      dbExecutorContent.getInsertedContentId( connection, parameter )
+			.then( function( results ){
+				resolve( results[0]._ID );
 			} )
 			.catch( function( _err ){
 				reject( _err );
 			} );
-
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
-	} );
-}
-
-function getInsertedContentId( connection, parameter ){
-	return new Promise( function(resolve, reject){
-		var params = parameter;
-		var queryId = "getInsertedContentId";
-
-		mysqlHandler.executeQuery( queryId, params, connection )
-		.then( function( queryResults ){
-			resolve( ( (queryResults.results)[0] )._ID );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
-	} );
-}
-
-function getRecentContentList( connection, lang ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getRecentContents";
-
-    params.push( lang );
-
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( {"recentContents": queryResults.results} );
     } )
-    .catch( function( err ){
+    .catch( function(err){
       reject( err );
     } );
   } );
 }
 
-function getMostViewedContentList( connection, lang ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getMostViewedContents";
 
-    params.push( lang );
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( {"mostViewedContents": queryResults.results} );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
 
-function increaseContentHitCount( connection, increseHitCount, contentId ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "increaseContentHitCount";
 
-    params.push( increseHitCount );
-    params.push( contentId );
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function(){
-      resolve( {"status": "succeed"} );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
 
-function getRelatedContents( connection, lang ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getRelatedContents";
 
-    params.push( lang );
-    params.push( lang );
-    params.push( lang );
-    params.push( lang );
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( {"relatedContents": queryResults.results} );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
 
-function getAnnounceContentList( connection ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getAnnounceContentList";
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( {"announceContentList": queryResults.results} );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
+// exports.selectRecentContents = function( connection, lang ){
+//   return new Promise( function(resolve, reject){
+//     getRecentContentList( connection, lang )
+//     .then( function( results ){
+//       resolve( results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// exports.selectMostViewedContents = function( connection, lang ){
+//   return new Promise( function(resolve, reject){
+//     getMostViewedContentList( connection, lang )
+//     .then( function( results ){
+//       resolve( results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
 
-function getPageList( connection, lang ){
-  return new Promise( function(resolve, reject){
-    var params = [];
-    var queryId = "getPageList";
+// exports.updateContentHitCount = function( connection, contentId ){
+//   return new Promise( function(resolve, reject){
+//     increaseContentHitCount( connection, 10, contentId )
+//     .then( function( results ){
+//
+//       if( results.status == "succeed" ){
+//         resolve( {"status": "succeed"} );
+//       } else {
+//         reject( {"status" : "error occured"} );
+//       }
+//     } )
+//     .catch( function(err){
+//       reject( err );
+//     } );
+//   } );
+// }
 
-    params.push( lang );
-    params.push( lang );
-    params.push( lang );
-    params.push( lang );
-    params.push( lang );
+// exports.selectRelatedContents = function( connection, lang ){
+//   return new Promise( function(resolve, reject){
+//     getRelatedContents( connection, lang )
+//     .then( function( results ){
+//       resolve( results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
 
-    mysqlHandler.executeQuery( queryId, params, connection )
-    .then( function( queryResults ){
-      resolve( {"pageList": queryResults.results} );
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-  } );
-}
 
-function extractContents( pageList ){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function getContent( connection, contentId, lang ){
+//   return new Promise( function(resolve, reject){
+//
+//     var promises = [];
+//
+//     promises.push( getContentMaster( connection, contentId, lang ) );
+//     promises.push( getContentCategory( connection, contentId, lang ) );
+//     promises.push( getContentHash( connection, contentId, lang ) );
+//     promises.push( getContentImage( connection, contentId, lang ) );
+//     promises.push( getContentWriter( connection, contentId, lang ) );
+//
+//     Promise.all( promises )
+//     .then( function(){
+//       var argv = arguments[0];
+//
+//       resolve( {
+//         "contentMaster": argv[0],
+//         "contentCategory": argv[1],
+//         "contentHash": argv[2],
+//         "contentImage": argv[3],
+//         "contentWriter": argv[4]
+//       } );
+//
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//
+//   } );
+// }
+//
+//
+//
+//
+// function getContentMaster( connection, contentId, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getContentMaster";
+//
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( contentId );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( queryResults.results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function getContentCategory( connection, contentId, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getContentCategory";
+//
+//     params.push( lang );
+//     params.push( contentId );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( queryResults.results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function getContentHash( connection, contentId, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getContentHash";
+//
+//     params.push( contentId );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( queryResults.results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function getContentImage( connection, contentId, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getContentImage";
+//
+//     params.push( contentId );
+//     params.push( contentId );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( queryResults.results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function getContentWriter( connection, contentId, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getContentWriter";
+//
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( contentId );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( queryResults.results );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+
+
+
+
+
+
+
+// function getRecentContentList( connection, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getRecentContents";
+//
+//     params.push( lang );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( {"recentContents": queryResults.results} );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function getMostViewedContentList( connection, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getMostViewedContents";
+//
+//     params.push( lang );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( {"mostViewedContents": queryResults.results} );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function increaseContentHitCount( connection, increseHitCount, contentId ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "increaseContentHitCount";
+//
+//     params.push( increseHitCount );
+//     params.push( contentId );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function(){
+//       resolve( {"status": "succeed"} );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+// function getRelatedContents( connection, lang ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getRelatedContents";
+//
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       resolve( {"relatedContents": queryResults.results} );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+//
+//
+// function getPageList( connection, lang, currentPage ){
+//   return new Promise( function(resolve, reject){
+//     var params = [];
+//     var queryId = "getPageList";
+//
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//     params.push( lang );
+//
+//
+//     mysqlHandler.executeQuery( queryId, params, connection )
+//     .then( function( queryResults ){
+//       var totalListCount = ( (queryResults.results)[0] ).total_count;
+//       var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
+//       var _currentPage = currentPage ? currentPage : 1;
+//
+//       resolve( {"pageList": queryResults.results, "totalListCount": totalListCount, "totalPageCount": totalPageCount, "currentPage": _currentPage} );
+//     } )
+//     .catch( function( err ){
+//       reject( err );
+//     } );
+//   } );
+// }
+
+
+
+
+
+
+
+function extractContents( pageList, lang ){
   return new Promise( function(resolve, reject){
     var promises = [];
 
     for( var i=0; i<pageList.length; i++ ){
-      promises.push( extractContentText( ( pageList[i] ).content) );
+      promises.push( extractContentText( ( pageList[i] ).content, lang ) );
     }
 
     Promise.all( promises )
@@ -423,7 +796,7 @@ function extractContents( pageList ){
   } );
 }
 
-function extractContentText( contentHTML ){
+function extractContentText( contentHTML, lang ){
   return new Promise( function(resolve, reject){
     try {
       const cheerio = require( "cheerio" );
@@ -435,8 +808,15 @@ function extractContentText( contentHTML ){
         contentText += " " + $(this).text();
       } );
 
-      if( contentText.length > 200 ){
-        contentText = contentText.substring( 0, 196 );
+      var targetTextLength = 200;
+      if( lang === "en" ){
+        targetTextLength = 200;
+      } else if( lang === "ko" ){
+        targetTextLength = 150;
+      }
+
+      if( contentText.length > targetTextLength ){
+        contentText = contentText.substring( 0, targetTextLength - 4 );
         var lastIndex = contentText.lastIndexOf( " " );
         contentText = contentText.substring( 0, lastIndex + 1 ) + "...";
       }
@@ -445,5 +825,28 @@ function extractContentText( contentHTML ){
     } catch( err ){
       reject( err );
     }
+  } );
+}
+
+function getPagingRange( parameters ){
+  return new Promise( function(resolve, reject){
+    var totalPageCount = parseInt( parameters.totalPageCount );
+    var releasedPages = parameters.releasedPages;
+    var calledPage = parseInt( parameters.calledPage );
+
+    var pageRange = [];
+    for( var i=calledPage-2; i<=calledPage+2; i++ ){
+
+      if( i > 0 && i <= totalPageCount ){
+
+        if( releasedPages.indexOf( i.toString() ) < 0 ){
+          pageRange.push( i );
+        }
+      }
+    }
+
+    parameters.pageRange = pageRange;
+
+    resolve( parameters );
   } );
 }

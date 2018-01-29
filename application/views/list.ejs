@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <% include partials/include.ejs %>
+
+  <script src="/pager.js"></script>
+
+    <title><%- windowTitle %> - <%- (searchText[0]).search_text %></title>
+</head>
+
+
+
+<body>
+  <% include partials/front_nav.ejs %>
+    <hr class="page-divider">
+    <div class="doc">
+
+      <header>
+        <div class="site-title">
+          <a class="content-anchor"><span class="site-title-name site-title-span"><%- (headerTitle[0]).displayName %></span><span class="site-title-com site-title-span">&nbsp;<%- (headerTitle[1]).displayName %></span></a>
+        </div>
+        <nav class="site-nav navbar">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav">
+              <% for( var i=0; i<menu.length; i++ ){ %>
+                <% if( i < menu.length-1 && menu[i].group_value === menu[i+1].group_value ){ %>
+                  <% var group_value = menu[i].group_value %>
+                  <% if( menu[i].active == "active" ){ %>
+                    <li class="navbar-item active">
+                  <% } else { %>
+                    <li class="navbar-item">
+                  <% } %>
+                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %><i style="padding-left: 10px" class="fa fa-angle-down" aria-hidden="true"></i></a>
+                      <ul class="dropdown-menu">
+                        <% i++; %>
+                        <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
+                          <% if( menu[i].active == "active" ){ %>
+                            <li class="navbar-item-inner active">
+                          <% } else { %>
+                            <li class="navbar-item-inner">
+                          <% } %>
+                              <a class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                          <% if( i < parseInt(menu.length)-2 && menu[i].group_value != menu[i+1].group_value ){ break; }%>
+                          <% i++; %>
+                        <% } %>
+                      </ul>
+                  </li>
+                <% } else { %>
+                  <% if( menu[i].active == "active" ){ %>
+                    <li class="navbar-item active"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% } else { %>
+                    <li class="navbar-item"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% } %>
+                <% } %>
+              <% } %>
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+
+      <div class="page-content">
+        <div class="container-fluid content-container">
+
+          <div class="col-lg-9 col-md-9 article-list-container" data-total-list-count="<%- totalListCount %>" data-total-page-count="<%- totalPageCount %>" data-current-page="<%- currentPage %>">
+
+            <div class="list-summary section-end">
+              <div class="list-caption">
+                <h4><%- (searchText[0]).search_text %></h4><p>&nbsp;&nbsp;|&nbsp;&nbsp;<%- totalListCount %> articles</p>
+                <center><hr class="page-divider-half"></center>
+              </div>
+
+              <div class="content-hashed section-end">
+                <% var index = 0 %>
+                <% for( var i=0; i<listHashes.length; i++ ){ %>
+                  <% if( i % 5 == 0 ){ %>
+                    <% index = i * 5; %>
+                      <ul class="hashed-list" id="id_hashed_list_<%- index %>">
+                          <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li>
+                  <% } else if( i % 5 == 4 || i == listHashes.length - 1){ %>
+                      <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li></ul>
+                  <% } else { %>
+                      <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li>
+                  <% } %>
+                <% } %>
+              </div>
+
+            </div>
+
+            <% var index = currentPage - 1; %>
+
+            <% for( var i=0; i<pageList.length; i++ ){ %>
+
+              <% if( i % 8 === 0 ){ %>
+                <% index++; %>
+                <% var id = "paging-" + index; %>
+                <% if( index === currentPage ){ %>
+                  <div id="<%- id %>" class="articles-paging-block active">
+                <% } else { %>
+                  <div id="<%- id %>" class="articles-paging-block">
+                <% } %>
+              <% } %>
+
+                <% if( pageList[i].type === "announce" ){ %>
+                  <article class="inner-announce post-hidden">
+                    <figure>
+                      <img src="/<%- pageList[i].savedFileName %>" />
+                      <figcaption data-href="/announce/<%- pageList[i].id %>">
+                        <div data-href="/announce/<%- pageList[i].id %>">
+                          <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>
+                          <h3 data-href="/announce/<%- pageList[i].id %>"><%- pageList[i].title %></h3>
+                        </div>
+                        </figcation>
+                    </figure>
+                  </article>
+                <% } else if( pageList[i].type === "content" ){ %>
+
+                  <article class="content-summary post-hidden">
+                    <div class="row">
+                      <div class="col-lg-4 col-md-4 col-sm-4">
+                        <figure>
+                          <img src="/<%- pageList[i].savedFileName %>" />
+                          <figcaption>
+                            <div data-href="/content/<%- pageList[i].id %>">View Post</div>
+                            </figcation>
+                        </figure>
+                      </div>
+                      <div class="col-lg-8 col-md-8 col-sm-8">
+                        <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category before-line"><%- pageList[i].category %></a>
+                        <h3 class="title"><a href="/content/<%- pageList[i].id %>" class="content-anchor title"><%- pageList[i].title %></a></h3>
+                        <span class="date"><%- ( ( pageList[i].create_date ).toISOString() ).split("T")[0] %></span><span class="writer-text">&nbsp;&nbsp;&nbsp;BY&nbsp;&nbsp;</span><a class="content-anchor writer" href="/writer/<%- pageList[i].writer_id %> "><%- pageList[i].writer %></a>
+                        <p class="summary"><%- pageList[i].content %></p>
+                        <button class="btn_important" onclick="location.href='/content/<%- pageList[i].id %>'">VIEW POST</button>
+                      </div>
+                    </div>
+                  </article>
+                <% } %>
+
+              <% if( i % 8 === 7 || i === pageList.length - 1 ){ %>
+                </div>
+              <% } %>
+
+
+            <% } %>
+
+            <div class="list-pager"></div>
+          </div>
+
+          <div class="col-lg-3 col-md-3 banner-container">
+            <div class="input-group">
+              <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
+              <div class="input-group-btn">
+                <button id="btn_search" class="btn_important">SEARCH</button>
+              </div>
+            </div>
+
+
+            <hr>
+
+            <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
+              YOUTUBE
+              <br>
+              <span class="btn_important_banner_describe">kangchangho.com channel</span>
+            </button>
+
+            <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
+              summer-mvc
+              <br>
+              <span class="btn_important_banner_describe">Open Source Project</span>
+            </button>
+
+            <hr>
+
+            <article>
+              <h4 class="title after-line-block-center">HASH RANKING</h4>
+              <div class="banner-table table table-responsive small-section-end">
+                <table class="hash-ranking table table-hover table-condensed">
+
+                  <% for( var i=0; i<hashRanking.length; i++ ){ %>
+                    <tr>
+                      <td class="ranking" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
+                      <td class="hashed" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].text %></td>
+                      <!-- <td class="changed">-</td> -->
+                    </tr>
+                  <% } %>
+                </table>
+              </div>
+            </article>
+
+            <hr class="small-section-end">
+
+            <article>
+              <h4 class="title after-line-block-center">MOST RECENT</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<recentContents.length; i++ ){ %>
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="/<%- recentContents[i].savedFileName %>" />
+                            <figcaption data-href="/content/<%- recentContents[i].id %>" >
+                              <div></div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content/<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+                  <% } %>
+                </ul>
+              </div>
+            </article>
+
+            <hr class="small-section-end">
+
+            <article>
+              <h4 class="title after-line-block-center">FILTER</h4>
+              <select class="select_important">
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+                <option value="2017-12">2017년 12월</option>
+              </select>
+            </article>
+
+            <hr class="small-section-end">
+
+            <article>
+              <h4 class="title after-line-block-center">MOST VIEWED</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<mostViewedContents.length; i++ ){ %>
+
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="/<%- mostViewedContents[i].savedFileName %>" />
+                            <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
+                              <div></div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content/<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+
+                  <% } %>
+
+                </ul>
+              </div>
+
+            </article>
+
+            <hr class="small-section-end">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer style="background-color: black">
+      <div class="jumbotron footer-background">
+        <div class="footer-heading">
+          <h2 class="title">NEWS LETTER</h2>
+          <div class="description">
+            Please subscribe Kangchangho.com News Letter.
+          </div>
+        </div>
+
+        <form class="footer-body">
+          <div class="input-group">
+            <input type="text" class="input_important form-control" placeholder="email">
+            <div class="input-group-btn">
+              <button class="btn btn_important" type="submit">
+                SUBSCRIBE
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="footer-footer">
+          <hr class="color-weaken">
+          <p class="copyright">
+            Copyright(c) 2018 MONTHLY KANGCHANGHO
+            <br> Created and Maintained by Ino Kang [Changho Kang].
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <a class="back-to-top"></a>
+
+</body>
+
+</html>
