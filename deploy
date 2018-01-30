@@ -2,5 +2,7 @@
  cd /Users/changhokang/git/Nodejs/kangchangho-com
  npm install --production
  /usr/local/lib/node_modules/pm2/bin/pm2 start app.js
+ sleep 5
+ /usr/local/lib/node_modules/pm2/bin/pm2 list
  exit
 EOF
