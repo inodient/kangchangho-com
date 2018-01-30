@@ -1,5 +1,4 @@
 #!/bin/sh
-ssh userName@development-server-ip <<EOF
  cd /Users/changhokang/git/Nodejs/kangchangho-com
  git pull
  npm install --production
