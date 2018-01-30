@@ -1,6 +1,6 @@
 #!/bin/sh
  cd /Users/Shared/Jenkins/Home/workspace/test
  npm install --production
- pm2 restart all
+ /usr/local/lib/node_modules/pm2/bin/pm2 restart all
  exit
 EOF
