@@ -1,6 +1,5 @@
 #!/bin/sh
- cd /Users/changhokang/git/Nodejs/kangchangho-com
- git pull
+ cd /Users/Shared/Jenkins/Home/workspace
  npm install --production
  pm2 restart all
  exit
