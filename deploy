@@ -1,5 +1,5 @@
 #!/bin/sh
- cd /Users/Shared/Jenkins/Home/workspace
+ cd /Users/Shared/Jenkins/Home/workspace/test
  npm install --production
  pm2 restart all
  exit
