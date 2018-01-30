@@ -1,6 +1,7 @@
 #!/bin/sh
  cd /Users/Shared/Jenkins/Home/workspace/test
  npm install --production
- pm2 start app.js
+ /usr/local/lib/node_modules/pm2/bin/pm2 delete app.js
+ /usr/local/lib/node_modules/pm2/bin/pm2 start app.js
  exit
 EOF
