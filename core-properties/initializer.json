@@ -1,5 +1,5 @@
 {
-  "port" : 3000,
+  "port" : 4000,
   "context_architecture" : [
     {
       "folder" : "/core-properties",
@@ -28,7 +28,7 @@
   "tools" : [
   	{
   		"name" : "logger",
-  		"enable" : false,
+  		"enable" : true,
   		"toolFiles" : [
   			{
 	  			"folder" : "/tools-properties",
