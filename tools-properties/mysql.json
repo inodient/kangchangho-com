@@ -1,7 +1,7 @@
 {
   "connectionLimit" : 100,
-  "host" : "localhost",
+  "host" : "127.0.0.1",
   "user" : "root",
-  "password" : "123qwer@",
+  "password" : "123Qwer@",
   "database" : "kangchangho-com"
 }
