@@ -72,7 +72,6 @@
             "viewPath": "",
             "view": "list.ejs"
         },
-
         {
             "id": "welcome",
             "path": "/:id",
