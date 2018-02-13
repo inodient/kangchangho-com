@@ -7,14 +7,77 @@ $(document).ready( function(){
     $(location).attr( "href", "/" );
   } );
 
-  $(".site-nav-menu, .site-nav-menu-inner").on( "click", function(){
-    var eventFunction = $(this).data("href");
 
-    if( eventFunction == "goToCategory()" ){
-      var id = $(this).attr( "id" );
-      $(location).attr( "href", "/category/" + id );
-    }
-  } );
+
+
+
+
+  if( $(window).width() < 1000 ){
+
+    // Whole Menu toggle
+    $('.navbar-toggle').click(function(e) {
+      e.preventDefault();
+      $('.site-nav').slideToggle(180, "linear");
+    });
+
+    // Menu Drop Down
+    $(".site-nav .navbar-nav .navbar-item .dropdown-arrow").on( "click", function(){
+      if( $(this).parent().parent().attr( "class" ).indexOf( "open" ) > -1 ){
+        // dropdown - close
+        $(".navbar-item").each( function(){
+          $(this).removeClass( "open" );
+        } );
+        $(this).removeClass( "fa-angle-up" );
+        $(this).addClass( "fa-angle-down" );
+      } else{
+      // dropdown - open
+        $(".navbar-item").each( function(){
+          $(this).removeClass( "open" );
+          $(this).children(".site-nav-menu").children(".dropdown-arrow").removeClass( "fa-angle-up" );
+          $(this).children(".site-nav-menu").children(".dropdown-arrow").addClass( "fa-angle-down" );
+        } );
+        $(this).parent().parent().addClass( "open" );
+        $(this).removeClass( "fa-angle-down" );
+        $(this).addClass( "fa-angle-up" );
+      }
+    } );
+
+    // Hyperlink
+    $(".site-nav-menu, .site-nav-menu *").on( "click", function(){
+      if( $(this).attr( "class" ).indexOf( "dropdown-arrow" ) < 0 ){
+        var eventFunction = $(this).data("href");
+
+        if( eventFunction == "goToCategory()" ){
+          var id = $(this).attr( "id" );
+          $(location).attr( "href", "/category/" + id );
+        }
+      }
+      event.stopPropagation();
+    } );
+
+    $(".site-nav-menu-inner").on( "click", function(){
+      var eventFunction = $(this).data("href");
+
+      if( eventFunction == "goToCategory()" ){
+        var id = $(this).attr( "id" );
+        $(location).attr( "href", "/category/" + id );
+      }
+    } );
+
+
+  } else {
+
+    $(".site-nav-menu, .site-nav-menu-inner").on( "click", function(){
+
+      var eventFunction = $(this).data("href");
+
+      if( eventFunction == "goToCategory()" ){
+        var id = $(this).attr( "id" );
+        $(location).attr( "href", "/category/" + id );
+      }
+    } );
+
+  }
 
 
 
@@ -76,17 +139,4 @@ $(document).ready( function(){
       $(location).attr( "href", "/search/" + searchword );
     }
   } );
-
-
-
-
-  // if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
-  //   $("footer .footer-heading .title").text( "뉴스레터" );
-  //   $("footer .footer-heading .description").text( "강창호닷컴 뉴스레터를 구독하세요." );
-  //   $("footer .footer-body button").text( "구독" );
-  // } else if( $.cookie( "lang" ).indexOf( "en" ) > -1 ){
-  //   $("footer .footer-heading .title").text( "News Letter" );
-  //   $("footer .footer-heading .description").text( "Please subscribe Kangchangho.com News Letter." );
-  //   $("footer .footer-body button").text( "Subscribe" );
-  // }
 } );

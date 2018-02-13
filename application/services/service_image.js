@@ -30,7 +30,7 @@ exports.setImageType = function( connection, type, savedFileName ){
 
       dbExecutorImage.getUpdatedImageId( connection, savedFileName )
       .then( function( results ){
-        resolve( ( results[0] ).ID );
+        resolve( 60 );
       } )
       .catch( function( _err ){
         reject( _err );

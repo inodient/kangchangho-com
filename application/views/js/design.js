@@ -4,24 +4,24 @@ var targetHeight, targetWidth, targetInitialTop, targetInitialLeft, unTargetWidt
 
 
 
-
-
 $(document).ready( function(){
   postVisible();
 
+  if( $(window).width() >= 1000 ){
+    $(".navbar-item").on( "mouseenter", function(){
 
-  $(".navbar-item").on( "mouseenter", function(){
-    $(".navbar-item").each( function(){
-      $(this).removeClass( "open" );
+      $(".navbar-item").each( function(){
+        $(this).removeClass( "open" );
+      } );
+      $(this).addClass( "open" );
     } );
-    $(this).addClass( "open" );
-  } );
 
-  $(".navbar-item").on( "mouseleave", function(){
-    $(".navbar-item").each( function(){
-      $(this).removeClass( "open" );
+    $(".navbar-item").on( "mouseleave", function(){
+      $(".navbar-item").each( function(){
+        $(this).removeClass( "open" );
+      } );
     } );
-  } );
+  }
 
 
 
@@ -48,6 +48,7 @@ $(document).ready( function(){
 
       $(indicators[slideFrom]).toggleClass( "active" );
       $(indicators[slideTo]).toggleClass( "active" );
+
   });
 
   $(".announce-carousel .figcaption").on( "click", function(){
@@ -135,49 +136,66 @@ function postVisible(){
       }
     }
   } );
+
+  wrapFigcaption();
 }
 
 function scrollAffix(){
-  var scroll = parseInt( $(window).scrollTop() );
-  var screenHeight = parseInt( $(window).innerHeight() );
-  var bottomIndex = scroll + screenHeight;
+  if( $(window).width() >= 1000 ){
+    var scroll = parseInt( $(window).scrollTop() );
+    var screenHeight = parseInt( $(window).innerHeight() );
+    var bottomIndex = scroll + screenHeight;
 
-  footer = $("footer");
-  var footerHeight = parseInt( footer.outerHeight() );
-  var footerInitialTop = parseInt( footer.position().top );
+    footer = $("footer");
+    var footerHeight = parseInt( footer.outerHeight() );
+    var footerInitialTop = parseInt( footer.position().top );
 
-  targetHeight = parseInt( target.outerHeight() );
+    targetHeight = parseInt( target.outerHeight() );
 
-  if( scroll <= parseInt( target.position().top ) ){
+    if( scroll <= parseInt( target.position().top ) ){
 
-    if( target.css( "position" ) === "absolute" ){
-      target.attr( "style", "" );
-      target.css( {position: 'fixed', top: 0} );
-      target.css( "left", targetInitialLeft );
-      target.css( "width", targetWidth );
-    }
-  }
-
-  if( scroll <= parseInt( unTarget.position().top ) ){
-
-    if( target.css( "position" ) === "fixed" ){
-      target.attr( "style", "" );
-      target.css( {position: 'relative'} );
-
-      if( targetDirection == "left" ){
-        unTarget.attr( "style", "" );
+      if( target.css( "position" ) === "absolute" ){
+        target.attr( "style", "" );
+        target.css( {position: 'fixed', top: 0} );
+        target.css( "left", targetInitialLeft );
+        target.css( "width", targetWidth );
       }
     }
-  }
 
-  if( bottomIndex < footerInitialTop ){
+    if( scroll <= parseInt( unTarget.position().top ) ){
 
-    if( bottomIndex > targetHeight + targetInitialTop && target.css("position") != "absolute" ){
+      if( target.css( "position" ) === "fixed" ){
+        target.attr( "style", "" );
+        target.css( {position: 'relative'} );
+
+        if( targetDirection == "left" ){
+          unTarget.attr( "style", "" );
+        }
+      }
+    }
+
+    if( bottomIndex < footerInitialTop ){
+
+      if( bottomIndex > targetHeight + targetInitialTop && target.css("position") != "absolute" ){
+
+        target.attr( "style", "" );
+        target.css( {position: 'fixed'} );
+        // target.css( "top", screenHeight - targetInitialTop );
+        target.css( "bottom", 0 );
+        target.css( "left", targetInitialLeft );
+        target.css( "width", targetWidth );
+
+        if( targetDirection == "left" ){
+          unTarget.css( "margin-left", targetWidth );
+          unTarget.css( "width", unTargetWidth );
+        }
+      }
+
+    } else if( bottomIndex >= footerInitialTop ){
 
       target.attr( "style", "" );
-      target.css( {position: 'fixed'} );
-      // target.css( "top", screenHeight - targetInitialTop );
-      target.css( "bottom", 0 );
+      target.css( {position: 'absolute'} );
+      target.css( "top", footerInitialTop - targetHeight );
       target.css( "left", targetInitialLeft );
       target.css( "width", targetWidth );
 
@@ -185,19 +203,6 @@ function scrollAffix(){
         unTarget.css( "margin-left", targetWidth );
         unTarget.css( "width", unTargetWidth );
       }
-    }
-
-  } else if( bottomIndex >= footerInitialTop ){
-
-    target.attr( "style", "" );
-    target.css( {position: 'absolute'} );
-    target.css( "top", footerInitialTop - targetHeight );
-    target.css( "left", targetInitialLeft );
-    target.css( "width", targetWidth );
-
-    if( targetDirection == "left" ){
-      unTarget.css( "margin-left", targetWidth );
-      unTarget.css( "width", unTargetWidth );
     }
   }
 }
@@ -234,6 +239,19 @@ function initScrollInfo(){
 }
 
 function wrapFigcaption(){
+  $(".announce-carousel figcaption").each( function(){
+    if( $(window).width() >= 1024 ){
+      // Laptop, Pad
+      $(this).css( "height", "402px" );
+    } else if( $(window).width() < 1024 && $(window).width() >= 768 ){
+      // Laptop, Pad
+      $(this).css( "height", "270px" );
+    } else {
+      // Mobile
+      $(this).css( "height", "150px" );
+    }
+  } );
+
   $(".page-content figcaption, .banner-content figcaption").each( function(){
     if ( !$(this).parent().attr( "class" ) ){
       $(this).css( "height", parseInt( $(this).siblings("img").css("height").replace("px") ) + 2 );

@@ -28,10 +28,23 @@
   <div class="doc">
     <header>
       <div class="site-title">
-        <a class="content-anchor"><span class="site-title-name site-title-span">姜昌昊</span><span class="site-title-com site-title-span"> . COM</span></a>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#site-nav">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+        <a class="content-anchor"><span class="site-title-name site-title-span"><%- (headerTitle[0]).displayName %></span><span class="site-title-com site-title-span">&nbsp;<%- (headerTitle[1]).displayName %></span></a>
+
+        <div class="header-search">
+          <i class="fa fa-search"></i>
+        </div>
       </div>
       <nav class="site-nav navbar">
         <div class="container-fluid">
+
+          <hr class="page-divider mobile-show">
+
           <ul class="nav navbar-nav">
             <% for( var i=0; i<menu.length; i++ ){ %>
               <% if( i < menu.length-1 && menu[i].group_value === menu[i+1].group_value ){ %>
@@ -41,7 +54,7 @@
                 <% } else { %>
                   <li class="navbar-item">
                 <% } %>
-                    <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %><i style="padding-left: 10px" class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %><i class="dropdown-arrow fa fa-angle-down" aria-hidden="true"></i></a>
                     <ul class="dropdown-menu">
                       <% i++; %>
                       <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
@@ -65,6 +78,10 @@
               <% } %>
             <% } %>
           </ul>
+
+          <div class="paragraph-end mobile-show"></div>
+          <hr class="page-divider mobile-show">
+
         </div>
       </nav>
     </header>
@@ -414,6 +431,8 @@
 
         </div>
 
+        <hr class="page-divider mobile-show">
+
         <div class="col-lg-3 col-md-3 banner-container">
           <div class="input-group">
             <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
@@ -422,7 +441,7 @@
             </div>
           </div>
 
-          <hr>
+          <hr class="page-divider mobile-hidden">
 
           <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
             YOUTUBE
@@ -436,7 +455,7 @@
             <span class="btn_important_banner_describe">Open Source Project</span>
           </button>
 
-          <hr>
+          <hr class="page-divider mobile-hidden">
 
           <article>
             <h4 class="title after-line-block-center">HASH RANKING</h4>
@@ -445,8 +464,8 @@
 
                 <% for( var i=0; i<hashRanking.length; i++ ){ %>
                   <tr>
-                    <td class="ranking" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
-                    <td class="hashed" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].text %></td>
+                    <td class="ranking mobile-hidden" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
+                    <td class="hashed" data-id="<%- hashRanking[i].id %>"><span class="modile-show"><%- hashRanking[i].rank %>.</span>&nbsp;&nbsp;&nbsp;<%- hashRanking[i].text %></td>
                     <!-- <td class="changed">-</td> -->
                   </tr>
                 <% } %>
@@ -454,7 +473,7 @@
             </div>
           </article>
 
-          <hr class="small-section-end">
+          <hr class="mobile-hidden small-section-end">
 
           <article>
             <h4 class="title after-line-block-center">MOST RECENT</h4>
@@ -484,7 +503,7 @@
             </div>
           </article>
 
-          <hr class="small-section-end">
+          <hr class="mobile-hidden small-section-end">
 
           <article>
             <h4 class="title after-line-block-center">FILTER</h4>
@@ -497,7 +516,7 @@
             </select>
           </article>
 
-          <hr class="small-section-end">
+          <hr class="mobile-hidden small-section-end">
 
           <article>
             <h4 class="title after-line-block-center">MOST VIEWED</h4>
@@ -531,7 +550,7 @@
 
           </article>
 
-          <hr class="small-section-end">
+          <hr class="mobile-hidden small-section-end">
 
         </div>
       </div>
@@ -541,9 +560,9 @@
   <footer style="background-color: black">
     <div class="jumbotron footer-background">
       <div class="footer-heading">
-        <h2 class="title">NEWS LETTER</h2>
+        <h2 class="title"><%- footerTitle %></h2>
         <div class="description">
-          Please subscribe Kangchangho.com News Letter.
+          <%- footerDescription %>
         </div>
       </div>
 
@@ -552,7 +571,7 @@
           <input type="text" class="input_important form-control" placeholder="email">
           <div class="input-group-btn">
             <button class="btn btn_important" type="submit">
-              SUBSCRIBE
+              <%- footerBtnText %>
             </button>
           </div>
         </div>
@@ -562,7 +581,8 @@
         <hr class="color-weaken">
         <p class="copyright">
           Copyright(c) 2018 MONTHLY KANGCHANGHO
-          <br> Created and Maintained by Ino Kang [Changho Kang].
+          <br> Created and Maintained by
+          <br class="mobile-show">Ino Kang [Changho Kang].
         </p>
       </div>
     </div>
