@@ -534,8 +534,16 @@ nav {
   display: none;
 }
 
+.mobile-show-inline {
+  display: none;
+}
+
 .mobile-hidden {
   display: block;
+}
+
+.mobile-hidden-inline {
+  display: inline;
 }
 
 @media screen and (min-width : 320px) and (max-width : 767px) {
@@ -544,6 +552,14 @@ nav {
   }
 
   .mobile-hidden {
+    display: none;
+  }
+
+  .mobile-show-inline {
+    display: inline;
+  }
+
+  .mobile-hidden-inline {
     display: none;
   }
 }
@@ -1561,6 +1577,16 @@ nav {
   padding-top: 25px;
 }
 
+@media screen and (min-width : 320px) and (max-width : 767px) {
+  .footer-heading .description {
+    font-size: 14.5px;
+  }
+
+  .footer-footer .copyright {
+    font-size: 14.5px;
+  }
+}
+
 .back-to-top {
   position: fixed;
   bottom: 3.5rem;
@@ -1596,8 +1622,45 @@ nav {
 /* Customized Classes - End */
 /************************************************************************************/
 
-/* temp */
 
-/* .banner-container {
-  border: 1px solid red;
-} */
+
+
+
+/************************************************************************************/
+/* error.html - external doc - Start */
+.error-doc .error-header {
+  height: 30vh;
+  margin: 0px;
+
+  background-color: black;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+}
+
+.error-doc .error-header h1 {
+  width: 100vw;
+  text-align: center;
+}
+
+.error-doc .error-body {
+  height: 35vh;
+  margin: auto;
+  padding: 100px 30px;
+}
+
+.error-doc .error-body h2 {
+  margin-bottom: 10px;
+}
+
+.error-doc .site-footer-container {
+  height: 25vh;
+}
+
+.error-doc .site-footer-container .footer-footer {
+  text-align: center;
+  color: #666666 !important;
+}
+/* error.html - external doc - End */
+/************************************************************************************/
