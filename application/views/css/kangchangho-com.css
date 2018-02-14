@@ -16,6 +16,11 @@ body {
   margin: auto;
 }
 
+body.iosBugFixCaret.modal-open {
+  position: fixed;
+  width: 100%;
+}
+
 div {
 }
 
@@ -35,6 +40,10 @@ table tr:hover td:hover {
 
 table td:hover {
   cursor: pointer;
+}
+
+*:focus {
+  outline: none;
 }
 
 /* =========================================================== */
@@ -851,6 +860,100 @@ nav {
 
 /* header - site-nav - End */
 /* =========================================================== */
+
+
+
+
+/* =========================================================== */
+/* header - header-search - Start */
+#header_search_modal .modal-dialog {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#header_search_modal .modal-content {
+  height: 100%;
+  text-align: center;
+}
+
+#header_search_modal .modal-body {
+  height: 100%;
+  margin: auto;
+}
+
+#header_search_modal .modal-dismiss {
+  font-size: 5rem;
+  position: fixed;
+  top: 5rem;
+  right: 8rem;
+  display: inline-block;
+  transition: all .2s ease;
+}
+
+#header_search_modal .modal-dismiss:hover {
+  cursor: pointer;
+}
+
+#header_search_modal .modal-body #modal_searchword {
+  text-align: center;
+  font-weight: 700;
+  width: 99%;
+  font-size: 6.25rem;
+  letter-spacing: -.1rem;
+  margin-top: 40vh;
+  margin-bottom: 15px;
+  border: 0;
+}
+
+@media screen and (min-width : 320px) and (max-width : 767px) {
+  #header_search_modal .modal-dismiss {
+    font-size: 2rem;
+    position: fixed;
+    top: 2rem;
+    right: 4rem;
+    display: inline-block;
+    transition: all .2s ease;
+  }
+
+  #header_search_modal .modal-body #modal_searchword {
+    text-align: center;
+    font-weight: 700;
+    font-size: 3.25rem;
+    letter-spacing: -.1rem;
+    margin-top: 40vh;
+    margin-bottom: 15px;
+    border: 0;
+  }
+}
+
+#header_search_modal .modal-body p {
+  color: #555555;
+}
+
+#header_search_modal .modal-body #modal_searchword::-webkit-input-placeholder {
+  color: #000000;
+  text-align: center;
+}
+
+#header_search_modal .modal-body #modal_searchword:-moz-placeholder { /* Firefox 18- */
+  color: #000000;
+  text-align: center;
+}
+
+#header_search_modal .modal-body #modal_searchword::-moz-placeholder {  /* Firefox 19+ */
+  color: #000000;
+  text-align: center;
+}
+
+#header_search_modal .modal-body #modal_searchword:-ms-input-placeholder {
+  color: #000000;
+  text-align: center;
+}
+/* header - header-search - End */
+/* =========================================================== */
+
+
 
 
 /* =========================================================== */

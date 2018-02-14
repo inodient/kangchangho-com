@@ -3,9 +3,19 @@ $(document).ready( function(){
     alert( $(this).children().attr( "class" ) );
   } );
 
+  $(".header-search").on( "click", function(){
+    $("#header_search_modal").modal( "show" );
+  } );
+
+  $(".modal-dismiss").on( "click", function(){
+    $("#header_search_modal").modal( "hide" );
+    $("#moadl_searchword").val( '' );
+  } );
+
   $(".site-title-span").on( "click", function(){
     $(location).attr( "href", "/" );
   } );
+
 
 
 
@@ -139,4 +149,31 @@ $(document).ready( function(){
       $(location).attr( "href", "/search/" + searchword );
     }
   } );
+
+  $("#modal_searchword").on( "keypress", function(e){
+    if( e.which == 13 ){
+      var searchword = $("#modal_searchword").val();
+      $(location).attr( "href", "/search/" + searchword );
+    }
+  } );
+
+  $("*").on( "keypress", function(e){
+    if( $(e.target) && $(e.target).attr("class") && $(e.target).attr("class").indexOf("modal-open") > -1 ){
+      if( e.which == 13 ){
+        var searchword = $("#modal_searchword").val();
+        if( searchword === "" || searchword === undefined ) return;
+
+        $(location).attr( "href", "/search/" + searchword );
+      }
+    }
+  } );
+
+  $("*").on( "click", function(e){
+    if( $(e.target) && $(e.target).attr("class") && $(e.target).attr("class").indexOf( "modal-body" ) > -1 ){
+      $("#header_search_modal").modal( "hide" );
+      $("#modal_searchword").val( '' );
+    }
+  } );
+
+
 } );
