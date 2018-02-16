@@ -10,10 +10,8 @@ exports.getBanner = function( connection, lang ){
 
     promises.push( dbExecutorHash.getHashRanking( connection ) );
     promises.push( dbExecutorContent.getRecentContentList( connection, lang ) );
-    promises.push( dbExecutorNewsletter.getRecentNewsLetterList( connection ) );
+    promises.push( dbExecutorNewsletter.getRecentNewsLetterList( connection, lang ) );
     promises.push( dbExecutorContent.getMostViewedContentList( connection, lang ) );
-
-
 
     Promise.all( promises )
     .then( function(){
@@ -23,9 +21,6 @@ exports.getBanner = function( connection, lang ){
       var recentContents = {"recentContents": argv[1]};
       var newsLetters = {"newsLetters": argv[2]};
       var mostViewedContents = {"mostViewedContents": argv[3]};
-
-
-      logger.debug( newsLetters );
 
       var modelObject = Object.assign( hashRanking, recentContents, newsLetters, mostViewedContents );
 
