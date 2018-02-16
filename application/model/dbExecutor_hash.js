@@ -5,7 +5,7 @@ exports.getHashRanking = function( connection, contentId, hashId ){
 
 		mysqlHandler.executeQuery( queryId, params, connection )
 		.then( function( queryResults ){
-			resolve( {"hashRanking":queryResults.results} );
+			resolve( queryResults.results );
 		} )
 		.catch( function( err ){
 			logger.error( "addContentHashLink" );

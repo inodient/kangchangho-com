@@ -1037,10 +1037,21 @@
       ]]>
     </query>
 
-      <query id='addSubscription'>
+    <query id='addSubscription'>
       <![CDATA[
         INSERT INTO TB_NEWSLETTER_RECEIVER (email, lang, create_date)
         VALUES ( ?, ?, NOW() )
+      ]]>
+    </query>
+
+    <query id='getRecentNewsLetterList'>
+      <![CDATA[
+        SELECT id, writer, create_date,
+               case when ? = 'ko' then title_ko
+                    else title_en end as title,
+               case when ? = 'ko' then content_ko
+                    else content_en end as content
+          FROM TB_NEWSLETTER Limit 5;
       ]]>
     </query>
 

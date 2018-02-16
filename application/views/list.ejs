@@ -255,18 +255,19 @@
 
             <hr class="mobile-hidden small-section-end">
 
-            <!-- <article>
-              <h4 class="title after-line-block-center">FILTER</h4>
+            <article>
+              <h4 class="title after-line-block-center">NEWS LETTER</h4>
               <select class="select_important">
-                <option value="2017-12">2017년 12월</option>
-                <option value="2017-12">2017년 12월</option>
-                <option value="2017-12">2017년 12월</option>
-                <option value="2017-12">2017년 12월</option>
-                <option value="2017-12">2017년 12월</option>
+                <% for( var i=0; i<newsLetters.length; i++ ){ %>
+                  <option value="<%- newsLetters[i].title %>" data-href="/newsletter/<%- newsLetters[i].id %>"><%- newsLetters[i].title %></option>
+                <% } %>
+                <% if( newsLetters.length >= 5 ){ %>
+                  <option value="Last News Letters" data-href="/newsletter/last">Last News Letters</option>
+                <% } %>
               </select>
             </article>
 
-            <hr class="mobile-hidden small-section-end"> -->
+            <hr class="mobile-hidden small-section-end">
 
             <article>
               <h4 class="title after-line-block-center">MOST VIEWED</h4>
