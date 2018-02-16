@@ -324,6 +324,14 @@
             "controlFunction": "control_search_word",
             "viewPath": "",
             "view": "list.ejs"
+        },
+        {
+            "id": "subscribe",
+            "path": "/subscribe",
+            "controllerJS": "controller_newsletter.js",
+            "controlFunction": "control_subscribe",
+            "viewPath": "",
+            "view": ""
         }
     ]
 }

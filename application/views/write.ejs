@@ -41,19 +41,7 @@
           <i class="fa fa-search"></i>
         </div>
 
-        <div id="header_search_modal" class="modal fade" role="dialog">
-          <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-              <div class="modal-body">
-                <i class="modal-dismiss fa fa-times"></i>
-                <input type="text" id="modal_searchword" placeholder="Enter Searchword" class="paragraph-end" required />
-                <br>
-                <span>Please write your search word and Press Enter.</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <% include partials/search_modal.ejs %>
       </div>
 
       <nav class="site-nav navbar">
@@ -592,6 +580,8 @@
           </div>
         </div>
       </form>
+
+      <% include partials/subscription_modal.ejs %>
 
       <div class="footer-footer">
         <hr class="color-weaken">

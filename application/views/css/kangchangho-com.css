@@ -884,6 +884,7 @@ nav {
 /* header - header-search - Start */
 #header_search_modal .modal-dialog {
   height: 100%;
+  width: 100vw;
   margin: 0;
   padding: 0;
 }
@@ -1585,6 +1586,33 @@ nav {
   .footer-footer .copyright {
     font-size: 14.5px;
   }
+}
+
+#subscribe_modal .modal-dialog {
+  display: flex;
+  align-items: center;
+
+  margin-top: 0;
+  margin-bottom: 0;
+
+  height: 100%;
+  text-align: center;
+}
+
+#subscribe_modal .modal-dialog .modal-content {
+  width: 100vw;
+  height: 45vh;
+  padding: 30px;
+
+  display: flex;
+  align-items: center;
+
+  color: #000000;
+}
+
+#subscribe_modal .modal-dialog .modal-content .modal-body {
+  width: 100%;
+  font-size: 2rem;
 }
 
 .back-to-top {

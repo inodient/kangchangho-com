@@ -103,6 +103,13 @@ $(document).ready( function(){
     scrollAffix();
   } );
 
+  $(window).on( "load", function(){
+    postVisible();
+
+    initScrollInfo();
+    scrollAffix();
+  } );
+
   $(window).on( "popstate", function(){
     alert( "POPSTATE" );
   } );

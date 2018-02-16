@@ -1030,4 +1030,18 @@
       ]]>
     </query>
 
+    <query id='checkSubscription'>
+      <![CDATA[
+        select count(*) as checkResult from TB_NEWSLETTER_RECEIVER
+        where email = ? and lang = ?
+      ]]>
+    </query>
+
+      <query id='addSubscription'>
+      <![CDATA[
+        INSERT INTO TB_NEWSLETTER_RECEIVER (email, lang, create_date)
+        VALUES ( ?, ?, NOW() )
+      ]]>
+    </query>
+
   </queries>

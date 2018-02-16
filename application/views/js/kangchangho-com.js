@@ -176,4 +176,44 @@ $(document).ready( function(){
   } );
 
 
+
+
+
+
+  $("#subscribe_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#subscribe_modal").modal( "hide" );
+  } );
+
+  $("#newsletter").submit( function(e){
+
+    $.LoadingOverlay("show", { color: "rgba(255, 255, 255, 0.8)" });
+
+    e.preventDefault();
+
+    $.ajax( {
+      data: { "addr" : $("#email_addr").val() },
+      type: "POST",
+      url: "/subscribe",
+
+      success: function( data ){
+        $.LoadingOverlay("hide");
+
+        $("#subscribe_modal .subscribe-message").html( data.message );
+        $("#subscribe_modal").modal( "show" );
+        $("#email_addr").blur();
+        $("#email_addr").val( "" );
+      },
+
+      error: function(){
+        $.LoadingOverlay("hide");
+        $("#email_addr").val( "" );
+      }
+    } );
+
+  } );
 } );
