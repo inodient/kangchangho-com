@@ -33,6 +33,14 @@
             "view": "write.ejs"
         },
         {
+            "id": "modify",
+            "path": "/modify/:type/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_modify",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
             "id": "addcategory",
             "path": "/addcategory",
             "controllerJS": "controller_write.js",
@@ -96,14 +104,7 @@
             "viewPath": "",
             "view": "list.ejs"
         },
-        {
-            "id": "write",
-            "path": "/write/:id",
-            "controllerJS": "controller_write.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "write.ejs"
-        },
+
         {
             "id": "addcategory",
             "path": "/addcategory/:id",

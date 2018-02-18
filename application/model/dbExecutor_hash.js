@@ -195,6 +195,43 @@ exports.addHash = function( connection, contentId, hashText ){
 	} );
 }
 
+exports.deleteHashLink = function( connection, contentId, hashText ){
+	return new Promise( function(resolve, reject){
+
+		var params = [];
+		var queryId = "deleteHashLink";
+
+		params.push( contentId );
+		params.push( hashText );
+
+		mysqlHandler.executeQuery( queryId, params, connection )
+		.then( function(){
+			resolve( {"status":"succeed"} );
+		} )
+		.catch( function( err ){
+			reject( err );
+		} );
+	} );
+}
+
+exports.addHashWithSameHitCount = function( connection, contentId, hashText ){
+	return new Promise( function(resolve, reject){
+
+		var params = [];
+		var queryId = "addHashWithSameHitCount";
+
+		params.push( hashText );
+
+		mysqlHandler.executeQuery( queryId, params, connection )
+		.then( function(){
+			resolve( {"status":"succeed"} );
+		} )
+		.catch( function( err ){
+			reject( err );
+		} );
+	} );
+}
+
 exports.getInsertedHashId = function( connection, hashText ){
 	return new Promise( function(resolve, reject){
 		var params = [];

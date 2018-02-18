@@ -1,9 +1,58 @@
 $(document).ready(function() {
-  $('#editor-content-ko').summernote( {height: "450px"} );
-  $('#editor-content-en').summernote( {height: "450px"} );
 
-  $('#editor-comment-ko').summernote( {height: "300px"} );
-  $('#editor-comment-en').summernote( {height: "300px"} );
+  var writeMode = "";
+
+  /************************************************************************************************************/
+  // INSERT - END
+  writeMode = "insert";
+
+  // 00. Editor Setting , Editor Image Upload ajaxSetting
+  $('#editor-content-ko').summernote( {height: "450px",
+    callbacks : {
+      onImageUpload: function( files, editor, welEditable ){
+        editorImageUpload( files, editor, welEditable, "editor-content-ko" );
+      }
+    }
+  } );
+  $('#editor-content-en').summernote( {height: "450px",
+    callbacks : {
+      onImageUpload: function( files, editor, welEditable ){
+        editorImageUpload( files, editor, welEditable, "editor-content-en" );
+      }
+    }
+  } );
+
+  $('#editor-comment-ko').summernote( {height: "300px",
+    callbacks : {
+      onImageUpload: function( files, editor, welEditable ){
+        editorImageUpload( files, editor, welEditable, "editor-comment-ko" );
+      }
+    }
+  } );
+  $('#editor-comment-en').summernote( {height: "300px",
+    callbacks : {
+      onImageUpload: function( files, editor, welEditable ){
+        editorImageUpload( files, editor, welEditable, "editor-comment-en" );
+      }
+    }
+  } );
+
+  function editorImageUpload( files, editor, welEditable, editorName ){
+    // Only 1 file allowed to upload
+    var data = new FormData();
+    data.append( "file", files[0] );
+
+    imageUploadAjax( data )
+    .then( function( results ){
+      alert( results ); // show response from the php script.
+      $('#' + editorName).summernote( "insertImage", "/" + results, "/" + results );
+
+    } )
+    .catch( function( err ){
+      throw err;
+    } );
+  }
+
 
   // 01. write type
   var writeType = "";
@@ -131,6 +180,17 @@ $(document).ready(function() {
       )
     );
   } );
+
+  // delete row event
+  $("#table_add_content tr").on( "click", function(){
+    if( confirm( "Are you sure removing this content?" ) ){
+      $(this).remove();
+      return false;
+    } else {
+      return;
+    }
+  } );
+
 
   $("#btn_add_search_condition").on( "click", function(){
     $("#table_add_search_condition tbody").append(
@@ -512,6 +572,9 @@ $(document).ready(function() {
 
     extractWriteContentData()
     .then( function( docData ){
+      docData.writeMode = writeMode;
+      docData.modifyId = modifyId;
+
       $.ajax( {
         data: docData,
         type: "POST",
@@ -537,6 +600,9 @@ $(document).ready(function() {
 
     extractAnnounceData()
     .then( function( docData ){
+      docData.writeMode = writeMode;
+      docData.modifyId = modifyId;
+
       $.ajax( {
         data: docData,
         type: "POST",
@@ -575,5 +641,63 @@ $(document).ready(function() {
   $('#preview_modal').on('hidden.bs.modal', function(){
     $('#preview_hashed_list').empty();
   } );
+  // INSERT - END
+  /************************************************************************************************************/
 
+
+
+
+
+
+
+
+  /************************************************************************************************************/
+  // MODIFY - START
+  var url = $(location).attr( "href" );
+  var modifyMode = "";
+  var modifyId = "";
+
+  if( url.indexOf( "/modify" ) > -1 ){
+
+    writeMode = "modify";
+
+    if( url.indexOf( "/content" ) > -1 ){
+      modifyMode = "content";
+      modifyId = url.split( "/content/" )[1];
+    } else if( url.indexOf( "/announce" ) > -1 ){
+      modifyMode = "announce";
+      modifyId = url.split( "/announce/" )[1];
+    }
+  }
+
+  // 1. SET TYPE
+  if( writeMode === "modify" && modifyMode === "content" ){
+    $('input:radio[name="write-type"][value=content]').prop( "checked", true );
+    $('input:radio[name="write-type"]').attr( "disabled", true );
+  } else if( writeMode === "modify" && modifyMode === "announce" ){
+    $('input:radio[name="write-type"][value=announce]').prop( "checked", true );
+    $('input:radio[name="write-type"]').attr( "disabled", true );
+  }
+  changeWriteType( $('input:radio[name="write-type"]:checked').val() );
+
+  // 2. SET IMAGES
+
+  // 3. SET CATEGORY, WRITER
+
+  // 4. SET TITLE (ko, en)
+
+  // 5-1. if CONTENT : SET CONTENT
+
+  // 5-2. if CONTENT : SET COMMENT
+
+  // 5-3. if CONTENT : HASHES
+
+  // 6-1. if ANNOUNCE : ANNOUNCE TYPE
+
+  // 6-2. if ANNOUNCE : ANNOUNCE CONTENTS
+
+
+
+  // MODIFY - END
+  /************************************************************************************************************/
 });

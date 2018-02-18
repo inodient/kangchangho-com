@@ -134,6 +134,43 @@ exports.addHash = function( connection, contentId, hashText ){
 		} );
 	} );
 }
+
+exports.modifyHash = function( connection, contentId, hashText ){
+  return new Promise( function(resolve, reject){
+
+    dbExecutorHash.deleteHashLink( connection, contentId, hashText )
+    .then( function(){
+
+      dbExecutorHash.addHashWithSameHitCount( connection, contentId, hashText )
+  		.then( function(){
+
+  			dbExecutorHash.getInsertedHashId( connection, hashText )
+  			.then( function( results ){
+
+          var hashId = ( results[0] )._ID;
+
+  				dbExecutorHash.addContentHashLink( connection, contentId, hashId )
+  				.then( function(){
+  					resolve( {"status":"succeed"} );
+  				} )
+  				.catch( function( ___err ){
+  					reject( ___err );
+  				} );
+
+  			} )
+  			.catch( function( __err ){
+  				reject( __err );
+  			} );
+  		} )
+  		.catch( function( _err ){
+  			reject( _err );
+  		} );
+
+    } )
+    .catch( function( err ){
+    } );
+	} );
+}
 // WRITE - END
 
 

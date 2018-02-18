@@ -147,6 +147,47 @@ exports.addAnnounce = function( connection, parameter ){
   } );
 }
 
+exports.modifyAnnounce = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "modifyAnnounce";
+
+    params.push( parameter.announceType );
+    params.push( parameter.title_en );
+    params.push( parameter.title_ko );
+    params.push( parameter.sel_writer );
+    params.push( parameter.sel_category );
+    params.push( 0 );
+    params.push( parameter.image_carousel );
+    params.push( parameter.modifyId );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+		.then( function( queryResults ){
+			resolve( {"status":"succeed"} );
+		} )
+		.catch( function( err ){
+			reject( err );
+		} );
+  } );
+}
+
+exports.deleteAnnounceContentList = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "deleteAnnounceContentList";
+
+    params.push( parameter.modifyId );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+		.then( function( queryResults ){
+			resolve( {"status":"succeed"} );
+		} )
+		.catch( function( err ){
+			reject( err );
+		} );
+  } );
+}
+
 exports.getInsertedAnnounceId = function( connection ){
   return new Promise( function(resolve, reject){
     var params = [];
@@ -202,3 +243,26 @@ exports.addAnnounceSearch = function( connection, announceId, searchCategoryId, 
   } );
 }
 // WRITE - END
+
+
+
+
+// MODIFY - START
+exports.getModifyAnnounceMaster = function( connection, id ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getModifyAnnounceMaster";
+
+    params.push( id );
+    params.push( id );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+// MODIFY - END

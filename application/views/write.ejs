@@ -106,7 +106,13 @@
             <h5 class="title before-line">MAIN IMAGE</h5>
             <form id="id_main_image_upload_form" class="form-inline" action="/upload" method="post" enctype="multipart/form-data">
               <div class="input-group">
-                <input id="id_temp_main_image_name" type="text" class="input_important form-control file-input" readonly>
+
+                <% if( typeof modifyData != "undefined" && modifyData.image_main_path ){ %>
+                  <input id="id_temp_main_image_name" type="text" class="input_important form-control file-input" value="<%- modifyData.image_main_path %>" readonly>
+                <% } else { %>
+                  <input id="id_temp_main_image_name" type="text" class="input_important form-control file-input" readonly>
+                <% } %>
+
                 <label class="input-group-btn">
                     <span id="id_save_main_image" class="btn_important">
                         UPLOAD <input type="file" style="display: none;" name="uploadFileForm">
@@ -116,7 +122,13 @@
             </form>
             <center>
               <figure class="write-image-vertical">
-                <img id="id_temp_main_image"  src="/default_vertical.png" />
+
+                <% if( typeof modifyData != "undefined" && modifyData.image_main_path ){ %>
+                  <img id="id_temp_main_image"  src="/<%- modifyData.image_main_path %>" />
+                <% } else { %>
+                  <img id="id_temp_main_image"  src="/default_vertical.png" />
+                <% } %>
+
               </figure>
             </center>
           </div>
@@ -127,7 +139,14 @@
             <h5 class="title before-line">CAROUSEL IMAGE</h5>
             <form id="id_carousel_image_upload_form" class="form-inline" action="/upload" method="post" enctype="multipart/form-data">
               <div class="input-group">
-                <input id="id_temp_carousel_image_name" type="text" class="input_important form-control file-input" readonly>
+                <% if( typeof modifyData != "undefined" && modifyData.image_carousel_path ){ %>
+                  <input id="id_temp_carousel_image_name" type="text" class="input_important form-control file-input" value="<%- modifyData.image_carousel_path %>" readonly>
+                <% } else if( typeof modifyData != "undefined" && modifyData.announce_image_path ) { %>
+                  <input id="id_temp_carousel_image_name" type="text" class="input_important form-control file-input" value="<%- modifyData.announce_image_path %>" readonly>
+                <% } else {%>
+                  <input id="id_temp_carousel_image_name" type="text" class="input_important form-control file-input" readonly>
+                <% } %>
+
                 <label class="input-group-btn">
                     <span id="id_save_carousel_image" class="btn_important">
                         UPLOAD <input type="file" style="display: none;" name="uploadFileForm">
@@ -137,7 +156,13 @@
             </form>
             <center>
               <figure class="write-image-horizontal">
-                <img id="id_temp_carousel_image" src="/default_horizontal.png" />
+                <% if( typeof modifyData != "undefined" && modifyData.image_carousel_path ){ %>
+                  <img id="id_temp_carousel_image" src="/<%- modifyData.image_carousel_path %>" />
+                <% } else if( typeof modifyData != "undefined" && modifyData.announce_image_path ) { %>
+                  <img id="id_temp_carousel_image" src="/<%- modifyData.announce_image_path %>" />
+                <% } else {%>
+                  <img id="id_temp_carousel_image" src="/default_horizontal.png" />
+                <% } %>
               </figure>
             </center>
           </div>
@@ -149,9 +174,17 @@
             <select id="selected_category" class="select_important_inverse">
               <% for( var i=0; i<category.length; i++ ){ %>
                 <% if( category[i].depth === 0 ){ %>
-                  <option value="<%- category[i].id %>"><%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                  <% if( typeof modifyData != "undefined" && modifyData.category && category[i].id == modifyData.category ){ %>
+                    <option value="<%- category[i].id %>" selected><%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                  <% } else { %>
+                    <option value="<%- category[i].id %>"><%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                  <% } %>
                 <% } else { %>
-                  <option value="<%- category[i].id %>"> &nbsp;>&nbsp; <%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                  <% if( typeof modifyData != "undefined" && modifyData.category && category[i].id == modifyData.category ){ %>
+                    <option value="<%- category[i].id %>" selected> &nbsp;>&nbsp; <%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                  <% } else { %>
+                    <option value="<%- category[i].id %>"> &nbsp;>&nbsp; <%- category[i].display_name_en %>&nbsp;|&nbsp;<%- category[i].display_name_ko %></option>
+                  <% } %>
                 <% } %>
               <% } %>
             </select>
@@ -193,7 +226,11 @@
             <h5 class="title before-line">writer</h5>
             <select id="selected_writer" class="select_important_inverse">
               <% for( var i=0; i<writer.length; i++ ){ %>
-                <option value="<%- writer[i].id %>" data-description-en="<%- writer[i].description_en %>" data-description-ko="<%- writer[i].description_ko %>" ><%- writer[i].name_en %>&nbsp;|&nbsp;<%- writer[i].name_ko %></option>
+                <% if( typeof modifyData != "undefined" && modifyData.category && writer[i].id == modifyData.writer ){ %>
+                  <option value="<%- writer[i].id %>" data-description-en="<%- writer[i].description_en %>" data-description-ko="<%- writer[i].description_ko %>" selected><%- writer[i].name_en %>&nbsp;|&nbsp;<%- writer[i].name_ko %></option>
+                <% } else { %>
+                  <option value="<%- writer[i].id %>" data-description-en="<%- writer[i].description_en %>" data-description-ko="<%- writer[i].description_ko %>" ><%- writer[i].name_en %>&nbsp;|&nbsp;<%- writer[i].name_ko %></option>
+                <% } %>
               <% } %>
             </select>
             <div class="align-right">
@@ -236,12 +273,20 @@
 
           <div class="write-sub-container">
             <h5 class="title before-line">TITLE - KO</h5>
-            <input type="text" id="id_title_ko" class="input_embrassed form-control"/>
+            <% if( typeof modifyData != "undefined" && modifyData.title_ko ){ %>
+              <input type="text" id="id_title_ko" class="input_embrassed form-control" value="<%- modifyData.title_ko %>" />
+            <% } else { %>
+              <input type="text" id="id_title_ko" class="input_embrassed form-control"/>
+            <% } %>
           </div>
 
           <div class="write-sub-container">
             <h5 class="title before-line">TITLE - EN</h5>
-            <input type="text" id="id_title_en" class="input_embrassed form-control"/>
+            <% if( typeof modifyData != "undefined" && modifyData.title_en ){ %>
+              <input type="text" id="id_title_en" class="input_embrassed form-control" value="<%- modifyData.title_en %>" />
+            <% } else { %>
+              <input type="text" id="id_title_en" class="input_embrassed form-control"/>
+            <% } %>
           </div>
 
           <hr class="small-section-end">
@@ -250,7 +295,11 @@
             <h5 class="title before-line">ANNOUNCE TYPE</h5>
             <select id="selected_announce_type" class="select_important_inverse">
               <% for( var i=0; i<announceType.length; i++ ){ %>
-                <option value="<%- announceType[i].id %>"><%- announceType[i].display_name %></option>
+                <% if( typeof modifyData != "undefined" && modifyData.announce_type && announceType[i].id == modifyData.announce_type ){ %>
+                  <option value="<%- announceType[i].id %>" selected><%- announceType[i].display_name %></option>
+                <% } else { %>
+                  <option value="<%- announceType[i].id %>"><%- announceType[i].display_name %></option>
+                <% } %>
               <% } %>
             </select>
           </div>
@@ -271,6 +320,25 @@
                 </tr>
               </thead>
               <tbody>
+                <% if( typeof modifyData != "undefined" && modifyData.content_list ){ %>
+                  <% var contentList = modifyData.content_list %>
+                  <% var contentListArr = contentList.split( ", " ) %>
+
+                  <% for( var j=0; j<contentListArr.length; j++ ){ %>
+                    <% for( var i=0; i<announceContentList.length; i++ ){ %>
+
+                      <% if( parseInt( contentListArr[j] ) === announceContentList[i].content_id ){ %>
+                        <tr>
+                          <td id="content_id"><%- contentListArr[j] %></td>
+                          <td><%- announceContentList[i].title_ko %><br><%- announceContentList[i].title_en %></td>
+                          <td id="category_id"><%- announceContentList[i].category_id %></td>
+                          <td><%- announceContentList[i].category_ko %><br><%- announceContentList[i].category_en %></td>
+                          <td><%- ( ( announceContentList[i].create_date ).toISOString() ).split("T")[0] %></td>
+                        </tr>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                <% }%>
               </tbody>
             </table>
             <div class="align-right">
@@ -370,31 +438,51 @@
 
           <div class="write-sub-container for-content">
             <h5 class="title before-line">CONTENT - KO</h5>
-            <div id="editor-content-ko"><p>CONTENT - KO</p></div>
+            <% if( typeof modifyData != "undefined" && modifyData.content_ko ){ %>
+              <div id="editor-content-ko"><%- modifyData.content_ko %></div>
+            <% } else { %>
+              <div id="editor-content-ko"><p>CONTENT - KO</p></div>
+            <% } %>
           </div>
 
           <div class="write-sub-container for-content">
             <h5 class="title before-line">CONTENT - EN</h5>
-            <div id="editor-content-en"><p>CONTENT - EN</p></div>
+            <% if( typeof modifyData != "undefined" && modifyData.content_en ){ %>
+              <div id="editor-content-en"><%- modifyData.content_en %></div>
+            <% } else { %>
+              <div id="editor-content-en"><p>CONTENT - EN</p></div>
+            <% } %>
           </div>
 
           <hr class="small-section-end">
 
           <div class="write-sub-container for-content">
             <h5 class="title before-line">COMMENT - KO</h5>
-            <div id="editor-comment-ko"><p>COMMENT - KO</p></div>
+            <% if( typeof modifyData != "undefined" && modifyData.comment_ko ){ %>
+              <div id="editor-comment-ko"><%- modifyData.comment_ko %></div>
+            <% } else { %>
+              <div id="editor-comment-ko"><p>COMMENT - KO</p></div>
+            <% } %>
           </div>
 
           <div class="write-sub-container for-content">
             <h5 class="title before-line">COMMENT - EN</h5>
-            <div id="editor-comment-en"><p>COMMENT - EN</p></div>
+            <% if( typeof modifyData != "undefined" && modifyData.comment_en ){ %>
+              <div id="editor-comment-en"><%- modifyData.comment_en %></div>
+            <% } else { %>
+              <div id="editor-comment-en"><p>COMMENT - EN</p></div>
+            <% } %>
           </div>
 
           <hr class="small-section-end for-content">
 
           <div class="write-sub-container for-content">
             <h5 class="title before-line">HASHES</h5>
-            <input type="text" id="id_hashes" class="input_embrassed form-control"/>
+            <% if( typeof modifyData != "undefined" && modifyData.hashes ){ %>
+              <input type="text" id="id_hashes" class="input_embrassed form-control" value="<%- modifyData.hashes %>"/>
+            <% } else { %>
+              <input type="text" id="id_hashes" class="input_embrassed form-control"/>
+            <% } %>
           </div>
 
           <div class="write-sub-container align-right">

@@ -417,6 +417,33 @@ exports.addContent = function( connection, parameter ){
 	} );
 }
 
+exports.modifyContent = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+		var params = [];
+		var queryId = "modifyContent";
+
+		params.push( parameter.sel_category );
+		params.push( parameter.sel_writer );
+		params.push( parameter.title_ko );
+		params.push( parameter.title_en );
+		params.push( parameter.content_ko );
+		params.push( parameter.content_en );
+		params.push( parameter.comment_ko );
+		params.push( parameter.comment_en );
+		params.push( parameter.image_main );
+		params.push( parameter.image_carousel );
+    params.push( parameter.modifyId );
+
+		mysqlHandler.executeQuery( queryId, params, connection )
+		.then( function( queryResults ){
+      resolve( parameter.modifyId );
+		} )
+		.catch( function( err ){
+			reject( err );
+		} );
+	} );
+}
+
 exports.getInsertedContentId = function( connection, parameter ){
 	return new Promise( function(resolve, reject){
 		var params = [];
@@ -442,9 +469,30 @@ exports.getInsertedContentId = function( connection, parameter ){
 		} );
 	} );
 }
-
-
 // WRITE - END
+
+
+
+
+// MODIFY - START
+exports.getModifyContentMaster = function( connection, id ){
+  return new Promise( function( resolve, reject){
+    var params = [];
+    var queryId = "getModifyContentMaster";
+
+    params.push( id );
+    params.push( id );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+// MODIFY - END
 
 
 

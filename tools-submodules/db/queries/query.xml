@@ -61,6 +61,23 @@
       ]]>
     </query>
 
+    <query id='modifyContent'>
+      <![CDATA[
+        UPDATE TB_CONTENT
+        SET category = ?,
+            writer = ?,
+            title_ko = ?,
+            title_en = ?,
+            content_ko = ?,
+            content_en = ?,
+            comment_ko = ?,
+            comment_en = ?,
+            image_main = ?,
+            image_carousel = ?
+        WHERE id = ?
+      ]]>
+    </query>
+
     <query id='getInsertedContentId'>
       <![CDATA[
         SELECT MAX(id) as _ID
@@ -83,6 +100,22 @@
         INSERT INTO TB_HASH_KV (text, create_date)
         VALUES ( ?, NOW() )
             ON DUPLICATE KEY UPDATE hit_count = hit_count + 5
+      ]]>
+    </query>
+
+    <query id='addHashWithSameHitCount'>
+      <![CDATA[
+        INSERT INTO TB_HASH_KV (text, create_date)
+        VALUES ( ?, NOW() )
+            ON DUPLICATE KEY UPDATE hit_count = hit_count
+      ]]>
+    </query>
+
+
+    <query id='deleteHashLink'>
+      <![CDATA[
+        delete from TB_CONTENT_HASH_LINK
+         where content_id = ? and hash_id = ( select id from TB_HASH_KV where text = ? );
       ]]>
     </query>
 
@@ -326,6 +359,27 @@
       <![CDATA[
         INSERT INTO TB_ANNOUNCE (type, title_en, title_ko, writer, category, on_main, announce_image, create_date)
         VALUES (?, ?, ?, ?, ?, ?, (select * from (select id from TB_CONTENT_IMAGE where savedFileName = ?) image ), now() )
+      ]]>
+    </query>
+
+    <query id='modifyAnnounce'>
+      <![CDATA[
+        UPDATE TB_ANNOUNCE
+           SET type = ?,
+               title_en = ?,
+               title_ko = ?,
+               writer = ?,
+               category = ?,
+               on_main = ?,
+               announce_image = ( select id from TB_CONTENT_IMAGE where savedFileName = ? )
+         WHERE id = ?
+      ]]>
+    </query>
+
+    <query id='deleteAnnounceContentList'>
+      <![CDATA[
+        DELETE FROM TB_ANNOUNCE_LIST
+         WHERE announce_id = ?
       ]]>
     </query>
 
@@ -1052,6 +1106,47 @@
                case when ? = 'ko' then content_ko
                     else content_en end as content
           FROM TB_NEWSLETTER Limit 5;
+      ]]>
+    </query>
+
+    <query id='getModifyContentMaster'>
+      <![CDATA[
+        select con.id,
+               con.category,
+               con.writer,
+               con.create_date,
+               con.title_ko,
+               con.title_en,
+               con.content_ko,
+               con.content_en,
+               con.comment_ko,
+               con.comment_en,
+               con.image_main,
+               ( select savedFileName from TB_CONTENT_IMAGE where id = con.image_main) as image_main_path,
+               con.image_carousel,
+               ( select savedFileName from TB_CONTENT_IMAGE where id = con.image_carousel) as image_carousel_path,
+               con.hit_count,
+               ( select GROUP_CONCAT( text SEPARATOR ', ' ) from TB_HASH_KV where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id = ? ) ) as hashes
+          from TB_CONTENT con
+         where con.id = ?
+      ]]>
+    </query>
+
+    <query id='getModifyAnnounceMaster'>
+      <![CDATA[
+        select id,
+               type as announce_type,
+               title_en,
+               title_ko,
+               writer,
+               category,
+               on_main,
+               announce_image,
+               ( select savedFileName from TB_CONTENT_IMAGE where id = announce_image ) as announce_image_path,
+               ( select GROUP_CONCAT( content_id SEPARATOR ', ') from TB_ANNOUNCE_LIST where announce_id = ? ) as content_list,
+               create_date
+          from TB_ANNOUNCE
+          where id = ?
       ]]>
     </query>
 

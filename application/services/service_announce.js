@@ -183,6 +183,57 @@ exports.addAnnounce = function( connection, parameter ){
   } );
 }
 
+exports.modifyAnnounce = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    dbExecutorAnnounce.modifyAnnounce( connection, parameter )
+    .then( function(){
+
+      dbExecutorAnnounce.deleteAnnounceContentList( connection, parameter )
+      .then( function(){
+
+        var promises = [];
+        var announceId = parameter.modifyId;
+
+        if( parameter.announceType === "1" ){
+          promises.push( addAnnounceContentList(connection, parameter, announceId) );
+        } else if( parameter.announceType === "2" ){
+          promises.push( addAnnounceSearchList(connection, parameter, announceId) );
+        }
+
+        Promise.all( promises )
+        .then( function(){
+          resolve( {"announceId": announceId} );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
+exports.getModifyAnnounceMaster = function( connection, id ){
+  return new Promise( function( resolve, reject){
+    dbExecutorAnnounce.getModifyAnnounceMaster( connection, id )
+    .then( function( results ){
+      resolve( {"modifyData": results[0]} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 
 
 
