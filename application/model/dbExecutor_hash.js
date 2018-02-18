@@ -195,14 +195,13 @@ exports.addHash = function( connection, contentId, hashText ){
 	} );
 }
 
-exports.deleteHashLink = function( connection, contentId, hashText ){
+exports.deleteHashLink = function( connection, contentId ){
 	return new Promise( function(resolve, reject){
 
 		var params = [];
 		var queryId = "deleteHashLink";
 
 		params.push( contentId );
-		params.push( hashText );
 
 		mysqlHandler.executeQuery( queryId, params, connection )
 		.then( function(){

@@ -115,7 +115,7 @@
     <query id='deleteHashLink'>
       <![CDATA[
         delete from TB_CONTENT_HASH_LINK
-         where content_id = ? and hash_id = ( select id from TB_HASH_KV where text = ? );
+         where content_id = ?;
       ]]>
     </query>
 

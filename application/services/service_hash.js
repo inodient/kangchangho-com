@@ -138,7 +138,7 @@ exports.addHash = function( connection, contentId, hashText ){
 exports.modifyHash = function( connection, contentId, hashText ){
   return new Promise( function(resolve, reject){
 
-    dbExecutorHash.deleteHashLink( connection, contentId, hashText )
+    dbExecutorHash.deleteHashLink( connection, contentId )
     .then( function(){
 
       dbExecutorHash.addHashWithSameHitCount( connection, contentId, hashText )
