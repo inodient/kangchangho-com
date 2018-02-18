@@ -242,6 +242,21 @@ exports.addAnnounceSearch = function( connection, announceId, searchCategoryId, 
 		} );
   } );
 }
+
+exports.getNewsletterAnnounceList = function( connection ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getNewsletterAnnounceList";
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+		.then( function( queryResults ){
+      resolve( queryResults.results );
+		} )
+		.catch( function( err ){
+			reject( err );
+		} );
+  } );
+}
 // WRITE - END
 
 

@@ -1493,11 +1493,11 @@ nav {
 
 /* =========================================================== */
 /* body - write-table - Start */
-#table_add_content *, #table_add_search_condition * {
+#table_add_content *, #table_add_announce *, #table_add_search_condition * {
   border: 1px solid #000000;
 }
 
-#table_add_content span {
+#table_add_content span, #table_add_announce span {
   border: 0 !important;
 }
 /* body - preview-modal - End */

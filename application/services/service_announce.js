@@ -236,6 +236,20 @@ exports.getModifyAnnounceMaster = function( connection, id ){
 
 
 
+exports.getNewsletterAnnounceList = function( connection ){
+  return new Promise( function( resolve, reject ){
+    dbExecutorAnnounce.getNewsletterAnnounceList( connection )
+    .then( function( results ){
+      resolve( {"newsletterContentList":results} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
 
 function addAnnounceContentList( connection, parameter, announceId ){
   return new Promise( function(resolve, reject){

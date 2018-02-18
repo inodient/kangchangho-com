@@ -98,11 +98,12 @@
             <h5 class="title before-line">TYPE</h5>
             <label class="radio-inline"><input type="radio" name="write-type" value="content" checked>CONTENT</label>
             <label class="radio-inline"><input type="radio" name="write-type" value="announce">ANNOUNCE</label>
+            <label class="radio-inline"><input type="radio" name="write-type" value="newsletter">NEWSLETTER</label>
           </div>
 
           <div class="section-end"></div>
 
-          <div class="write-sub-container for-content">
+          <div class="write-sub-container for-content for-newsletter">
             <h5 class="title before-line">MAIN IMAGE</h5>
             <form id="id_main_image_upload_form" class="form-inline" action="/upload" method="post" enctype="multipart/form-data">
               <div class="input-group">
@@ -135,7 +136,7 @@
 
           <hr class="small-section-end">
 
-          <div class="write-sub-container">
+          <div class="write-sub-container for-announce for-content">
             <h5 class="title before-line">CAROUSEL IMAGE</h5>
             <form id="id_carousel_image_upload_form" class="form-inline" action="/upload" method="post" enctype="multipart/form-data">
               <div class="input-group">
@@ -169,7 +170,7 @@
 
           <hr class="small-section-end">
 
-          <div class="write-sub-container">
+          <div class="write-sub-container for-content for-announce">
             <h5 class="title before-line">category</h5>
             <select id="selected_category" class="select_important_inverse">
               <% for( var i=0; i<category.length; i++ ){ %>
@@ -212,6 +213,9 @@
                     <hr>
                     <h5 class="title before-line">category - kor</h5>
                     <input type="text" class="input_embrassed form-control" id="id_input_add_category_ko"/>
+                    <hr>
+                    <h5 class="title before-line">href</h5>
+                    <input type="text" class="input_embrassed form-control" id="id_input_add_category_href"/>
                   </div>
                   <div class="modal-footer">
                     <button type="button" id="btn_add_category" class="btn_important">ADD</button>
@@ -306,7 +310,7 @@
 
           <hr class="small-section-end">
 
-          <div class="write-sub-container for-announce">
+          <div class="write-sub-container for-announce for-newsletter">
             <h5 class="title before-line">ADD CONTENTS</h5>
             <table id="table_add_content" class="table table-responsive table-hover table-bordered">
               <thead>
@@ -392,6 +396,72 @@
             </div>
           </div>
 
+          <div class="write-sub-container for-newsletter">
+            <h5 class="title before-line">ADD ANNOUNCE</h5>
+            <table id="table_add_announce" class="table table-responsive table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>TITLE</th>
+                  <th>CATEGORY_ID</th>
+                  <th>CATEGORY</th>
+                  <!-- <th>hashes</th> -->
+                  <th>CREATE_DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+            <div class="align-right">
+                <button class="btn_important" data-toggle="modal" data-target="#add_announce_modal">ADD</button>
+            </div>
+            <div id="add_announce_modal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h5 class="title before-line">CONTENTS LIST</h5>
+                    <select id="selected_announce_modal" class="select_important_inverse">
+                      <option value="" selected disabled hidden>Choose here</option>
+                      <% for( var i=0; i<newsletterContentList.length; i++ ){ %>
+                        <option value="<%- newsletterContentList[i].announce_id %>"
+                          data-title-ko="<%- newsletterContentList[i].title_ko %>"
+                          data-title-en="<%- newsletterContentList[i].title_en %>"
+                          data-category-id="<%- newsletterContentList[i].category_id %>"
+                          data-category-ko="<%- newsletterContentList[i].category_ko %>"
+                          data-category-en="<%- newsletterContentList[i].category_en %>"
+                          data-create-date="<%- ( ( newsletterContentList[i].create_date ).toISOString() ).split("T")[0] %>"
+                          data-savedfilename="<%- newsletterContentList[i].announce_image_path %>"
+                          >
+                          <%- newsletterContentList[i].title_ko %>&nbsp;|&nbsp;<%- newsletterContentList[i].title_en %>
+                        </option>
+                      <% } %>
+                    </select>
+                    <hr>
+                    <h5 class="title before-line">CONTENT INFO</h5>
+                    <ul>
+                      <li>id : <span id="span_announce_id"></span></li>
+                      <li>title_ko : <span id="span_announce_title_ko"></span></li>
+                      <li>title_en : <span id="span_announce_title_en"></span></li>
+                      <li>category_id : <span id="span_announce_category_id"></span></li>
+                      <li>category_ko : <span id="span_announce_category_ko"></span></li>
+                      <li>category_en : <span id="span_announce_category_en"></span></li>
+                      <li>create_date : <span id="span_announce_create_date"></span></li>
+                    </ul>
+                    <hr>
+                    <h5 class="title before-line">IMAGE</h5>
+                    <img id="selected_announce_image_carousel" src="" />
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" id="btn_add_announce" class="btn_important">ADD</button>
+                    <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="write-sub-container for-announce">
             <h5 class="title before-line">ADD SEARCH CONDITION</h5>
             <table id="table_add_search_condition" class="table table-responsive table-condensed">
@@ -436,7 +506,7 @@
             </div>
           </div>
 
-          <div class="write-sub-container for-content">
+          <div class="write-sub-container for-content for-newsletter">
             <h5 class="title before-line">CONTENT - KO</h5>
             <% if( typeof modifyData != "undefined" && modifyData.content_ko ){ %>
               <div id="editor-content-ko"><%- modifyData.content_ko %></div>
@@ -445,7 +515,7 @@
             <% } %>
           </div>
 
-          <div class="write-sub-container for-content">
+          <div class="write-sub-container for-content for-newsletter">
             <h5 class="title before-line">CONTENT - EN</h5>
             <% if( typeof modifyData != "undefined" && modifyData.content_en ){ %>
               <div id="editor-content-en"><%- modifyData.content_en %></div>
@@ -512,6 +582,21 @@
                 <div class="modal-body">
 
                   <% include partials/preview_announce_modal.ejs %>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn_important" data-dismiss="modal">CANCEL</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="preview_newsletter_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+
+                  <% include partials/preview_newsletter_modal.ejs %>
 
                 </div>
                 <div class="modal-footer">

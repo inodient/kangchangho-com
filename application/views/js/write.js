@@ -65,11 +65,17 @@ $(document).ready(function() {
 
   function changeWriteType( type ){
     if( type === "announce" ){
-      $(".for-announce").css( "display", "block" );
       $(".for-content").css( "display", "none" );
+      $(".for-newsletter").css( "display", "none" );
+      $(".for-announce").css( "display", "block" );
     } else if( type === "content" ){
       $(".for-announce").css( "display", "none" );
+      $(".for-newsletter").css( "display", "none" );
       $(".for-content").css( "display", "block" );
+    } else if( type === "newsletter" ){
+      $(".for-announce").css( "display", "none" );
+      $(".for-content").css( "display", "none" );
+      $(".for-newsletter").css( "display", "block" );
     }
 
     writeType = type;
@@ -80,11 +86,13 @@ $(document).ready(function() {
     var parent_id = $("#selected_category_modal option:selected").val();
     var category_en = $("#id_input_add_category_en").val();
     var category_ko = $("#id_input_add_category_ko").val();
+    var category_href = $("#id_input_add_category_href").val();
 
     var parameter = {};
     parameter.parent_id = parent_id;
     parameter.category_en = category_en;
     parameter.category_ko = category_ko;
+    parameter.category_href = category_href;
 
     $.ajax( {
       data: parameter,
@@ -179,17 +187,80 @@ $(document).ready(function() {
         $("<td>").text( $("#selected_content_modal option:selected").data( "create-date" ) )
       )
     );
+
+    deleteRowEventHandler();
   } );
 
   // delete row event
-  $("#table_add_content tr").on( "click", function(){
-    if( confirm( "Are you sure removing this content?" ) ){
-      $(this).remove();
-      return false;
-    } else {
-      return;
-    }
+  function deleteRowEventHandler(){
+    $("#table_add_content tbody tr").on( "click", function(){
+      if( confirm( "Are you sure removing this content?" ) ){
+        $(this).remove();
+        return false;
+      } else {
+        return;
+      }
+    } );
+  }
+
+
+
+
+  $("#selected_announce_modal").change( function(){
+    $("#span_announce_id").text( $("#selected_announce_modal option:selected").val() );
+    $("#span_announce_title_ko").text( $("#selected_announce_modal option:selected").data( "title-ko" ) );
+    $("#span_announce_title_en").text( $("#selected_announce_modal option:selected").data( "title-en" ) );
+    $("#span_announce_category_id").text( $("#selected_announce_modal option:selected").data( "category-id" ) );
+    $("#span_announce_category_ko").text( $("#selected_announce_modal option:selected").data( "category-ko" ) );
+    $("#span_announce_category_en").text( $("#selected_announce_modal option:selected").data( "category-en" ) );
+    $("#span_announce_create_date").text( $("#selected_announce_modal option:selected").data( "create-date" ) );
+    $("#selected_announce_image_carousel").css( "width", "100%" );
+    $("#selected_announce_image_carousel").attr( "src", $("#selected_announce_modal option:selected").data( "savedfilename" ) );
   } );
+
+  $("#btn_add_announce").on( "click", function(){
+    $("#table_add_announce tbody").append(
+      $("<tr>").append(
+        $("<td id='content_id'>").text( $("#selected_announce_modal option:selected").val() )
+      )
+      .append(
+        $("<td>").append(
+          $("<span>").append( $("#selected_announce_modal option:selected").data( "title-ko" ) )
+          .append( "<br>" )
+          .append( $("#selected_announce_modal option:selected").data( "title-en" ) )
+        )
+      )
+      .append(
+        $("<td id='category_id'>").text( $("#selected_announce_modal option:selected").data( "category-id" ) )
+      )
+      .append(
+        $("<td>").append(
+          $("<span>").append( $("#selected_announce_modal option:selected").data( "category-ko" ) )
+          .append( "<br>" )
+          .append( $("#selected_announce_modal option:selected").data( "category-en" ) )
+        )
+      )
+      .append(
+        $("<td>").text( $("#selected_announce_modal option:selected").data( "create-date" ) )
+      )
+    );
+
+    deleteRowEventHandler();
+  } );
+
+  // delete row event
+  function deleteRowEventHandler(){
+    $("#table_add_content tbody tr, #table_add_announce tr").on( "click", function(){
+      if( confirm( "Are you sure removing this content?" ) ){
+        $(this).remove();
+        return false;
+      } else {
+        return;
+      }
+    } );
+  }
+
+
 
 
   $("#btn_add_search_condition").on( "click", function(){
@@ -310,6 +381,14 @@ $(document).ready(function() {
         } );
       } else if( writeType === "content" ){
         extractWriteContentData()
+        .then( function( docData ){
+          resolve( docData );
+        } )
+        .catch( function(err){
+          reject( err );
+        } );
+      } else if( writeType === "newsletter" ){
+        extractWriteNewsLetterData()
         .then( function( docData ){
           resolve( docData );
         } )
@@ -453,6 +532,74 @@ $(document).ready(function() {
     } );
   }
 
+  function extractWriteNewsLetterData(){
+
+    return new Promise( function(resolve, reject){
+      var docData = {};
+
+      var image_main = $("#id_temp_main_image_name").val();
+      image_main = $("#id_temp_main_image_name").val() == "" ? "default_vertical.png" : $("#id_temp_main_image_name").val();
+
+      var sel_writer = $("#selected_writer option:selected").val();
+      var sel_writer_text = $("#selected_writer option:selected").text();
+
+      var sel_writer_description_en = $("#selected_writer option:selected").data( "description-en");
+      var sel_writer_description_ko = $("#selected_writer option:selected").data( "description-ko" );
+
+      var title_ko = $("#id_title_ko").val();
+      var title_en = $("#id_title_en").val();
+
+      var _announceContentList = $("#table_add_content tbody tr #content_id");
+      var _announceContentCategoryList = $("#table_add_content tbody tr #category_id");
+
+      var announceContentList = [];
+      var announceContentCategoryList = [];
+
+      $(_announceContentList).each( function(){
+        announceContentList.push( $(this).text() );
+      } );
+
+      $(_announceContentCategoryList).each( function(){
+        announceContentCategoryList.push( $(this).text() );
+      } );
+
+      var _newsletterAnnounceList = $("#table_add_announce tbody tr #content_id");
+      var _newsletterAnnounceCategoryList = $("#table_add_announce tbody tr #category_id");
+
+      var newsletterAnnounceList = [];
+      var newsletterAnnounceCategoryList = [];
+
+      $(_newsletterAnnounceList).each( function(){
+        newsletterAnnounceList.push( $(this).text() );
+      } );
+
+      $(_newsletterAnnounceCategoryList).each( function(){
+        newsletterAnnounceCategoryList.push( $(this).text() );
+      } );
+
+
+
+      var content_ko =  $("#editor-content-ko" ).summernote( "code" );
+      var content_en =  $("#editor-content-en" ).summernote( "code" );
+
+      docData.image_main = image_main;
+      docData.sel_writer = sel_writer;
+      docData.sel_writer_text = sel_writer_text;
+      docData.sel_writer_description_en = sel_writer_description_en;
+      docData.sel_writer_description_ko = sel_writer_description_ko;
+      docData.title_ko = title_ko;
+      docData.title_en = title_en;
+      docData.announceContentList = announceContentList;
+      docData.announceContentCategoryList = announceContentCategoryList;
+      docData.newsletterAnnounceList = newsletterAnnounceList;
+      docData.newsletterAnnounceCategoryList = newsletterAnnounceCategoryList;
+      docData.content_ko = content_ko;
+      docData.content_en = content_en;
+
+      resolve( docData );
+    } );
+  }
+
   function extractHashes( hashes ){
     // 하면된다할수있다, 강창호닷컴대박, 설연휴, 내년엔장가, 강호동, 돈까스먹고싶다, 내일은뭐할까, 성공하자, 연봉 1억 9천 1백만원, 강경호, 염성희, 강창호, 강리경
     var hashesList = hashes.split( "," );
@@ -477,7 +624,7 @@ $(document).ready(function() {
         alert( err );
       } );
     } else if( writeType === "announce" ){
-      extractWriteContentData()
+      extractData()
       .then( function( docData ){
         setAnnouncePreview( docData )
         .then( function(){
@@ -489,6 +636,15 @@ $(document).ready(function() {
             } );
           } );
         } );
+      } )
+      .catch( function(err){
+        alert( err );
+      } );
+    } else if( writeType === "newsletter" ){
+      extractData()
+      .then( function( docData ){
+        setNewsLetterPreview( docData );
+        $("#preview_newsletter_modal").modal();
       } )
       .catch( function(err){
         alert( err );
@@ -512,7 +668,7 @@ $(document).ready(function() {
     var content = docData.content_ko + "<hr>" + docData.content_en;
     var comment = docData.comment_ko + "<hr>" + docData.comment_en;
 
-    $("#preview_title_ko").text( docData.title_en + " | " + docData.title_ko );
+    $("#preview_title").text( docData.title_en + " | " + docData.title_ko );
     $("#preview_content").html( content );
     $("#preview_comment").html( comment );
     $("#preview_writer").text( docData.sel_writer_text );
@@ -523,6 +679,17 @@ $(document).ready(function() {
     $("#preview_carousel_image").attr( "src", "/" + docData.image_carousel );
 
     setPreviewHashes( docData.hashesList );
+  }
+
+  function setNewsLetterPreview( docData ){
+    var content = docData.content_ko + "<hr>" + docData.content_en;
+
+    $("#preview_newsletter_title").text( docData.title_en + " | " + docData.title_ko );
+    $("#preview_newsletter_content").html( content );
+    $("#preview_newsletter_writer").text( docData.sel_writer_text );
+    $("#preview_newsletter_writer_description").text( docData.sel_writer_description_en + " | " + docData.sel_writer_description_ko );
+    $("#preview_newsletter_date").text( (( (new Date()).toISOString() ).split("T"))[0] );
+    $("#preview_newsletter_main_image").attr( "src", "/" + docData.image_main );
   }
 
   function setPreviewHashes( hashesList ){
@@ -565,6 +732,8 @@ $(document).ready(function() {
       saveContent( docData );
     } else if( writeType === "announce" ){
       saveAnnounce( docData );
+    } else if( writeType === "newsletter" ){
+      saveNewsLetter( docData );
     }
   }
 
@@ -620,7 +789,36 @@ $(document).ready(function() {
     .catch( function(err){
       alert( err );
     } );
+  }
 
+  function saveNewsLetter( docData ){
+
+    extractWriteNewsLetterData()
+    .then( function( docData ){
+      docData.writeMode = writeMode;
+      docData.modifyId = modifyId;
+
+      console.log( "-------" );
+      console.log( docData );
+      console.log( "-------" );
+
+      $.ajax( {
+        data: docData,
+        type: "POST",
+        url: "/uploadnewsletter",
+
+        success: function()
+        {
+          var announceId = arguments[0].announceId;
+          alert( "success " + announceId ); // show response from the php script.
+          $(location).attr( "href", "/announce/" + announceId );
+        }
+      } );
+
+    } )
+    .catch( function(err){
+      alert( err );
+    } );
   }
 
 

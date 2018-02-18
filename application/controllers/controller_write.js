@@ -3,6 +3,7 @@ const menuService = require( require("path").join( __runningPath, "application",
 const contentService = require( require("path").join( __runningPath, "application", "services", "service_content.js" ) );
 const writerService = require( require("path").join( __runningPath, "application", "services", "service_writer.js" ) );
 const announceService = require( require("path").join( __runningPath, "application", "services", "service_announce.js" ) );
+const newsletterService = require( require("path").join( __runningPath, "application", "services", "service_newsletter.js" ) );
 const imageService = require( require("path").join( __runningPath, "application", "services", "service_image.js" ) );
 const hashService = require( require("path").join( __runningPath, "application", "services", "service_hash.js" ) );
 
@@ -22,13 +23,14 @@ exports.control = function( req, res, connection ){
 			promises.push( menuService.getMenuList( connection ) );
       promises.push( writerService.getWriterList( connection ) );
 			promises.push( contentService.getAnnounceContentList( connection ) );
+			promises.push( announceService.getNewsletterAnnounceList( connection ) );
 			promises.push( announceService.getAnnounceCategory( connection ) );
 			promises.push( announceService.getAnnounceType( connection ) );
 
       Promise.all( promises )
       .then( function(){
         var argv = arguments[0];
-        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4] ) );
+        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5] ) );
       } )
       .catch( function( _err ){
         reject( _err );
@@ -141,7 +143,7 @@ exports.control_upload_content = function( req, res, connection ){
 			req.body.image_main = argv[0];
 			req.body.image_carousel = argv[1];
 
-			if( req.body.writeMode === "write" ){
+			if( req.body.writeMode === "insert" ){
 
 				contentService.addContent( connection, req.body )
 				.then( function( contentId ){
@@ -206,7 +208,7 @@ exports.control_upload_announce = function( req, res, connection ){
 
 		logger.debug( req.body );
 
-		if( req.body.writeMode === "write" ){
+		if( req.body.writeMode === "insert" ){
 			announceService.addAnnounce( connection, req.body )
 			.then( function( results ){
 				resolve( results );
@@ -222,6 +224,30 @@ exports.control_upload_announce = function( req, res, connection ){
 			.catch( function( err ){
 				reject( err );
 			} );
+		}
+
+	} );
+}
+
+exports.control_upload_newsletter = function( req, res, connection ){
+	return new Promise( function(resolve, reject){
+
+		if( req.body.writeMode === "insert" ){
+			newsletterService.addNewsLetter( connection, req.body )
+			.then( function( results ){
+				resolve( results );
+			} )
+			.catch( function( err ){
+				reject( err );
+			} );
+		} else if( req.body.writeMode === "modify" ){
+			// announceService.modifyAnnounce( connection, req.body )
+			// .then( function( results ){
+			// 	resolve( results );
+			// } )
+			// .catch( function( err ){
+			// 	reject( err );
+			// } );
 		}
 
 	} );

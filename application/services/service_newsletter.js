@@ -1,4 +1,4 @@
-const dbExecutorNewsletter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_newsletter.js" ) );
+const dbExecutorNewsLetter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_newsletter.js" ) );
 
 
 
@@ -6,14 +6,14 @@ const dbExecutorNewsletter = require( require("path").join( __runningPath, "appl
 exports.addSubscription = function( connection, parameter, lang ){
   return new Promise( function(resolve, reject){
 
-    dbExecutorNewsletter.checkSubscription( connection, parameter.addr, lang )
+    dbExecutorNewsLetter.checkSubscription( connection, parameter.addr, lang )
     .then( function( results ){
       var checkResult = parseInt( results[0].checkResult );
 
       if( checkResult > 0 ){
         resolve( { "status":"0", "message":createMessage( lang, 0, parameter.addr ) } );
       } else{
-        dbExecutorNewsletter.addSubscription( connection, parameter.addr, lang )
+        dbExecutorNewsLetter.addSubscription( connection, parameter.addr, lang )
         .then( function( results ){
           resolve( { "status":"1", "message":createMessage( lang, 1, parameter.addr )  } );
         } )
@@ -47,6 +47,58 @@ exports.sendWelcomeMail = function( parameter, lang ){
       }
     } );
 
+  } );
+}
+
+exports.addNewsLetter = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+
+    dbExecutorNewsLetter.addNewsLetterMaster( connection, parameter )
+    .then( function(){
+      dbExecutorNewsLetter.getInsertedNewsLetterId( connection, parameter )
+      .then( function( results ){
+
+        var contentList = parameter.announceContentList;
+        var announceList = parameter.newsletterAnnounceList;
+
+        var promises = [];
+
+        for( var i=0; i<contentList.length; i++ ){
+          var params = {};
+          params.newsletter_id = results[0].id;
+          params.seq = i;
+          params.link_type = "content";
+          params.link_id = contentList[i];
+
+          promises.push( dbExecutorNewsLetter.addNewsLetterList( connection, params ) );
+        }
+
+        for( var i=0; i<announceList.length; i++ ){
+          var params = {};
+          params.newsletter_id = results[0].id;
+          params.seq = i;
+          params.link_type = "announce";
+          params.link_id = announceList[i];
+
+          promises.push( dbExecutorNewsLetter.addNewsLetterList( connection, params ) );
+        }
+
+        Promise.all( promises )
+        .then( function(){
+          resolve( {"newsLetterId": results[0].id } );
+        } )
+        .catch( function(__err){
+          reject( __err );
+        } );
+
+      } )
+      .catch( function(_err){
+        reject( _err );
+      } );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
   } );
 }
 

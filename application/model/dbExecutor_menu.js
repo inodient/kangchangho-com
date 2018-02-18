@@ -75,6 +75,7 @@ exports.addCategory = function( connection, parameter ){
 		params.push( parameter.category_en );
 		params.push( parameter.category_ko );
 		params.push( parameter.category_en );
+    params.push( parameter.category_href );
 		params.push( parameter.parent_id );
 		params.push( parameter.parent_id );
 		params.push( parameter.parent_id );

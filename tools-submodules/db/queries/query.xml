@@ -23,7 +23,7 @@
                 ?,
                 '',
                 'href',
-                '/',
+                ?,
                 'center',
                 ?,
                 (select * from (select max(group_value) from TB_MENU where id = ?) _group_value ),
@@ -1147,6 +1147,50 @@
                create_date
           from TB_ANNOUNCE
           where id = ?
+      ]]>
+    </query>
+
+    <query id='getNewsletterAnnounceList'>
+      <![CDATA[
+        SELECT id as announce_id,
+               title_en,
+               title_ko,
+               writer,
+               category as category_id,
+               ( select display_name_en from TB_MENU where id = category ) as category_en,
+               ( select display_name_ko from TB_MENU where id = category ) as category_ko,
+               on_main,
+               announce_image,
+               ( select savedFileName from TB_CONTENT_IMAGE where id = announce_image ) as announce_image_path,
+               create_date
+          FROM TB_ANNOUNCE
+          ORDER BY create_date desc
+      ]]>
+    </query>
+
+    <query id='addNewsLetterMaster'>
+      <![CDATA[
+        INSERT INTO TB_NEWSLETTER (writer, create_date, title_ko, title_en, content_ko, content_en)
+        VALUES (?, NOW(), ?, ?, ?, ?);
+      ]]>
+    </query>
+
+    <query id='getInsertedNewsLetterId'>
+      <![CDATA[
+        SELECT id
+          FROM TB_NEWSLETTER
+         WHERE writer = ?
+           and title_ko = ?
+           and title_en = ?
+           and content_ko = ?
+           and content_en = ?
+      ]]>
+    </query>
+
+    <query id='addNewsLetterList'>
+      <![CDATA[
+        INSERT INTO TB_NEWSLETTER_LIST (newsletter_id, seq, link_type, link_id, create_date)
+        VALUES (?, ?, ?, ?, NOW() )
       ]]>
     </query>
 

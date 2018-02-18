@@ -189,6 +189,14 @@
             "view": "write.ejs"
         },
         {
+            "id": "uploadnewsletter",
+            "path": "/uploadnewsletter",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_newsletter",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
             "id": "getotherpages",
             "path": "/getotherpages",
             "controllerJS": "controller_welcome.js",
