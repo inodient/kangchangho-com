@@ -158,7 +158,7 @@ $(document).ready(function() {
     $("#span_hashes").text( $("#selected_content_modal option:selected").data( "hashes" ) );
     $("#span_create_date").text( $("#selected_content_modal option:selected").data( "create-date" ) );
     $("#selected_content_image_carousel").css( "width", "100%" );
-    $("#selected_content_image_carousel").attr( "src", $("#selected_content_modal option:selected").data( "savedfilename" ) );
+    $("#selected_content_image_carousel").attr( "src", "/" + $("#selected_content_modal option:selected").data( "savedfilename" ) );
   } );
 
   $("#btn_add_content").on( "click", function(){
@@ -190,20 +190,6 @@ $(document).ready(function() {
 
     deleteRowEventHandler();
   } );
-
-  // delete row event
-  function deleteRowEventHandler(){
-    $("#table_add_content tbody tr").on( "click", function(){
-      if( confirm( "Are you sure removing this content?" ) ){
-        $(this).remove();
-        return false;
-      } else {
-        return;
-      }
-    } );
-  }
-
-
 
 
   $("#selected_announce_modal").change( function(){
@@ -248,6 +234,8 @@ $(document).ready(function() {
     deleteRowEventHandler();
   } );
 
+
+  deleteRowEventHandler();
   // delete row event
   function deleteRowEventHandler(){
     $("#table_add_content tbody tr, #table_add_announce tr").on( "click", function(){
@@ -259,7 +247,6 @@ $(document).ready(function() {
       }
     } );
   }
-
 
 
 
@@ -798,10 +785,6 @@ $(document).ready(function() {
       docData.writeMode = writeMode;
       docData.modifyId = modifyId;
 
-      console.log( "-------" );
-      console.log( docData );
-      console.log( "-------" );
-
       $.ajax( {
         data: docData,
         type: "POST",
@@ -809,9 +792,9 @@ $(document).ready(function() {
 
         success: function()
         {
-          var announceId = arguments[0].announceId;
-          alert( "success " + announceId ); // show response from the php script.
-          $(location).attr( "href", "/announce/" + announceId );
+          var newsLetterId = arguments[0].newsLetterId;
+          alert( "success " + newsLetterId ); // show response from the php script.
+          $(location).attr( "href", "/newsletter/" + newsLetterId );
         }
       } );
 
@@ -865,6 +848,9 @@ $(document).ready(function() {
     } else if( url.indexOf( "/announce" ) > -1 ){
       modifyMode = "announce";
       modifyId = url.split( "/announce/" )[1];
+    } else if( url.indexOf( "/newsletter" ) > -1 ){
+      modifyMode = "newsletter";
+      modifyId = url.split( "/newsletter/" )[1];
     }
   }
 
@@ -875,7 +861,10 @@ $(document).ready(function() {
   } else if( writeMode === "modify" && modifyMode === "announce" ){
     $('input:radio[name="write-type"][value=announce]').prop( "checked", true );
     $('input:radio[name="write-type"]').attr( "disabled", true );
-  }
+  } else if( writeMode === "modify" && modifyMode === "newsletter" ){
+     $('input:radio[name="write-type"][value=newsletter]').prop( "checked", true );
+     $('input:radio[name="write-type"]').attr( "disabled", true );
+   }
   changeWriteType( $('input:radio[name="write-type"]:checked').val() );
 
   // 2. SET IMAGES

@@ -5,7 +5,7 @@ const announceService = require( require("path").join( __runningPath, "applicati
 const langService = require( require("path").join( __runningPath, "application", "services", "service_lang.js" ) );
 const menuService = require( require("path").join( __runningPath, "application", "services", "service_menu.js" ) );
 const writerService = require( require("path").join( __runningPath, "application", "services", "service_writer.js" ) );
-
+const newsletterService = require( require("path").join( __runningPath, "application", "services", "service_newsletter.js" ) );
 
 
 
@@ -281,3 +281,55 @@ exports.control_other_hash_pages = function( req, res, connection ){
   } );
 }
 // SEARCH HASH - END
+
+
+
+
+// SEARCH NEWSLETTER - START
+exports.control_search_newsletter = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+
+    var targetId = req.params.id;
+
+    staticService.getStaticInfo( req, res, connection, targetId )
+    .then( function( staticInfo ){
+      var lang = staticInfo.lang;
+      var promises = [];
+
+      promises.push( newsletterService.getPageListOfNewsLetter( connection, lang ) );
+      promises.push( newsletterService.getNewsLetterText( connection, lang ) );
+
+      Promise.all( promises )
+      .then( function(){
+        var argv = arguments[0];
+
+        resolve( Object.assign( staticInfo, argv[0], argv[1] ) );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } )
+
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+	} );
+}
+
+exports.control_other_newsletter_pages = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+
+    langService.setDefaultLang( req, res )
+    .then( function( lang ){
+
+      newsletterService.getPageListOfNewsLetterByIndex( connection, lang, req.body )
+      .then( function(results){
+        resolve( results );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
+    } );
+  } );
+}
+// SEARCH NEWSLETTER - END

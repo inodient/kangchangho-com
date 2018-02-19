@@ -99,6 +99,8 @@ function getOtherPages( calledPage ){
       url = "/getothersearchpages";
     } else if( target === "announce" ){
       url = "/getotherannouncepages";
+    } else if( target === "newsletterlist" || targetId === "newsletterlist" || targetText === "newsletter" ){
+      url = "/getothernewsletterpages";
     } else {
       url = "/getotherpages";
     }
@@ -153,6 +155,22 @@ function createPages( pageInfo ){
                       $("<a  data-href='/announce/" + specificData.category_id + "' class='content-anchor category'>").text( specificData.category )
                     ).append(
                       $("<h3 data-href='/announce/" + specificData.id + "'>").text( specificData.title )
+                    )
+                  )
+                )
+              )
+            )
+          } else if( specificData.type === "newsletter" ){
+            page.append(
+              $("<article class='inner-announce post-hidden'>").append(
+                $("<figure>").append(
+                  $("<img>").attr( "src", "/" + specificData.savedFileName )
+                ).append(
+                  $("<figcaption data-href='/newsletter/" + specificData.id + "'>").append(
+                    $("<div data-href='/newsletter/" + specificData.id + "'>").append(
+                      $("<a  data-href='/newsletter/" + specificData.category_id + "' class='content-anchor category'>").text( specificData.category )
+                    ).append(
+                      $("<h3 data-href='/newsletter/" + specificData.id + "'>").text( specificData.title )
                     )
                   )
                 )

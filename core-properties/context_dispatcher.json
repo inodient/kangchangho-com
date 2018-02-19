@@ -82,7 +82,7 @@
         },
         {
             "id": "welcome",
-            "path": "/:id",
+            "path": "/",
             "controllerJS": "controller_welcome.js",
             "controlFunction": "control",
             "viewPath": "",
@@ -142,6 +142,22 @@
             "path": "/search/:searchword",
             "controllerJS": "controller_search.js",
             "controlFunction": "control_search_word",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "newsletter",
+            "path": "/newsletter/:id",
+            "controllerJS": "controller_newsletter.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "newsletter.ejs"
+        },
+        {
+            "id": "newsletterlist",
+            "path": "/newsletterlist",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_newsletter",
             "viewPath": "",
             "view": "list.ejs"
         }
@@ -241,6 +257,14 @@
             "path": "/getotherannouncepages",
             "controllerJS": "controller_search.js",
             "controlFunction": "control_other_announce_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getothernewsletterpages",
+            "path": "/getothernewsletterpages",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_newsletter_pages",
             "viewPath": "",
             "view": ""
         },

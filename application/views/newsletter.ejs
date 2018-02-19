@@ -9,9 +9,7 @@
 
   <% include partials/include.ejs %>
 
-  <script src="/pager.js"></script>
-
-    <title><%- windowTitle %> - <%- (searchText[0]).search_text %></title>
+    <title><%- windowTitle %> - <%- newsLetterMaster.title %></title>
 </head>
 
 
@@ -86,115 +84,81 @@
       </header>
 
 
+
       <div class="page-content">
         <div class="container-fluid content-container">
+          <div class="col-lg-9 col-md-9 article-container">
 
-          <div class="col-lg-9 col-md-9 article-list-container" data-total-list-count="<%- totalListCount %>" data-total-page-count="<%- totalPageCount %>" data-current-page="<%- currentPage %>">
+            <article>
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <div class="content-body section-end">
+                    <center>News Letter</center>
+                    <center>
+                      <h2 class="after-line-block-center"><%- newsLetterMaster.title %></h2></center>
 
-            <div class="list-summary section-end">
-              <div class="list-caption">
-                <h4><%- (searchText[0]).search_text %></h4><p>&nbsp;&nbsp;|&nbsp;&nbsp;<%- totalListCount %> articles</p>
-                <center><hr class="page-divider-half"></center>
+                    <center class="paragraph-end"><span class="date"><%- ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] %></span></center>
+                    <center class="small-section-end">
+                      <img class="content-image" id="<%- newsLetterMaster.image_id %>" src="/<%- newsLetterMaster.image_path %>" />
+                    </center>
+
+                    <p class="content-text">
+                      <%- newsLetterMaster.content %>
+                    </p>
+                  </div>
+
+                  <hr class="small-section-end">
+
+                  <div class="content-footer">
+                    <center class="paragraph-end"><a class="content-anchor writer after-line-block-center"><%- newsLetterMaster.writer_name %></a></center>
+                    <center><%- newsLetterMaster.writer_description %></center>
+                  </div>
+
+                  <hr class="small-section-end">
+                </div>
               </div>
+            </article>
 
-              <% if( typeof listHashes != "undefined" && listHashes.length ) { %>
+            <article>
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related-post">
+                  <h4 class="after-line-block">Post & Announce</h4>
 
-                <div class="content-hashed section-end mobile-hidden">
-                  <% var index = 0 %>
-                  <% for( var i=0; i<listHashes.length; i++ ){ %>
-                    <% if( i % 5 == 0 ){ %>
-                      <% index = i * 5; %>
-                        <ul class="hashed-list" id="id_hashed_list_<%- index %>">
-                            <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li>
-                    <% } else if( i % 5 == 4 || i == listHashes.length - 1){ %>
-                        <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li></ul>
-                    <% } else { %>
-                        <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li>
+                  <div class="row small-section-end">
+                    <% for( var i=0; i<newsLetterContentsList.length; i++ ){ %>
+                      <% if( newsLetterContentsList[i].link_type === "content" ){ %>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 thumb-article">
+                          <figure>
+                            <img class="thumb-image" src="/<%- newsLetterContentsList[i].image_path %>" />
+                            <figcaption>
+                              <div data-href="/content/<%- newsLetterContentsList[i].link_id %>">View Post</div>
+                              </figcation>
+                          </figure>
+                          <center><a href="/content/<%- newsLetterContentsList[i].link_id %>" class="content-anchor"><h4><%- newsLetterContentsList[i].title %></h4></a></center>
+                        </div>
+                      <% } %>
                     <% } %>
-                  <% } %>
+                  </div>
                 </div>
+              </div>
+            </article>
 
-                <div class="content-hashed section-end mobile-show">
-                  <ul class="hashed-list" id="id_hashed_list">
-                  <% for( var i=0; i<listHashes.length; i++ ){ %>
-                    <li class="hashed-list-item"><a href="/hash/<%- listHashes[i].id %>" class="content-anchor-reverse">#<%- listHashes[i].text %></a></li>
-                  <% } %>
-                  </ul>
-                </div>
+            <article class="inner-announce">
+              <% for( var i=0; i<newsLetterContentsList.length; i++ ){ %>
+                <% if( newsLetterContentsList[i].link_type === "announce" ){ %>
+                  <figure>
+                    <img src="/<%- newsLetterContentsList[i].image_path %>" />
+                    <figcaption>
+                      <div data-href="/announce/<%- newsLetterContentsList[i].link_id %>"><%- newsLetterContentsList[i].title %></div>
+                      </figcation>
+                  </figure>
 
-              <% } %>
-
-            </div>
-
-            <% var index = currentPage - 1; %>
-
-            <% for( var i=0; i<pageList.length; i++ ){ %>
-
-              <% if( i % 8 === 0 ){ %>
-                <% index++; %>
-                <% var id = "paging-" + index; %>
-                <% if( index === currentPage ){ %>
-                  <div id="<%- id %>" class="articles-paging-block active">
-                <% } else { %>
-                  <div id="<%- id %>" class="articles-paging-block">
+                  <div class="paragraph-end"></div>
                 <% } %>
               <% } %>
-
-                <% if( pageList[i].type === "announce" ){ %>
-                  <article class="inner-announce post-hidden">
-                    <figure>
-                      <img src="/<%- pageList[i].savedFileName %>" />
-                      <figcaption data-href="/announce/<%- pageList[i].id %>">
-                        <div data-href="/announce/<%- pageList[i].id %>">
-                          <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>
-                          <h3 data-href="/announce/<%- pageList[i].id %>"><%- pageList[i].title %></h3>
-                        </div>
-                        </figcation>
-                    </figure>
-                  </article>
-                <% } else if( pageList[i].type === "newsletter" ){ %>
-                  <article class="inner-announce post-hidden">
-                    <figure>
-                      <img src="/<%- pageList[i].savedFileName %>" />
-                      <figcaption data-href="/newsletter/<%- pageList[i].id %>">
-                        <div data-href="/newsletter/<%- pageList[i].id %>">
-                          <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>
-                          <h3 data-href="/newsletter/<%- pageList[i].id %>"><%- pageList[i].title %></h3>
-                        </div>
-                        </figcation>
-                    </figure>
-                  </article>
-                <% } else if( pageList[i].type === "content" ){ %>
-
-                  <article class="content-summary post-hidden">
-                    <div class="row">
-                      <div class="col-lg-4 col-md-4 col-sm-4">
-                        <figure>
-                          <img src="/<%- pageList[i].savedFileName %>" />
-                          <figcaption>
-                            <div data-href="/content/<%- pageList[i].id %>">View Post</div>
-                            </figcation>
-                        </figure>
-                      </div>
-                      <div class="col-lg-8 col-md-8 col-sm-8">
-                        <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category before-line"><%- pageList[i].category %></a>
-                        <h3 class="title"><a href="/content/<%- pageList[i].id %>" class="content-anchor title"><%- pageList[i].title %></a></h3>
-                        <span class="date"><%- ( ( pageList[i].create_date ).toISOString() ).split("T")[0] %></span><span class="writer-text">&nbsp;&nbsp;&nbsp;BY&nbsp;&nbsp;</span><a class="content-anchor writer" href="/writer/<%- pageList[i].writer_id %> "><%- pageList[i].writer %></a>
-                        <p class="summary"><%- pageList[i].content %></p>
-                        <button class="btn_important" onclick="location.href='/content/<%- pageList[i].id %>'">VIEW POST</button>
-                      </div>
-                    </div>
-                  </article>
-                <% } %>
-
-              <% if( i % 8 === 7 || i === pageList.length - 1 ){ %>
-                </div>
-              <% } %>
+            </article>
 
 
-            <% } %>
-
-            <div class="list-pager"></div>
           </div>
 
           <hr class="page-divider mobile-show">

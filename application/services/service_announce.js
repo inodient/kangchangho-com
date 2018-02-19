@@ -69,8 +69,6 @@ exports.getPageListOfAnnounceByIndex = function( connection, lang, announceId, p
       dbExecutorAnnounce.getPageListOfAnnounceByIndex( connection, lang, announceId, pageInfo )
       .then( function( results ){
 
-        logger.debug( results );
-
         pageInfo.totalListCount = ( (results)[0] ).total_count;
         pageInfo.totalPageCount = pageInfo.totalListCount % 8 == 0 ? pageInfo.totalListCount / 8 : parseInt( (pageInfo.totalListCount / 8) ) + 1 ;
         pageInfo.currentPage = pageInfo.calledPage;
@@ -80,8 +78,6 @@ exports.getPageListOfAnnounceByIndex = function( connection, lang, announceId, p
         .then( function( parsedPageList ){
 
           pageInfo.pageList = parsedPageList;
-
-          logger.debug( pageInfo );
 
           resolve( pageInfo );
 

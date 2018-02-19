@@ -958,6 +958,74 @@
       ]]>
     </query>
 
+    <query id='getPageListOfNewsLetter'>
+      <![CDATA[
+          select
+            total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+            total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+            total.category_id, total.content, total.savedFileName, @rownum as total_count
+          from
+            ( select
+                page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+                page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+                page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+                from
+                  ( select newsletter.id as id,
+                           'newsletter' as type,
+                           0 as announce_type_id,
+                           'list' as announce_type_text,
+                           case when ? = 'en' then newsletter.title_en else newsletter.title_ko end as title,
+                           newsletter.create_date,
+                           case when ? = 'en' then 'NEWS LETTER' else '뉴스레터' end as category,
+                           -1 as category_id,
+                           '' as content,
+                           image.savedFileName as savedFileName,
+                           writer.id as writer_id,
+                           case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                           writer.email as writer_email
+                    from TB_NEWSLETTER newsletter
+                    LEFT JOIN TB_CONTENT_IMAGE image ON newsletter.image_id = image.id
+                    LEFT JOIN TB_WRITER writer ON newsletter.writer = writer.id
+              ) page_list, (SELECT @rownum :=0) AS R
+           order by create_date desc ) total
+          limit 16
+      ]]>
+    </query>
+
+    <query id='getPageListOfNewsLetterByIndex'>
+      <![CDATA[
+          select
+            total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
+            total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
+            total.category_id, total.content, total.savedFileName, @rownum as total_count
+          from
+            ( select
+                page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
+                page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
+                page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+                from
+                  ( select newsletter.id as id,
+                           'newsletter' as type,
+                           0 as announce_type_id,
+                           'list' as announce_type_text,
+                           case when ? = 'en' then newsletter.title_en else newsletter.title_ko end as title,
+                           newsletter.create_date,
+                           case when ? = 'en' then 'NEWS LETTER' else '뉴스레터' end as category,
+                           -1 as category_id,
+                           '' as content,
+                           image.savedFileName as savedFileName,
+                           writer.id as writer_id,
+                           case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                           writer.email as writer_email
+                    from TB_NEWSLETTER newsletter
+                    LEFT JOIN TB_CONTENT_IMAGE image ON newsletter.image_id = image.id
+                    LEFT JOIN TB_WRITER writer ON newsletter.writer = writer.id
+              ) page_list, (SELECT @rownum :=0) AS R
+           order by create_date desc ) total
+          limit ?, ?
+      ]]>
+    </query>
+
     <query id='increaseHashHitCount'>
       <![CDATA[
         Update TB_HASH_KV
@@ -1150,6 +1218,24 @@
       ]]>
     </query>
 
+    <query id='getModifyNewsLetterMaster'>
+      <![CDATA[
+        SELECT id,
+               writer,
+               title_ko,
+               title_en,
+               content_ko,
+               content_en,
+               image_id,
+               ( select savedFileName from TB_CONTENT_IMAGE where id = image_id ) as image_main_path,
+               ( select GROUP_CONCAT( link_id SEPARATOR ', ') from TB_NEWSLETTER_LIST where newsletter_id = ? and link_type = 'content' ) as content_list,
+               ( select GROUP_CONCAT( link_id SEPARATOR ', ') from TB_NEWSLETTER_LIST where newsletter_id = ? and link_type = 'announce' ) as announce_list,
+               create_date
+          FROM TB_NEWSLETTER
+          WHERE id = ?
+      ]]>
+    </query>
+
     <query id='getNewsletterAnnounceList'>
       <![CDATA[
         SELECT id as announce_id,
@@ -1170,8 +1256,8 @@
 
     <query id='addNewsLetterMaster'>
       <![CDATA[
-        INSERT INTO TB_NEWSLETTER (writer, create_date, title_ko, title_en, content_ko, content_en)
-        VALUES (?, NOW(), ?, ?, ?, ?);
+        INSERT INTO TB_NEWSLETTER (writer, create_date, title_ko, title_en, content_ko, content_en, image_id)
+        VALUES (?, NOW(), ?, ?, ?, ?, ? );
       ]]>
     </query>
 
@@ -1191,6 +1277,58 @@
       <![CDATA[
         INSERT INTO TB_NEWSLETTER_LIST (newsletter_id, seq, link_type, link_id, create_date)
         VALUES (?, ?, ?, ?, NOW() )
+      ]]>
+    </query>
+
+    <query id='getNewsLetterMaster'>
+      <![CDATA[
+      SELECT id,
+             writer,
+             case when ? = 'en' then ( select name_en from TB_WRITER where id = writer )
+                  else ( select name_ko from TB_WRITER where id = writer ) end as writer_name,
+             case when ? = 'en' then ( select description_en from TB_WRITER where id = writer )
+                  else ( select description_ko from TB_WRITER where id = writer ) end as writer_description,
+             case when ? = 'en' then title_en
+                  else title_ko end as title,
+             case when ? = 'en' then content_en
+                  else content_ko end as content,
+             image_id,
+             (select savedFileName from TB_CONTENT_IMAGE where id = image_id) as image_path,
+             create_date
+        FROM TB_NEWSLETTER
+       WHERE id = ?
+      ]]>
+    </query>
+
+    <query id='getNewsLetterContentsList'>
+      <![CDATA[
+        SELECT id,
+               newsletter_id,
+               seq,
+               link_type,
+               case when 'content' = link_type then ( select savedFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
+                    else ( select savedFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_announce where id = link_id) ) end as image_path,
+               link_id,
+               case when ('content' = link_type and ? = 'en') then ( select title_en from TB_CONTENT where id = link_id )
+                    when ('content' = link_type and ? = 'ko') then ( select title_ko from TB_CONTENT where id = link_id )
+                    when ('announce' = link_type and ? = 'en') then ( select title_en from TB_ANNOUNCE where id = link_id )
+                    when ('announce' = link_type and ? = 'ko') then ( select title_ko from TB_ANNOUNCE where id = link_id ) end as title,
+               create_date
+          FROM TB_NEWSLETTER_LIST
+         WHERE newsletter_id = ?
+         ORDER BY link_type, seq
+      ]]>
+    </query>
+
+    <query id='deleteNewsLetter'>
+      <![CDATA[
+        DELETE FROM TB_NEWSLETTER where id = ?
+      ]]>
+    </query>
+
+    <query id='deleteNewsLetterList'>
+      <![CDATA[
+        DELETE FROM TB_NEWSLETTER_LIST where newsletter_id = ?
       ]]>
     </query>
 

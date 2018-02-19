@@ -216,4 +216,11 @@ $(document).ready( function(){
     } );
 
   } );
+
+
+
+
+  $("#newsletter_select").on( "change", function(){
+    $(location).attr( "href", $("#newsletter_select option:selected").data("href") );
+  } );
 } );

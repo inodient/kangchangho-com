@@ -4,6 +4,31 @@ const newsletterService = require( require("path").join( __runningPath, "applica
 
 
 
+exports.control = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+    staticService.getStaticInfo( req, res, connection )
+    .then( function( staticInfo ){
+      var lang = staticInfo.lang;
+      var targetId = req.params.id;
+      var promises = [];
+
+      newsletterService.getNewsLetter( connection, targetId, lang )
+      .then( function( newsLetterInfo ){
+        resolve( Object.assign( staticInfo, newsLetterInfo ) );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
 exports.control_subscribe = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 

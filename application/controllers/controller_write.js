@@ -57,6 +57,7 @@ exports.control_modify = function( req, res, connection ){
 			promises.push( menuService.getMenuList( connection ) );
       promises.push( writerService.getWriterList( connection )  );
 			promises.push( contentService.getAnnounceContentList( connection )  );
+			promises.push( announceService.getNewsletterAnnounceList( connection ) );
 			promises.push( announceService.getAnnounceCategory( connection ) );
 			promises.push( announceService.getAnnounceType( connection ) );
 
@@ -64,12 +65,14 @@ exports.control_modify = function( req, res, connection ){
 				promises.push( contentService.getModifyContentMaster( connection, id ) );
 			} else if( type === "announce" ){
 				promises.push( announceService.getModifyAnnounceMaster( connection, id ) );
+			} else if( type === "newsletter" ){
+				promises.push( newsletterService.getModifyNewsLetterMaster( connection, id ) );
 			}
 
 			Promise.all( promises )
       .then( function(){
         var argv = arguments[0];
-        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5] ) );
+        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6] ) );
       } )
       .catch( function( _err ){
         reject( _err );
@@ -206,8 +209,6 @@ exports.control_upload_content = function( req, res, connection ){
 exports.control_upload_announce = function( req, res, connection ){
 	return new Promise( function(resolve, reject){
 
-		logger.debug( req.body );
-
 		if( req.body.writeMode === "insert" ){
 			announceService.addAnnounce( connection, req.body )
 			.then( function( results ){
@@ -232,23 +233,28 @@ exports.control_upload_announce = function( req, res, connection ){
 exports.control_upload_newsletter = function( req, res, connection ){
 	return new Promise( function(resolve, reject){
 
-		if( req.body.writeMode === "insert" ){
-			newsletterService.addNewsLetter( connection, req.body )
-			.then( function( results ){
-				resolve( results );
-			} )
-			.catch( function( err ){
-				reject( err );
-			} );
-		} else if( req.body.writeMode === "modify" ){
-			// announceService.modifyAnnounce( connection, req.body )
-			// .then( function( results ){
-			// 	resolve( results );
-			// } )
-			// .catch( function( err ){
-			// 	reject( err );
-			// } );
-		}
+		imageService.setImageType( connection, "newsletter", req.body.image_main )
+		.then( function( imageId ){
+			req.body.imageId = imageId;
+
+			if( req.body.writeMode === "insert" ){
+				newsletterService.addNewsLetter( connection, req.body )
+				.then( function( results ){
+					resolve( results );
+				} )
+				.catch( function( err ){
+					reject( err );
+				} );
+			} else if( req.body.writeMode === "modify" ){
+				newsletterService.modifyNewsLetter( connection, req.body )
+				.then( function( results ){
+					resolve( results );
+				} )
+				.catch( function( err ){
+					reject( err );
+				} );
+			}
+		} );
 
 	} );
 }

@@ -410,7 +410,25 @@
                 </tr>
               </thead>
               <tbody>
+                <% if( typeof modifyData != "undefined" && modifyData.announce_list ){ %>
+                  <% var announceList = modifyData.announce_list %>
+                  <% var announceListArr = announceList.split( ", " ) %>
 
+                  <% for( var j=0; j<announceListArr.length; j++ ){ %>
+                    <% for( var i=0; i<newsletterContentList.length; i++ ){ %>
+
+                      <% if( parseInt( announceListArr[j] ) === newsletterContentList[i].announce_id ){ %>
+                        <tr>
+                          <td id="content_id"><%- announceListArr[j] %></td>
+                          <td><%- newsletterContentList[i].title_ko %><br><%- newsletterContentList[i].title_en %></td>
+                          <td id="category_id"><%- newsletterContentList[i].category_id %></td>
+                          <td><%- newsletterContentList[i].category_ko %><br><%- newsletterContentList[i].category_en %></td>
+                          <td><%- ( ( newsletterContentList[i].create_date ).toISOString() ).split("T")[0] %></td>
+                        </tr>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                <% }%>
               </tbody>
             </table>
             <div class="align-right">
@@ -684,12 +702,13 @@
 
           <article>
             <h4 class="title after-line-block-center">NEWS LETTER</h4>
-            <select class="select_important">
+            <select id="newsletter_select" class="select_important">
+              <option value="-" data-href="">NEWS LETTER</option>
               <% for( var i=0; i<newsLetters.length; i++ ){ %>
                 <option value="<%- newsLetters[i].title %>" data-href="/newsletter/<%- newsLetters[i].id %>"><%- newsLetters[i].title %></option>
               <% } %>
               <% if( newsLetters.length >= 5 ){ %>
-                <option value="Last News Letters" data-href="/newsletter/last">Last News Letters</option>
+                <option value="Last News Letters" data-href="/newsletterlist">Last News Letters</option>
               <% } %>
             </select>
           </article>
