@@ -1307,7 +1307,7 @@
                seq,
                link_type,
                case when 'content' = link_type then ( select savedFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
-                    else ( select savedFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_announce where id = link_id) ) end as image_path,
+                    else ( select savedFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_ANNOUNCE where id = link_id) ) end as image_path,
                link_id,
                case when ('content' = link_type and ? = 'en') then ( select title_en from TB_CONTENT where id = link_id )
                     when ('content' = link_type and ? = 'ko') then ( select title_ko from TB_CONTENT where id = link_id )
