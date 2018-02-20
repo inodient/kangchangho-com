@@ -3,10 +3,17 @@ const menuService = require( require("path").join( __runningPath, "application",
 const bannerService = require( require("path").join( __runningPath, "application", "services", "service_banner.js" ) );
 const headerService = require( require("path").join( __runningPath, "application", "services", "service_header.js" ) );
 const footerService = require( require("path").join( __runningPath, "application", "services", "service_footer.js" ) );
+const dbExecutorHistory = require( require("path").join( __runningPath, "application", "model", "dbExecutor_history.js" ) );
 
 
 
 
+var getClientAddress = function(req) {
+    return (req.headers["X-Forwarded-For"] ||
+            req.headers["x-forwarded-for"] ||
+            '').split(',')[0] ||
+           req.client.remoteAddress;
+};
 
 exports.getStaticInfo = function( req, res, connection, targetId ){
   return new Promise( function(resolve, reject){
@@ -26,7 +33,14 @@ exports.getStaticInfo = function( req, res, connection, targetId ){
 
         setStaticInfoObject( lang, argv )
         .then( function(results){
-          resolve( results );
+
+          addAccessHistory( connection, req, lang )
+          .then( function(){
+            resolve( results );
+          } )
+          .catch( function( ___err ){
+            reject( ___err );
+          } );
         } )
         .catch( function( __err ){
           reject( __err );
@@ -54,3 +68,29 @@ function setStaticInfoObject( lang, argv ){
     resolve( staticInfo );
   } );
 }
+
+function addAccessHistory( connection, req, lang ){
+  return new Promise( function(resolve, reject){
+    var history = {};
+
+    history.lang = lang;
+    history.contextPath = req.path;
+    history.path = req.url;
+    history.client = getClientAddress(req);
+
+    dbExecutorHistory.addAccessHistory( connection, history )
+    .then( function(results){
+      resolve( results );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
+function getClientAddress(req) {
+    return (req.headers["X-Forwarded-For"] ||
+            req.headers["x-forwarded-for"] ||
+            '').split(',')[0] ||
+           req.client.remoteAddress;
+};

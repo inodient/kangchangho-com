@@ -25,6 +25,30 @@ exports.getNewsLetter = function( connection, targetId, lang ){
   } );
 }
 
+exports.getNewsLetterToSend = function( connection, targetId, lang ){
+  return new Promise( function(resolve, reject){
+    var promises = [];
+
+    promises.push( dbExecutorNewsLetter.getNewsLetterMasterToSend( connection, targetId, lang ) );
+    promises.push( dbExecutorNewsLetter.getNewsLetterContentsListToSend( connection, targetId, lang ) );
+    promises.push( dbExecutorNewsLetter.getReceiver( connection ) );
+
+    Promise.all( promises )
+    .then( function(){
+      var argv = arguments[0];
+
+      resolve( {
+        "newsLetterMaster": ( argv[0] )[0],
+        "newsLetterContentsList": argv[1],
+        "receiver": argv[2]
+      } );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 exports.getModifyNewsLetterMaster = function( connection, id ){
   return new Promise( function( resolve, reject){
     dbExecutorNewsLetter.getModifyNewsLetterMaster( connection, id )
@@ -48,11 +72,27 @@ exports.addSubscription = function( connection, parameter, lang ){
       var checkResult = parseInt( results[0].checkResult );
 
       if( checkResult > 0 ){
-        resolve( { "status":"0", "message":createMessage( lang, 0, parameter.addr ) } );
+
+        createMessage( lang, 0, parameter.addr )
+        .then( function( message ){
+          resolve( { "status":"0", "message":message } );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } );
+
       } else{
         dbExecutorNewsLetter.addSubscription( connection, parameter.addr, lang )
         .then( function( results ){
-          resolve( { "status":"1", "message":createMessage( lang, 1, parameter.addr )  } );
+
+          createMessage( lang, 1, parameter.addr )
+          .then( function( message ){
+            resolve( { "status":"1", "message":message } );
+          } )
+          .catch( function( __err ){
+            reject( __err );
+          } );
+
         } )
         .catch( function( _err ){
           reject( _err );
@@ -70,22 +110,203 @@ exports.sendWelcomeMail = function( parameter, lang ){
   return new Promise( function(resolve, reject){
     var nodemailer = require('nodemailer');
 
-    var mailInfo = getMailInfo( parameter.addr, lang );
-    var transporterInfo = mailInfo.transporterInfo;
-    var mailOptions = mailInfo.mailOptions;
+    getMailInfo( parameter.addr, lang, "welcome" )
+    .then( function( mailInfo ){
+      var transporterInfo = mailInfo.transporterInfo;
+      var mailOptions = mailInfo.mailOptions;
 
-    var transporter = nodemailer.createTransport( transporterInfo );
-    transporter.sendMail( mailOptions, function( err, info ){
-      if( err ){
-        logger.error( err );
-        reject( err );
-      } else{
-        resolve( {"stauts":"succeed"} );
-      }
+      var transporter = nodemailer.createTransport( transporterInfo );
+      transporter.sendMail( mailOptions, function( err, info ){
+        if( err ){
+          logger.error( err );
+          reject( err );
+        } else{
+          resolve( {"stauts":"succeed"} );
+        }
+      } );
+    } )
+    .catch( function( err ){
+      reject( err );
     } );
 
   } );
 }
+
+// exports.sendNewsLetterMail = function( connection, parameter, lang ){
+//   return new Promise( function(resolve, reject){
+//     var nodemailer = require('nodemailer');
+//
+//     var receiver = parameter.receiver;
+//     var contents = parameter.contents;
+//
+//     var promises = [];
+//
+//     for( var i=0; i<receiver.length; i++ ){
+//
+//       promises.push(
+//         getMailInfo( parameter, receiver[i].lang, "newsletter", receiver[i] )
+//         .then( function( mailInfo ){
+//
+//           var transporterInfo = mailInfo.transporterInfo;
+//           var mailOptions = mailInfo.mailOptions;
+//
+//           var transporter = nodemailer.createTransport( transporterInfo );
+//
+//           transporter.sendMail( mailOptions, function( _err, info ){
+//             if( _err ){
+//               logger.error( _err );
+//               reject( _err );
+//             } else{
+//
+//               logger.debug( "-----------------" );
+//               logger.debug( mailOptions );
+//               logger.debug( "-----------------" );
+//
+//               resolve( mailInfo );
+//             }
+//           } );
+//         } )
+//         .catch( function( err ){
+//           reject( err );
+//         } )
+//       );
+//     }
+//
+//     Promise.all( promises )
+//     .then( function(){
+//
+//       var argv = arguments[0];
+//
+//       var _promises = [];
+//
+//       for( var i=0; i<argv.length; i++ ){
+//
+//         _promises.push(
+//
+//           dbExecutorNewsLetter.addNewsLetterHistory( connection, argv[i] )
+//           .then( function(){
+//
+//             var __promises = [];
+//             var attachList = mailOptions.attachments;
+//
+//             for( var j=0; j<attachList.length; j++ ){
+//               var attachInfo = {};
+//               attachInfo.insertId = results.insertId;
+//               attachInfo.filename = attachList[j].filename;
+//               attachInfo.path = attachList[j].path;
+//               attachInfo.cid = attachList[j].cid;
+//
+//               __promises.push( dbExecutorNewsLetter.addNewsLetterAttachmentsHistory( connection, attachInfo ) );
+//             }
+//
+//             Promise.all( __promises )
+//             .then( function(){
+//               resolve( {"status":"succeed"} );
+//             } )
+//             .catch( function( ___err ){
+//               reject( ___err );
+//             } );
+//
+//           } )
+//           .catch( function( __err ){
+//             reject( __err );
+//           } )
+//         );
+//       }
+//
+//       Promise.all( _promises )
+//       .then( function(){
+//         resolve( {"status":"succeed"} );
+//       } )
+//       .catch( function( err ){
+//         reject( err );
+//       } )
+//
+//
+//     } )
+//     .catch( function( _err ){
+//       reject( _err );
+//     } );
+//
+//   } );
+// }
+
+exports.sendNewsLetterMail = function( connection, parameter, lang ){
+  return new Promise( function(resolve, reject){
+    var nodemailer = require('nodemailer');
+
+    var receiver = parameter.receiver;
+    var contents = parameter.contents;
+
+    var promises = [];
+
+    for( var i=0; i<receiver.length; i++ ){
+
+      promises.push(
+        getMailInfo( parameter, receiver[i].lang, "newsletter", receiver[i] )
+        .then( function( mailInfo ){
+
+          var transporterInfo = mailInfo.transporterInfo;
+          var mailOptions = mailInfo.mailOptions;
+
+          var transporter = nodemailer.createTransport( transporterInfo );
+
+          transporter.sendMail( mailOptions, function( _err, info ){
+            if( _err ){
+              logger.error( _err );
+              reject( _err );
+            } else{
+
+              dbExecutorNewsLetter.addNewsLetterHistory( connection, mailOptions )
+              .then( function(){
+
+                var __promises = [];
+                var attachList = mailOptions.attachments;
+
+                for( var j=0; j<attachList.length; j++ ){
+                  var attachInfo = {};
+                  attachInfo.insertId = results.insertId;
+                  attachInfo.filename = attachList[j].filename;
+                  attachInfo.path = attachList[j].path;
+                  attachInfo.cid = attachList[j].cid;
+
+                  __promises.push( dbExecutorNewsLetter.addNewsLetterAttachmentsHistory( connection, attachInfo ) );
+                }
+
+                Promise.all( __promises )
+                .then( function(){
+                  resolve( {"status":"succeed"} );
+                } )
+                .catch( function( ___err ){
+                  reject( ___err );
+                } );
+
+              } )
+              .catch( function( __err ){
+                reject( __err );
+              } )
+            }
+          } );
+        } )
+        .catch( function( err ){
+          reject( err );
+        } )
+      );
+    }
+
+    Promise.all( promises )
+    .then( function(){
+      resolve( {"status":"succeed"} );
+    } )
+    .catch( function( _err ){
+      reject( _err );
+    } );
+
+  } );
+}
+
+
+
 
 exports.addNewsLetter = function( connection, parameter ){
   return new Promise( function(resolve, reject){
@@ -144,8 +365,6 @@ exports.modifyNewsLetter = function( connection, parameter ){
 
     var modifyId = parameter.modifyId;
     var promises =[];
-
-    logger.debug( "modifyId :", modifyId );
 
     promises.push( dbExecutorNewsLetter.deleteNewsLetter( connection, modifyId ) );
     promises.push( dbExecutorNewsLetter.deleteNewsLetterList( connection, modifyId ) );
@@ -266,9 +485,6 @@ exports.getPageListOfNewsLetterByIndex = function( connection, lang, parameter )
 
           pageInfo.pageList = parsedPageList;
 
-          logger.debug( pageInfo );
-
-
           resolve( pageInfo );
 
         } )
@@ -305,97 +521,817 @@ exports.getNewsLetterText = function( connection, lang ){
 
 
 function createMessage( lang, status, addr ){
-  if( lang === "en" ){
-
-    if( status === 0 ){
-      return "<b>" + addr + "is already subscribed.</b> <hr>If you want to change your information, <br>please let system adminstartor know.";
-    } else if( status === 1 ){
-      return "<b>Subscription request succeed. </b><hr>" + addr + " will receive kangchangho.com news letter.";
+  return new Promise( function(resolve, reject){
+    if( lang === "en" ){
+      if( status === 0 ){
+        resolve( "<b>" + addr + "is already subscribed.</b> <hr>If you want to change your information, <br>please let system adminstartor know." );
+      } else if( status === 1 ){
+        resolve( "<b>Subscription request succeed. </b><hr>" + addr + " will receive kangchangho.com news letter." );
+      }
+    } else if( lang === "ko" ){
+      if( status === 0 ){
+        resolve( "<b>이미 구독 중인 메일 주소 입니다.</b> <hr> " + addr + " 의 구독 정보를 변경하려면 <br> 시스템 운영 담당자에게 알려주세요." );
+      } else if( status === 1 ){
+        resolve( "<b>구독 신청이 완료 되었습니다.</b> <hr> " + addr + " 로 <br> 정기적으로 발행되는 뉴스레터를 <br> 확인하실 수 있습니다.");
+      }
     }
-
-  } else if( lang === "ko" ){
-
-    if( status === 0 ){
-      return "<b>이미 구독 중인 메일 주소 입니다.</b> <hr> " + addr + " 의 구독 정보를 변경하려면 <br> 시스템 운영 담당자에게 알려주세요.";
-    } else if( status === 1 ){
-      return "<b>구독 신청이 완료 되었습니다.</b> <hr> " + addr + " 로 <br> 정기적으로 발행되는 뉴스레터를 <br> 확인하실 수 있습니다.";
-    }
-
-  }
+  } );
 }
 
-function getMailInfo( addr, lang ){
-  var transporterInfo = getTransporterInfo();
-  var mailOptions = getMailOptions( addr, lang );
+function getMailInfo( parameter, lang, type, receiver ){
+  return new Promise( function(resolve, reject){
 
-  return { "transporterInfo":transporterInfo, "mailOptions":mailOptions };
+    var promises = [];
+    promises.push( getTransporterInfo() );
+    promises.push( getMailOptions( parameter, lang, type, receiver ) );
+
+    Promise.all( promises )
+    .then( function(){
+      var argv = arguments[0];
+
+      var transporterInfo = argv[0];
+      var mailOptions = argv[1];
+
+      resolve( { "transporterInfo":transporterInfo, "mailOptions":mailOptions } );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
 }
 
 function getTransporterInfo(){
-  var transporterInfo = require( require("path").join( __runningPath, "application", "properties", "transporter.json" ) );
-  return transporterInfo;
+  return new Promise( function(resolve, reject){
+    var transporterInfo = require( require("path").join( __runningPath, "application", "properties", "transporter.json" ) );
+    resolve( transporterInfo );
+  } );
 }
 
-function getMailOptions( addr, lang ){
-  // mailOption information
-  var mailOptions = {
-    from: 'inodient@gmail.com',
-    to: addr,
-    subject: getMailSubject( addr, lang ),
-    html: getMailContent( addr, lang )
-  };
-
-  return mailOptions;
+function getMailOptions( parameter, lang, type, receiver ){
+  return new Promise( function(resolve, reject){
+    if( type === "welcome" ){
+      getWelcomeMailOptions( parameter, lang, type )
+      .then( function( mailOptions ){
+        resolve( mailOptions );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
+    } else if( type === "newsletter" ){
+      getNewsLetterMailOptions( parameter, lang, type, receiver )
+      .then( function( mailOptions ){
+        resolve( mailOptions );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
+    }
+  } );
 }
 
-function getMailSubject( addr, lang ){
-  if( lang === "en" ){
-    return "#0 NewsLetter - kangchangho.com";
-  } else if( lang === "ko" ){
-    return "0번째 뉴스레터 - 강창호닷컴";
-  }
+function getWelcomeMailOptions( parameter, lang, type ){
+  return new Promise( function(resolve, reject){
+    var promises = [];
+    promises.push( getMailSubject( parameter, lang, type ) );
+    promises.push( getMailContent( parameter, lang, type ) );
+    promises.push( getAttachments( parameter, lang, type ) );
+
+    Promise.all( promises )
+    .then( function(){
+
+      var argv = arguments[0];
+
+      var mailOptions = {
+        from: 'inodient@gmail.com',
+        to: parameter,
+        subject: argv[0],
+        html: argv[1],
+        attachments: argv[2]
+      };
+
+      resolve( mailOptions );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
 }
 
-function getMailContent( addr, lang ){
-  if( lang === "en" ){
-    return `
-      <DOCTYPE html>
-      <html>
-        <head>
-          <title>kangchangho.com NewsLetter #00"</title>
-        </head>
-        <body>
-          <p>Thank you very much for subscribing kangchangho.com news letter.</p>
-          <p>You will receive kangchangho.com news letter at&nbsp;<span style="font-weight: 700;">` + addr + `</span>.</p>
-          <p>If we make mistake or introduce wrong knowledge, please send us that points.</p>
-          <p>We will try to take many IT stories deeply.</p>
-          <p><br></p><p><br></p><p style=""><br></p><p style=""><br></p>
-          <hr>
-          <p style=""><font color="#333333">Copyright(c) 2018 KANGCHANGHO.COM</font></p>
-          <p style=""><font color="#333333">Created and Maintained by&nbsp;</font><span ">Ino Kang [Changho Kang].</span></p>
-        </body>
-      </html>
-    `;
-  } else if( lang === "ko" ){
-    return `
-      <DOCTYPE html>
-      <html>
-        <head>
-          <title>kangchangho.com NewsLetter #00"</title>
-        </head>
-        <body>
-          <p>강창호 닷컴 뉴스레터를 구독해 주셔서 감사 드립니다.</p>
-          <p>앞으로 발행되는 뉴스레터를<span style="font-weight: 700;">&nbsp;` + addr + `</span>에서 받아보실 수 있습니다.</p>
-          <p>틀린 부분이나 부족한 부분은 지적해 주시고, 지식을 나눌 수 있는 기회가 되었으면 합니다.</p>
-          <p>여러 IT 이야기들을 깊이 있게 담을 수 있도록 노력하겠습니다.</p>
-          <p><br></p><p><br></p><p style=""><br></p><p style=""><br></p>
-          <hr>
-          <p style=""><font color="#333333">Copyright(c) 2018 KANGCHANGHO.COM</font></p>
-          <p style=""><font color="#333333">Created and Maintained by&nbsp;</font><span ">Ino Kang [Changho Kang].</span></p>
-        </body>
-      </html>
-    `;
-  }
+function getNewsLetterMailOptions( parameter, lang, type, receiver ){
+  return new Promise( function(resolve, reject){
+
+    var promises = [];
+    promises.push( getMailSubject( parameter, lang, type ) );
+    promises.push( getMailContent( parameter, lang, type ) );
+    promises.push( getAttachments( parameter, lang, type ) );
+
+    Promise.all( promises )
+    .then( function(){
+
+      var argv = arguments[0];
+
+      var mailOptions = {
+        from: 'inodient@gmail.com',
+        to: receiver.email,
+        subject: argv[0],
+        html: argv[1],
+        attachments: argv[2]
+      };
+
+      resolve( mailOptions );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
+function getMailSubject( parameter, lang, type ){
+  return new Promise( function(resolve, reject){
+    if( type === "welcome" ){
+      getWelcomeMailSubject( parameter, lang )
+      .then( function( subject ){
+        resolve( subject );
+      } )
+      .catch( function( err ){
+        reject( err );
+      } );
+    } else if( type === "newsletter" ){
+      getNewsLetterMailSubject( parameter, lang )
+      .then( function( subject ){
+        resolve( subject );
+      } )
+      .catch( function( err ){
+        reject( err );
+      } );
+    }
+  } );
+}
+
+function getWelcomeMailSubject( parameter, lang ){
+  return new Promise( function(resolve, reject){
+    if( lang === "en" ){
+      resolve( "#0 NewsLetter - kangchangho.com" );
+    } else if( lang === "ko" ){
+      resolve( "0번째 뉴스레터 - 강창호닷컴" );
+    }
+  } );
+}
+
+function getNewsLetterMailSubject( parameter, lang ){
+  return new Promise( function(resolve, reject){
+    if( lang === "en" ){
+      resolve( "KANGCHANGHO.COM - " + parameter.newsLetterMaster.title_en );
+    } else if( lang === "ko" ){
+      resolve( "강창호닷컴 뉴스레터 - " + parameter.newsLetterMaster.title_ko );
+    }
+  } );
+}
+
+
+
+
+function getMailContent( parameter, lang, type ){
+  return new Promise( function(resolve, reject){
+    if( type === "welcome" ){
+      getWelcomeMailContent( parameter, lang )
+      .then( function( contents ){
+        resolve( contents );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
+    } else if( type === "newsletter" ){
+      getNewsLetterMailContent( parameter, lang )
+      .then( function( contents ){
+        resolve( contents );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
+    }
+  } );
+}
+
+function getWelcomeMailContent( parameter, lang ){
+  return new Promise( function(resolve, reject){
+    var html = ``;
+
+    if( lang === "en" ){
+      html =  `
+        <DOCTYPE html>
+        <html>
+          <head>
+            <title>kangchangho.com NewsLetter #00"</title>
+          </head>
+          <body>
+            <p>Thank you very much for subscribing kangchangho.com news letter.</p>
+            <p>You will receive kangchangho.com news letter at&nbsp;<span style="font-weight: 700;">` + parameter + `</span>.</p>
+            <p>If we make mistake or introduce wrong knowledge, please send us that points.</p>
+            <p>We will try to take many IT stories deeply.</p>
+            <p><br></p><p><br></p><p style=""><br></p><p style=""><br></p>
+            <hr>
+            <p style=""><font color="#333333">Copyright(c) 2018 KANGCHANGHO.COM</font></p>
+            <p style=""><font color="#333333">Created and Maintained by&nbsp;</font><span ">Ino Kang [Changho Kang].</span></p>
+          </body>
+        </html>
+      `;
+    } else if( lang === "ko" ){
+      html = `
+        <DOCTYPE html>
+        <html>
+          <head>
+            <title>kangchangho.com NewsLetter #00"</title>
+          </head>
+          <body>
+            <p>강창호 닷컴 뉴스레터를 구독해 주셔서 감사 드립니다.</p>
+            <p>앞으로 발행되는 뉴스레터를<span style="font-weight: 700;">&nbsp;` + parameter + `</span>에서 받아보실 수 있습니다.</p>
+            <p>틀린 부분이나 부족한 부분은 지적해 주시고, 지식을 나눌 수 있는 기회가 되었으면 합니다.</p>
+            <p>여러 IT 이야기들을 깊이 있게 담을 수 있도록 노력하겠습니다.</p>
+            <p><br></p><p><br></p><p style=""><br></p><p style=""><br></p>
+            <hr>
+            <p style=""><font color="#333333">Copyright(c) 2018 KANGCHANGHO.COM</font></p>
+            <p style=""><font color="#333333">Created and Maintained by&nbsp;</font><span ">Ino Kang [Changho Kang].</span></p>
+          </body>
+        </html>
+      `;
+    }
+
+    resolve( html );
+  } );
+}
+
+function getNewsLetterMailContent( parameter, lang ){
+  return new Promise( function(resolve, reject){
+
+    var newsLetterMaster = parameter.newsLetterMaster;
+    var newsLetterContentsList = parameter.newsLetterContentsList;
+    var host = parameter.host;
+
+    var promises = [];
+    promises.push( designContent(newsLetterMaster.content_en) );
+    promises.push( designContent(newsLetterMaster.content_ko) );
+    promises.push( createContentThumb(newsLetterContentsList, host, "en") );
+    promises.push( createAnnounceThumb(newsLetterContentsList, host, "en") );
+    promises.push( createContentThumb(newsLetterContentsList, host, "ko") );
+    promises.push( createAnnounceThumb(newsLetterContentsList, host, "ko") );
+
+    Promise.all( promises )
+    .then( function(){
+      var argv = arguments[0];
+      var content_en = argv[0];
+      var content_ko = argv[1];
+      var contents_en = argv[2];
+      var announce_en = argv[3];
+      var contents_ko = argv[4];
+      var announce_ko = argv[5];
+
+
+      var html = ``;
+
+      if( lang === "en" ){
+        html = `
+          <DOCTYPE html>
+          <html>
+            <head>
+
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+            <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Roboto:italic" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Roboto:bold" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Roboto:bolditalic" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+            <link rel="stylesheet" href="http://` + host + `/kangchangho-com.css">
+
+            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/src/loadingoverlay.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
+
+            <script src="http://` + host + `/kangchangho-com.js"></script>
+            <script src="http://` + host + `/design.js"></script>
+
+            <style>
+              .paragraph-end {
+                margin-bottom: 30px;
+              }
+
+              .small-section-end {
+                margin-bottom: 60px;
+              }
+
+              .section-end {
+                margin-bottom: 120px;
+              }
+
+              .content-footer .writer {
+                font-size: 16.5px;
+                font-weight: 800;
+              }
+
+              .content-anchor {
+                color: #111111;
+                text-decoration: none;
+              }
+
+              .content-anchor:hover {
+                color: #888888;
+                text-decoration: none;
+                cursor: pointer;
+              }
+
+              .content-anchor:focus {
+                color: #888888;
+                text-decoration: none;
+                cursor: pointer;
+              }
+
+              .content-image {
+                max-width: 100%;
+              }
+
+              .content-text {
+                line-height: 1.65em;
+                margin-top: 20px;
+                color: #777777;
+              }
+
+              .date {
+                font-size: 12px;
+                color: #777777;
+              }
+
+              .after-line-block::after {
+                content: '';
+                display: block;
+                width: 5rem;
+                height: 2px;
+                background: black;
+                margin-top: 30px;
+              }
+            </style>
+
+
+
+            </head>
+            <body style="padding: 25px">
+
+
+              <article>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="content-body section-end">
+                      <div>
+                        <h2 class="after-line-block">` + newsLetterMaster.title_en + `</h2>
+                      </div>
+
+                      <div class="paragraph-end"></div>
+
+                      <div class="small-section-end">
+                        <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
+                      </div>
+
+                      <p class="content-text small-section-end">
+                        ` + content_en + `
+                      </p>
+                    </div>
+
+                    <div class="small-section-end"></div>
+
+                    <div class="content-footer">
+                      <div class="paragraph-end content-anchor writer after-line-block">` + newsLetterMaster.writer_name_en + ` | ` + ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] + `</div>
+                      <div>` + newsLetterMaster.writer_description_en + `</div>
+                    </div>
+
+                  </div>
+                </div>
+              </article>
+
+              <div class="section-end"></div>
+
+              <article>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h3 class="after-line-block">Post & Announce</h3>
+
+                    <table class="table table-responsive" style="border: 0">
+                      <tbody>
+                      `
+                        + contents_en +
+                      `<tr></tr>
+                      `
+                        + announce_en +
+                      `
+                      <tbody>
+                    </table>
+                  </div>
+                </div>
+            </article>
+          </body>
+        </html>
+        `;
+      } else if( lang === "ko" ){
+        html = `
+          <DOCTYPE html>
+          <html>
+            <head>
+
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+            <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Roboto:italic" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Roboto:bold" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Roboto:bolditalic" rel="stylesheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+            <link rel="stylesheet" href="http://` + host + `/kangchangho-com.css">
+
+            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/src/loadingoverlay.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
+
+            <script src="http://` + host + `/kangchangho-com.js"></script>
+            <script src="http://` + host + `/design.js"></script>
+
+            <style>
+              .paragraph-end {
+                margin-bottom: 30px;
+              }
+
+              .small-section-end {
+                margin-bottom: 60px;
+              }
+
+              .section-end {
+                margin-bottom: 120px;
+              }
+
+              .content-footer .writer {
+                font-size: 16.5px;
+                font-weight: 800;
+              }
+
+              .content-anchor {
+                color: #111111;
+                text-decoration: none;
+              }
+
+              .content-anchor:hover {
+                color: #888888;
+                text-decoration: none;
+                cursor: pointer;
+              }
+
+              .content-anchor:focus {
+                color: #888888;
+                text-decoration: none;
+                cursor: pointer;
+              }
+
+              .content-image {
+                max-width: 100%;
+              }
+
+              .content-text {
+                line-height: 1.65em;
+                margin-top: 20px;
+                color: #777777;
+              }
+
+              .date {
+                font-size: 12px;
+                color: #777777;
+              }
+
+              .after-line-block::after {
+                content: '';
+                display: block;
+                width: 5rem;
+                height: 2px;
+                background: black;
+                margin-top: 30px;
+              }
+            </style>
+
+
+            </head>
+            <body style="padding: 25px;">
+
+
+              <article>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="content-body section-end">
+                      <div class="after-line-block">
+                        <h2>` + newsLetterMaster.title_en + `</h2>
+                      </div>
+
+                      <div class="paragraph-end"></div>
+
+                      <div class="small-section-end">
+                        <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
+                      </div>
+
+                      <p class="content-text small-section-end">
+                        ` + content_ko + `
+                      </p>
+                    </div>
+
+                    <div class="small-section-end"></div>
+
+                    <div class="content-footer">
+                      <div class="paragraph-end content-anchor writer after-line-block">` + newsLetterMaster.writer_name_ko + ` | ` + ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] + `</div>
+                      <div>` + newsLetterMaster.writer_description_ko + `</div>
+                    </div>
+
+                  </div>
+                </div>
+              </article>
+
+              <div class="section-end"></div>
+
+              <article>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h3 class="after-line-block">Post & Announce</h3>
+
+                    <table class="table table-responsive" style="border: 0">
+                      <tbody>
+                      `
+                        + contents_ko +
+                      `<tr></tr>
+                      `
+                        + announce_ko +
+                      `
+                      <tbody>
+                    </table>
+                  </div>
+                </div>
+            </article>
+          </body>
+        </html>
+        `;
+      }
+
+      logger.debug( "==========================" );
+      logger.debug( html );
+      logger.debug( "==========================" );
+
+      resolve( html );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+
+  } );
+}
+
+
+
+function designContent( content ){
+  return new Promise( function(resolve, reject){
+    const cheerio = require( "cheerio" );
+
+    try {
+      const $ = cheerio.load( content );
+
+      $("img").each( function(){
+        $(this).attr( "id", "inodient" );
+        $(this).css( {'max-width':'50vw'} )
+        var orgSrc = $(this).attr( "src" );
+        $(this).attr( "src", orgSrc.replace( "/", "cid:" ) );
+      } );
+
+      var html = $.html();
+      html = html.replace( "<html>", "" );
+      html = html.replace( "<head>", "" );
+      html = html.replace( "<body>", "" );
+      html = html.replace( "</body>", "" );
+      html = html.replace( "</head>", "" );
+      html = html.replace( "</html>", "" );
+
+      html = "<div>" + html + "</div>";
+
+      resolve( html );
+
+    } catch( err ){
+      reject( err );
+    }
+  } );
+}
+
+function createContentThumb( newsLetterContentsList, host, lang ){
+  return new Promise( function(resolve, reject){
+    var list = ``;
+    var title = "";
+
+    for( var i=0; i<newsLetterContentsList.length; i++ ){
+      if( newsLetterContentsList[i].link_type === "content" ){
+
+        if( lang === "en" ){
+          title = newsLetterContentsList[i].title_en;
+        } else if( lang === "ko" ){
+          title = newsLetterContentsList[i].title_ko;
+        }
+
+        list += `<tr>
+          <td style="border: 0"><a style="text-decoration: underline;" href="http://` + host + `/content/` + newsLetterContentsList[i].link_id + `" class="content-anchor"><p>` + title + `</p></a></td>
+        </tr>`;
+      }
+    }
+
+    resolve( list );
+  } );
+}
+
+function createAnnounceThumb( newsLetterContentsList, host, lang ){
+  return new Promise( function(resolve, reject){
+    var list = ``;
+    var title = "";
+
+    for( var i=0; i<newsLetterContentsList.length; i++ ){
+      if( newsLetterContentsList[i].link_type === "announce" ){
+
+        if( lang === "en" ){
+          title = newsLetterContentsList[i].title_en
+        } else if( lang === "ko" ){
+          title = newsLetterContentsList[i].title_ko
+        }
+
+        list += `<tr>
+          <td style="border: 0"><a style="text-decoration: underline;" href="http://` + host + `/announce/` + newsLetterContentsList[i].link_id + `" class="content-anchor"><p>` + title + `</p></a></td>
+        </tr>`;
+      }
+    }
+
+    resolve( list );
+  } );
+}
+
+
+
+
+
+function getAttachments( parameter, lang, type ){
+  return new Promise( function(resolve, reject){
+    if( type === "welcome" ){
+      getWelcomeAttachments( parameter, lang )
+      .then( function(attachments){
+        resolve( attachments );
+      } )
+      .catch( function(err){
+      } );
+    } else if( type === "newsletter" ){
+      getNewsLetterAttachments( parameter, lang )
+      .then( function(attachments){
+        resolve( attachments );
+      } )
+      .catch( function(err){
+      } );
+    }
+  } );
+}
+
+function getWelcomeAttachments( parameter, lang ){
+  return new Promise( function(resolve, reject){
+    var attachments = [];
+    attachments.push( {
+      filename: "kangchangho-com.css",
+      path: require("path").join( __runningPath, __viewsPath, "css", "kangchangho-com.css" ),
+      cid: "kangchangho-com.css"
+    } );
+
+    resolve( attachments );
+  } );
+}
+
+// function getNewsLetterAttachments( parameter, lang ){
+//   return new Promise( function(resolve, reject){
+//     var newsLetterMaster = parameter.newsLetterMaster;
+//     var newsLetterContentsList = parameter.newsLetterContentsList;
+//
+//     var attachments = [];
+//
+//     try {
+//       const cheerio = require( "cheerio" );
+//       var $ = cheerio.load( newsLetterMaster.content_en );
+//
+//       $("img").each( function(){
+//         attachments.push( {
+//           filename: ( $(this).attr( "src" ) ).split("cid:")[1],
+//           path: require("path").join( __runningPath, "upload", "image", ( $(this).attr( "src" ) ).split("cid:")[1] ),
+//           cid: ( $(this).attr( "src" ) ).split("cid:")[1]
+//         } );
+//
+//         $(this).css( {'width':'100%'} )
+//       } );
+//       // newsLetterMaster.content_en = $.html();
+//       // parameter.newsLetterMaster = newsLetterMaster;
+//
+//
+//       $ = cheerio.load( newsLetterMaster.content_ko );
+//
+//       $("img").each( function(){
+//         attachments.push( {
+//           filename: ( $(this).attr( "src" ) ).split("cid:")[1],
+//           path: require("path").join( __runningPath, "upload", "image", ( $(this).attr( "src" ) ).split("cid:")[1] ),
+//           cid: ( $(this).attr( "src" ) ).split("cid:")[1]
+//         } );
+//
+//         $(this).css( {'width':'100%'} )
+//       } );
+//       // newsLetterMaster.content_ko = $.html();
+//       // parameter.newsLetterMaster = newsLetterMaster;
+//
+//       attachments.push( {
+//         filename: newsLetterMaster.image_path,
+//         path: require("path").join( __runningPath, "upload", "image", newsLetterMaster.image_path ),
+//         cid: newsLetterMaster.image_path
+//       } );
+//
+//       resolve( attachments );
+//
+//     } catch( err ){
+//       reject( err );
+//     }
+//   } );
+// }
+
+function getNewsLetterAttachments( parameter, lang ){
+  return new Promise( function(resolve, reject){
+    var newsLetterMaster = parameter.newsLetterMaster;
+    var newsLetterContentsList = parameter.newsLetterContentsList;
+
+    var attachments = [];
+
+    var promises = [];
+    promises.push( extractAttachments(newsLetterMaster.content_en) );
+    promises.push( extractAttachments(newsLetterMaster.content_ko) );
+
+    Promise.all( promises )
+    .then( function(){
+      var argv = arguments[0];
+
+      var content_en = argv[0];
+      var content_ko = argv[1];
+
+      attachments.push( {
+        filename: newsLetterMaster.image_path,
+        path: require("path").join( __runningPath, "upload", "image", newsLetterMaster.image_path ),
+        cid: newsLetterMaster.image_path
+      } );
+
+      for( var i=0; i<argv[0].length; i++ ){
+        attachments.push( (argv[0])[i] );
+      }
+
+      for( var j=0; j<argv[1].length; j++ ){
+        attachments.push( (argv[1])[j] );
+      }
+
+      resolve( attachments );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+
+  } );
+}
+
+function extractAttachments( content ){
+  return new Promise( function(resolve, reject){
+    try {
+      const cheerio = require( "cheerio" );
+      const $ = cheerio.load( content );
+
+      var attachments = [];
+
+      $("img").each( function(){
+
+        attachments.push( {
+          filename: $(this).attr( "src" ).split("/")[1],
+          path: require("path").join( __runningPath, "upload", "image", $(this).attr( "src" ).split("/")[1] ),
+          cid: $(this).attr( "src" ).split("/")[1]
+        } );
+
+        $(this).css( {'max-width':'50vw'} );
+      } );
+
+      logger.error( attachments );
+
+      resolve( attachments );
+    } catch( err ){
+      reject( err );
+    }
+  } );
 }
 
 

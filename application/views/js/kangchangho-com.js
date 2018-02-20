@@ -191,6 +191,10 @@ $(document).ready( function(){
 
   $("#newsletter").submit( function(e){
 
+    if( $("#email_addr").val() === "" ){
+      return false;
+    }
+
     $.LoadingOverlay("show", { color: "rgba(255, 255, 255, 0.8)" });
 
     e.preventDefault();
@@ -222,5 +226,33 @@ $(document).ready( function(){
 
   $("#newsletter_select").on( "change", function(){
     $(location).attr( "href", $("#newsletter_select option:selected").data("href") );
+  } );
+
+  $(".newsletter-send").on( "click", function(){
+    if( $(location).attr( "href" ).indexOf( "newsletteradmin" ) > -1 ){
+      if( confirm( "Are you sure sending newsletter?" ) ){
+
+        $.LoadingOverlay("show", { color: "rgba(255, 255, 255, 0.8)" });
+
+        var id = $(location).attr( "href" ).split( "newsletteradmin/" )[1];
+
+        $.ajax( {
+          data: {"id":id},
+          type: "POST",
+          url: "/sendnewsletter",
+
+          success: function( data ){
+            $.LoadingOverlay("hide");
+            alert( "SENDING NEWS LETTER SUCCEED" );
+          },
+
+          error: function(){
+            $.LoadingOverlay("hide");
+            alert( "SENDING NEWS LETTER FAILED" );
+          }
+        } );
+
+      }
+    }
   } );
 } );

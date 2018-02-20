@@ -158,6 +158,99 @@ exports.getNewsLetterContentsList = function( connection, targetId, lang ){
   } );
 }
 
+exports.getNewsLetterMasterToSend = function( connection, targetId, lang ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getNewsLetterMasterToSend";
+
+    params.push( targetId );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getNewsLetterContentsListToSend = function( connection, targetId, lang ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getNewsLetterContentsListToSend";
+
+    params.push( targetId );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getReceiver = function( connection ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getReceiver";
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.addNewsLetterHistory = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "addNewsLetterHistory";
+
+
+    params.push( parameter.from );
+    params.push( parameter.to );
+    params.push( parameter.subject );
+    params.push( parameter.html );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.addNewsLetterAttachmentsHistory = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "addNewsLetterAttachmentsHistory";
+
+    params.push( parameter.insertId );
+    params.push( parameter.filename );
+    params.push( parameter.path );
+    params.push( parameter.cid );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( {"status":"succeed"} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+
+
+
 exports.getPageListOfNewsLetter = function( connection, lang ){
   return new Promise( function(resolve, reject){
     var params = [];

@@ -9,6 +9,22 @@
             "view": "welcome.ejs"
         },
         {
+            "id": "content",
+            "path": "/content",
+            "controllerJS": "controller_content.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "content.ejs"
+        },
+        {
+            "id": "announce",
+            "path": "/announce",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_announce",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
             "id": "write",
             "path": "/write",
             "controllerJS": "controller_write.js",
@@ -25,6 +41,54 @@
             "view": "write.ejs"
         },
         {
+            "id": "addcategory",
+            "path": "/addcategory",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "category",
+            "path": "/category",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_category",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "writer",
+            "path": "/writer",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_writer",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "hash",
+            "path": "/hash",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_hash",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "search",
+            "path": "/search",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_word",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
+        {
+            "id": "welcome",
+            "path": "/",
+            "controllerJS": "controller_welcome.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "welcome.ejs"
+        },
+        {
             "id": "content",
             "path": "/content/:id",
             "controllerJS": "controller_content.js",
@@ -39,6 +103,15 @@
             "controlFunction": "control_search_announce",
             "viewPath": "",
             "view": "list.ejs"
+        },
+
+        {
+            "id": "addcategory",
+            "path": "/addcategory/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
         },
         {
             "id": "category",
@@ -75,14 +148,6 @@
         {
             "id": "newsletter",
             "path": "/newsletter/:id",
-            "controllerJS": "controller_newsletter.js",
-            "controlFunction": "control",
-            "viewPath": "",
-            "view": "newsletter.ejs"
-        },
-        {
-            "id": "newsletteradmin",
-            "path": "/newsletteradmin/:id",
             "controllerJS": "controller_newsletter.js",
             "controlFunction": "control",
             "viewPath": "",
@@ -203,19 +268,101 @@
             "viewPath": "",
             "view": ""
         },
+
+
+        {
+            "id": "addcategory",
+            "path": "/addcategory/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_category",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "addwriter",
+            "path": "/addwriter/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_add_writer",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "uploadimage",
+            "path": "/uploadimage/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_image",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "uploadcontent",
+            "path": "/uploadcontent/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_content",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "uploadannounce",
+            "path": "/uploadannounce/:id",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control_upload_announce",
+            "viewPath": "",
+            "view": "write.ejs"
+        },
+        {
+            "id": "getotherpages",
+            "path": "/getotherpages/:id",
+            "controllerJS": "controller_welcome.js",
+            "controlFunction": "control_other_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherwriterpages",
+            "path": "/getotherwriterpages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_writer_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherhashpages",
+            "path": "/getotherhashpages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_hash_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getothersearchpages",
+            "path": "/getothersearchpages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_search_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "getotherannouncepages",
+            "path": "/getotherannouncepages/:id",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_other_announce_pages",
+            "viewPath": "",
+            "view": ""
+        },
+        {
+            "id": "search",
+            "path": "/search/:searchword",
+            "controllerJS": "controller_search.js",
+            "controlFunction": "control_search_word",
+            "viewPath": "",
+            "view": "list.ejs"
+        },
         {
             "id": "subscribe",
             "path": "/subscribe",
             "controllerJS": "controller_newsletter.js",
             "controlFunction": "control_subscribe",
-            "viewPath": "",
-            "view": ""
-        },
-        {
-            "id": "sendnewsletter",
-            "path": "/sendnewsletter",
-            "controllerJS": "controller_newsletter.js",
-            "controlFunction": "control_send_newsletter",
             "viewPath": "",
             "view": ""
         }

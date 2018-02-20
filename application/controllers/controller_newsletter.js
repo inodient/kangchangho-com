@@ -66,3 +66,39 @@ exports.control_subscribe = function( req, res, connection ){
 
   } );
 }
+
+
+
+
+exports.control_send_newsletter = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+
+    staticService.getStaticInfo( req, res, connection )
+    .then( function( staticInfo ){
+      var lang = staticInfo.lang;
+      var targetId = req.body.id;
+      var promises = [];
+
+      newsletterService.getNewsLetterToSend( connection, targetId, lang )
+      .then( function( newsLetterInfo ){
+
+        newsLetterInfo.host = req.headers.host;
+
+        newsletterService.sendNewsLetterMail( connection, newsLetterInfo )
+        .then( function(results){
+          resolve( results );
+        } )
+        .catch( function( __err ){
+          reject( __err );
+        } )
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+
+  } );
+}

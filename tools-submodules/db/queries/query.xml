@@ -1300,6 +1300,26 @@
       ]]>
     </query>
 
+    <query id='getNewsLetterMasterToSend'>
+      <![CDATA[
+        SELECT id,
+               writer,
+               ( select name_en from TB_WRITER where id = writer ) writer_name_en,
+               ( select name_ko from TB_WRITER where id = writer ) writer_name_ko,
+               ( select description_en from TB_WRITER where id = writer ) writer_description_en,
+               ( select description_ko from TB_WRITER where id = writer ) writer_description_ko,
+               title_en,
+               title_ko,
+               content_en,
+               content_ko,
+               image_id,
+               (select savedFileName from TB_CONTENT_IMAGE where id = image_id) as image_path,
+               create_date
+          FROM TB_NEWSLETTER
+         WHERE id = ?
+      ]]>
+    </query>
+
     <query id='getNewsLetterContentsList'>
       <![CDATA[
         SELECT id,
@@ -1320,6 +1340,26 @@
       ]]>
     </query>
 
+    <query id='getNewsLetterContentsListToSend'>
+      <![CDATA[
+        SELECT id,
+               newsletter_id,
+               seq,
+               link_type,
+               case when 'content' = link_type then ( select savedFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
+                    else ( select savedFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_ANNOUNCE where id = link_id) ) end as image_path,
+               link_id,
+               case when 'content' = link_type then ( select title_en from TB_CONTENT where id = link_id )
+                    when 'announce' = link_type then ( select title_en from TB_ANNOUNCE where id = link_id ) end as title_en,
+               case when 'content' = link_type then ( select title_ko from TB_CONTENT where id = link_id )
+                    when 'announce' = link_type then ( select title_ko from TB_ANNOUNCE where id = link_id ) end as title_ko,
+               create_date
+          FROM TB_NEWSLETTER_LIST
+         WHERE newsletter_id = ?
+         ORDER BY link_type, seq
+      ]]>
+    </query>
+
     <query id='deleteNewsLetter'>
       <![CDATA[
         DELETE FROM TB_NEWSLETTER where id = ?
@@ -1329,6 +1369,33 @@
     <query id='deleteNewsLetterList'>
       <![CDATA[
         DELETE FROM TB_NEWSLETTER_LIST where newsletter_id = ?
+      ]]>
+    </query>
+
+    <query id='getReceiver'>
+      <![CDATA[
+        select email, lang, create_date from TB_NEWSLETTER_RECEIVER order by create_date desc;
+      ]]>
+    </query>
+
+    <query id='addNewsLetterHistory'>
+      <![CDATA[
+        INSERT INTO TB_NEWSLETTER_HISTORY (from_addr, to_addr, subject, html, create_date)
+        VALUES (?, ?, ?, ?, NOW() )
+      ]]>
+    </query>
+
+    <query id='addNewsLetterAttachmentsHistory'>
+      <![CDATA[
+        INSERT INTO TB_NEWSLETTER_ATTACHMENT_HISTORY (history_id, filename, path, cid, create_date)
+        VALUES ( ?, ?, ?, ?, NOW() )
+      ]]>
+    </query>
+
+    <query id='addAccessHistory'>
+      <![CDATA[
+        INSERT INTO TB_HISTORY (contextPath, path, client, lang, create_date)
+        VALUES ( ?, ?, ?, ?, NOW() )
       ]]>
     </query>
 
