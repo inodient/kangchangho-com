@@ -49,7 +49,7 @@ exports.getAboutContent = function( connection, lang ){
     dbExecutorContent.getLastAboutContentId( connection )
     .then( function( results ){
 
-      var contentId = results[0].id;
+      var contentId = typeof results[0].id === "undefined" ? -1 : results[0].id;
 
       promises.push( dbExecutorContent.getContentMaster( connection, contentId, lang ) );
       promises.push( dbExecutorMenu.getContentCategory( connection, contentId, lang ) );
