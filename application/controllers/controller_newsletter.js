@@ -85,8 +85,17 @@ exports.control_send_newsletter = function( req, res, connection ){
         newsLetterInfo.host = req.headers.host;
 
         newsletterService.sendNewsLetterMail( connection, newsLetterInfo )
-        .then( function(results){
-          resolve( results );
+        .then( function(info){
+
+          newsletterService.addNewsLetterHistory( connection, newsLetterInfo )
+          .then( function(_results){
+
+            resolve( _results );
+          } )
+          .catch( function(___err){
+            reject(___err);
+          } );
+
         } )
         .catch( function( __err ){
           reject( __err );

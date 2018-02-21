@@ -212,7 +212,6 @@ exports.addNewsLetterHistory = function( connection, parameter ){
     var params = [];
     var queryId = "addNewsLetterHistory";
 
-
     params.push( parameter.from );
     params.push( parameter.to );
     params.push( parameter.subject );

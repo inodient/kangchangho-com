@@ -132,106 +132,7 @@ exports.sendWelcomeMail = function( parameter, lang ){
   } );
 }
 
-// exports.sendNewsLetterMail = function( connection, parameter, lang ){
-//   return new Promise( function(resolve, reject){
-//     var nodemailer = require('nodemailer');
-//
-//     var receiver = parameter.receiver;
-//     var contents = parameter.contents;
-//
-//     var promises = [];
-//
-//     for( var i=0; i<receiver.length; i++ ){
-//
-//       promises.push(
-//         getMailInfo( parameter, receiver[i].lang, "newsletter", receiver[i] )
-//         .then( function( mailInfo ){
-//
-//           var transporterInfo = mailInfo.transporterInfo;
-//           var mailOptions = mailInfo.mailOptions;
-//
-//           var transporter = nodemailer.createTransport( transporterInfo );
-//
-//           transporter.sendMail( mailOptions, function( _err, info ){
-//             if( _err ){
-//               logger.error( _err );
-//               reject( _err );
-//             } else{
-//
-//               logger.debug( "-----------------" );
-//               logger.debug( mailOptions );
-//               logger.debug( "-----------------" );
-//
-//               resolve( mailInfo );
-//             }
-//           } );
-//         } )
-//         .catch( function( err ){
-//           reject( err );
-//         } )
-//       );
-//     }
-//
-//     Promise.all( promises )
-//     .then( function(){
-//
-//       var argv = arguments[0];
-//
-//       var _promises = [];
-//
-//       for( var i=0; i<argv.length; i++ ){
-//
-//         _promises.push(
-//
-//           dbExecutorNewsLetter.addNewsLetterHistory( connection, argv[i] )
-//           .then( function(){
-//
-//             var __promises = [];
-//             var attachList = mailOptions.attachments;
-//
-//             for( var j=0; j<attachList.length; j++ ){
-//               var attachInfo = {};
-//               attachInfo.insertId = results.insertId;
-//               attachInfo.filename = attachList[j].filename;
-//               attachInfo.path = attachList[j].path;
-//               attachInfo.cid = attachList[j].cid;
-//
-//               __promises.push( dbExecutorNewsLetter.addNewsLetterAttachmentsHistory( connection, attachInfo ) );
-//             }
-//
-//             Promise.all( __promises )
-//             .then( function(){
-//               resolve( {"status":"succeed"} );
-//             } )
-//             .catch( function( ___err ){
-//               reject( ___err );
-//             } );
-//
-//           } )
-//           .catch( function( __err ){
-//             reject( __err );
-//           } )
-//         );
-//       }
-//
-//       Promise.all( _promises )
-//       .then( function(){
-//         resolve( {"status":"succeed"} );
-//       } )
-//       .catch( function( err ){
-//         reject( err );
-//       } )
-//
-//
-//     } )
-//     .catch( function( _err ){
-//       reject( _err );
-//     } );
-//
-//   } );
-// }
-
-exports.sendNewsLetterMail = function( connection, parameter, lang ){
+exports.sendNewsLetterMail = function( connection, parameter ){
   return new Promise( function(resolve, reject){
     var nodemailer = require('nodemailer');
 
@@ -241,53 +142,9 @@ exports.sendNewsLetterMail = function( connection, parameter, lang ){
     var promises = [];
 
     for( var i=0; i<receiver.length; i++ ){
-
       promises.push(
         getMailInfo( parameter, receiver[i].lang, "newsletter", receiver[i] )
-        .then( function( mailInfo ){
-
-          var transporterInfo = mailInfo.transporterInfo;
-          var mailOptions = mailInfo.mailOptions;
-
-          var transporter = nodemailer.createTransport( transporterInfo );
-
-          transporter.sendMail( mailOptions, function( _err, info ){
-            if( _err ){
-              logger.error( _err );
-              reject( _err );
-            } else{
-
-              dbExecutorNewsLetter.addNewsLetterHistory( connection, mailOptions )
-              .then( function(){
-
-                var __promises = [];
-                var attachList = mailOptions.attachments;
-
-                for( var j=0; j<attachList.length; j++ ){
-                  var attachInfo = {};
-                  attachInfo.insertId = results.insertId;
-                  attachInfo.filename = attachList[j].filename;
-                  attachInfo.path = attachList[j].path;
-                  attachInfo.cid = attachList[j].cid;
-
-                  __promises.push( dbExecutorNewsLetter.addNewsLetterAttachmentsHistory( connection, attachInfo ) );
-                }
-
-                Promise.all( __promises )
-                .then( function(){
-                  resolve( {"status":"succeed"} );
-                } )
-                .catch( function( ___err ){
-                  reject( ___err );
-                } );
-
-              } )
-              .catch( function( __err ){
-                reject( __err );
-              } )
-            }
-          } );
-        } )
+        .then( sendMail.bind( null ) )
         .catch( function( err ){
           reject( err );
         } )
@@ -296,12 +153,99 @@ exports.sendNewsLetterMail = function( connection, parameter, lang ){
 
     Promise.all( promises )
     .then( function(){
+      var argv = arguments[0];
+      resolve( argv );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+function sendMail( mailInfo ){
+  return new Promise( function(resolve, reject){
+    var nodemailer = require('nodemailer');
+
+    var transporterInfo = mailInfo.transporterInfo;
+    var mailOptions = mailInfo.mailOptions;
+
+    var transporter = nodemailer.createTransport( transporterInfo );
+    transporter.sendMail( mailOptions, function( err, info ){
+      if( err ){
+        logger.error( err );
+        reject( err );
+      }
+
+      resolve( info );
+    } );
+  } );
+}
+
+exports.addNewsLetterHistory = function( connection, parameter ){
+
+    return new Promise( function(resolve, reject){
+      var receiver = parameter.receiver;
+      var contents = parameter.contents;
+
+      var promises = [];
+
+      for( var i=0; i<receiver.length; i++ ){
+        promises.push(
+          new Promise( function(_resolve, _reject){
+            getMailInfo( parameter, receiver[i].lang, "newsletter", receiver[i] )
+            .then( function( mailInfo ){
+
+              var mailOptions = mailInfo.mailOptions;
+
+              dbExecutorNewsLetter.addNewsLetterHistory( connection, mailOptions )
+              .then( addNewsLetterAttachmentsHistory.bind( null, connection, mailOptions ) )
+              .then( function(){
+                _resolve( {"status":"succeed"} );
+              } )
+              .catch( function( _err ){
+                _reject( _err );
+              } )
+
+            } )
+            .catch( function( err ){
+              _reject( err );
+            } )
+          } )
+        );
+      }
+
+      Promise.all( promises )
+      .then( function(){
+        resolve( {"status":"succeed"} );
+      } )
+      .catch( function( err ){
+        reject( err );
+      } );
+    } );
+}
+
+function addNewsLetterAttachmentsHistory( connection, mailOptions, results ){
+  return new Promise( function(resolve, reject){
+    var promises = [];
+    var attachList = mailOptions.attachments;
+
+    for( var j=0; j<attachList.length; j++ ){
+      var attachInfo = {};
+      attachInfo.insertId = results.insertId;
+      attachInfo.filename = attachList[j].filename;
+      attachInfo.path = attachList[j].path;
+      attachInfo.cid = attachList[j].cid;
+
+      promises.push( dbExecutorNewsLetter.addNewsLetterAttachmentsHistory( connection, attachInfo ) );
+    }
+
+    Promise.all( promises )
+    .then( function(){
       resolve( {"status":"succeed"} );
     } )
-    .catch( function( _err ){
-      reject( _err );
+    .catch( function( err ){
+      reject( err );
     } );
-
   } );
 }
 
@@ -764,6 +708,336 @@ function getWelcomeMailContent( parameter, lang ){
   } );
 }
 
+// function getNewsLetterMailContent( parameter, lang ){
+//   return new Promise( function(resolve, reject){
+//
+//     var newsLetterMaster = parameter.newsLetterMaster;
+//     var newsLetterContentsList = parameter.newsLetterContentsList;
+//     var host = parameter.host;
+//
+//     var promises = [];
+//     promises.push( designContent(newsLetterMaster.content_en) );
+//     promises.push( designContent(newsLetterMaster.content_ko) );
+//     promises.push( createContentThumb(newsLetterContentsList, host, "en") );
+//     promises.push( createAnnounceThumb(newsLetterContentsList, host, "en") );
+//     promises.push( createContentThumb(newsLetterContentsList, host, "ko") );
+//     promises.push( createAnnounceThumb(newsLetterContentsList, host, "ko") );
+//
+//     Promise.all( promises )
+//     .then( function(){
+//       var argv = arguments[0];
+//       var content_en = argv[0];
+//       var content_ko = argv[1];
+//       var contents_en = argv[2];
+//       var announce_en = argv[3];
+//       var contents_ko = argv[4];
+//       var announce_ko = argv[5];
+//
+//
+//       var html = ``;
+//
+//       if( lang === "en" ){
+//         html = `
+//           <!DOCTYPE html>
+//           <html>
+//             <head>
+//
+//             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+//             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+//             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+//             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+//
+//             <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+//             <link href="https://fonts.googleapis.com/css?family=Roboto:italic" rel="stylesheet">
+//             <link href="https://fonts.googleapis.com/css?family=Roboto:bold" rel="stylesheet">
+//             <link href="https://fonts.googleapis.com/css?family=Roboto:bolditalic" rel="stylesheet">
+//             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+//
+//             <link rel="stylesheet" href="http://` + host + `/kangchangho-com.css">
+//
+//             <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/src/loadingoverlay.min.js"></script>
+//             <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
+//
+//             <script src="http://` + host + `/kangchangho-com.js"></script>
+//             <script src="http://` + host + `/design.js"></script>
+//
+//             <style>
+//               .paragraph-end {
+//                 margin-bottom: 30px;
+//               }
+//
+//               .small-section-end {
+//                 margin-bottom: 60px;
+//               }
+//
+//               .section-end {
+//                 margin-bottom: 120px;
+//               }
+//
+//               .content-footer .writer {
+//                 font-size: 16.5px;
+//                 font-weight: 800;
+//               }
+//
+//               .content-anchor {
+//                 color: #111111;
+//                 text-decoration: none;
+//               }
+//
+//               .content-anchor:hover {
+//                 color: #888888;
+//                 text-decoration: none;
+//                 cursor: pointer;
+//               }
+//
+//               .content-anchor:focus {
+//                 color: #888888;
+//                 text-decoration: none;
+//                 cursor: pointer;
+//               }
+//
+//               .content-image {
+//                 max-width: 100%;
+//               }
+//
+//               .content-text {
+//                 line-height: 1.65em;
+//                 margin-top: 20px;
+//                 color: #777777;
+//               }
+//
+//               .date {
+//                 font-size: 12px;
+//                 color: #777777;
+//               }
+//
+//               .after-line-block::after {
+//                 content: '';
+//                 display: block;
+//                 width: 5rem;
+//                 height: 2px;
+//                 background: black;
+//                 margin-top: 30px;
+//               }
+//             </style>
+//
+//
+//
+//             </head>
+//             <body style="padding: 25px">
+//
+//
+//               <article>
+//                 <div class="row">
+//                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+//                     <div class="content-body section-end">
+//                       <div>
+//                         <h2 class="after-line-block">` + newsLetterMaster.title_en + `</h2>
+//                       </div>
+//
+//                       <div class="paragraph-end"></div>
+//
+//                       <div class="small-section-end">
+//                         <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
+//                       </div>
+//
+//                       <p class="content-text small-section-end">
+//                         ` + content_en + `
+//                       </p>
+//                     </div>
+//
+//                     <div class="small-section-end"></div>
+//
+//                     <div class="content-footer">
+//                       <div class="paragraph-end content-anchor writer after-line-block">` + newsLetterMaster.writer_name_en + ` | ` + ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] + `</div>
+//                       <div>` + newsLetterMaster.writer_description_en + `</div>
+//                     </div>
+//
+//                   </div>
+//                 </div>
+//               </article>
+//
+//               <div class="section-end"></div>
+//
+//               <article>
+//                 <div class="row">
+//                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+//                     <h3 class="after-line-block">Post & Announce</h3>
+//
+//                     <table class="table table-responsive" style="border: 0">
+//                       <tbody>
+//                       `
+//                         + contents_en +
+//                       `<tr></tr>
+//                       `
+//                         + announce_en +
+//                       `
+//                       <tbody>
+//                     </table>
+//                   </div>
+//                 </div>
+//             </article>
+//           </body>
+//         </html>
+//         `;
+//       } else if( lang === "ko" ){
+//         html = `
+//           <!DOCTYPE html>
+//           <html>
+//             <head>
+//
+//             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+//             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+//             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+//             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+//
+//             <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+//             <link href="https://fonts.googleapis.com/css?family=Roboto:italic" rel="stylesheet">
+//             <link href="https://fonts.googleapis.com/css?family=Roboto:bold" rel="stylesheet">
+//             <link href="https://fonts.googleapis.com/css?family=Roboto:bolditalic" rel="stylesheet">
+//             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+//
+//             <link rel="stylesheet" href="http://` + host + `/kangchangho-com.css">
+//
+//             <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/src/loadingoverlay.min.js"></script>
+//             <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
+//
+//             <script src="http://` + host + `/kangchangho-com.js"></script>
+//             <script src="http://` + host + `/design.js"></script>
+//
+//             <style>
+//               .paragraph-end {
+//                 margin-bottom: 30px;
+//               }
+//
+//               .small-section-end {
+//                 margin-bottom: 60px;
+//               }
+//
+//               .section-end {
+//                 margin-bottom: 120px;
+//               }
+//
+//               .content-footer .writer {
+//                 font-size: 16.5px;
+//                 font-weight: 800;
+//               }
+//
+//               .content-anchor {
+//                 color: #111111;
+//                 text-decoration: none;
+//               }
+//
+//               .content-anchor:hover {
+//                 color: #888888;
+//                 text-decoration: none;
+//                 cursor: pointer;
+//               }
+//
+//               .content-anchor:focus {
+//                 color: #888888;
+//                 text-decoration: none;
+//                 cursor: pointer;
+//               }
+//
+//               .content-image {
+//                 max-width: 100%;
+//               }
+//
+//               .content-text {
+//                 line-height: 1.65em;
+//                 margin-top: 20px;
+//                 color: #777777;
+//               }
+//
+//               .date {
+//                 font-size: 12px;
+//                 color: #777777;
+//               }
+//
+//               .after-line-block::after {
+//                 content: '';
+//                 display: block;
+//                 width: 5rem;
+//                 height: 2px;
+//                 background: black;
+//                 margin-top: 30px;
+//               }
+//             </style>
+//
+//
+//             </head>
+//             <body style="padding: 25px;">
+//
+//
+//               <article>
+//                 <div class="row">
+//                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+//                     <div class="content-body section-end">
+//                       <div class="after-line-block">
+//                         <h2>` + newsLetterMaster.title_en + `</h2>
+//                       </div>
+//
+//                       <div class="paragraph-end"></div>
+//
+//                       <div class="small-section-end">
+//                         <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
+//                       </div>
+//
+//                       <p class="content-text small-section-end">
+//                         ` + content_ko + `
+//                       </p>
+//                     </div>
+//
+//                     <div class="small-section-end"></div>
+//
+//                     <div class="content-footer">
+//                       <div class="paragraph-end content-anchor writer after-line-block">` + newsLetterMaster.writer_name_ko + ` | ` + ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] + `</div>
+//                       <div>` + newsLetterMaster.writer_description_ko + `</div>
+//                     </div>
+//
+//                   </div>
+//                 </div>
+//               </article>
+//
+//               <div class="section-end"></div>
+//
+//               <article>
+//                 <div class="row">
+//                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+//                     <h3 class="after-line-block">Post & Announce</h3>
+//
+//                     <table class="table table-responsive" style="border: 0">
+//                       <tbody>
+//                       `
+//                         + contents_ko +
+//                       `<tr></tr>
+//                       `
+//                         + announce_ko +
+//                       `
+//                       <tbody>
+//                     </table>
+//                   </div>
+//                 </div>
+//             </article>
+//           </body>
+//         </html>
+//         `;
+//       }
+//
+//       logger.debug( "==========================" );
+//       logger.debug( html );
+//       logger.debug( "==========================" );
+//
+//       resolve( html );
+//     } )
+//     .catch( function(err){
+//       reject( err );
+//     } );
+//
+//   } );
+// }
+
 function getNewsLetterMailContent( parameter, lang ){
   return new Promise( function(resolve, reject){
 
@@ -794,296 +1068,345 @@ function getNewsLetterMailContent( parameter, lang ){
 
       if( lang === "en" ){
         html = `
-          <DOCTYPE html>
-          <html>
-            <head>
+        <!DOCTYPE html>
+        <html>
+          <head>
 
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+          <style>
+            body {
+              font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+              line-height: 1.4rem;
+              max-width: 600px;
+              margin: auto;
+              padding-top: 50px;
+              padding-bottom: 50px;
+            }
 
-            <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css?family=Roboto:italic" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css?family=Roboto:bold" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css?family=Roboto:bolditalic" rel="stylesheet">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+            .master-table {
+              max-width: 600px;
+            }
 
-            <link rel="stylesheet" href="http://` + host + `/kangchangho-com.css">
+            img {
+              max-width: 100%;
+            }
 
-            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/src/loadingoverlay.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
+            h2 {
+              font-size:30px;
+              margin: 30px 0 30px 0;
+            }
 
-            <script src="http://` + host + `/kangchangho-com.js"></script>
-            <script src="http://` + host + `/design.js"></script>
+            h3 {
+              font-size:25px;
+              margin: 30px 0 0px 0;
+            }
 
-            <style>
-              .paragraph-end {
-                margin-bottom: 30px;
-              }
+            .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+              border: 0;
+              padding-top: 15px;
+              padding-bottom: 15px;
+            }
 
-              .small-section-end {
-                margin-bottom: 60px;
-              }
+            .table>tbody>tr>td.td-aboveline {
+              border-top: 1px solid #ddd;
+            }
 
-              .section-end {
-                margin-bottom: 120px;
-              }
+            .table>tbody>tr>td.td-underline {
+              border-bottom: 1px solid #ddd;
+              padding-top:30px;
+              padding-bottom:30px;
+            }
 
-              .content-footer .writer {
-                font-size: 16.5px;
-                font-weight: 800;
-              }
+            .table>tbody>tr>td.td-inverse * {
+              color: #ffffff;
+              background-color: #000000;
+              padding:3px;
+            }
 
-              .content-anchor {
-                color: #111111;
-                text-decoration: none;
-              }
+            .list-table td {
+              padding: 15px 5px 15px 5px;
+            }
 
-              .content-anchor:hover {
-                color: #888888;
-                text-decoration: none;
-                cursor: pointer;
-              }
+            .text-center {
+              text-align: center;
+            }
 
-              .content-anchor:focus {
-                color: #888888;
-                text-decoration: none;
-                cursor: pointer;
-              }
+            .text-right {
+              text-align: right;
+            }
 
-              .content-image {
-                max-width: 100%;
-              }
+            .big-text {
+              font-size: 17.5px;
+            }
 
-              .content-text {
-                line-height: 1.65em;
-                margin-top: 20px;
-                color: #777777;
-              }
+            .text-embrassed {
+              font-size: 17.5px;
+              font-weight: 700;
+            }
 
-              .date {
-                font-size: 12px;
-                color: #777777;
-              }
+            .short-cut {
+              padding:15px 15px 15px 15px;
+              background-color: #000;
+              color: #fff;
+              text-decoration: none;
+              display: inline-block;
+            }
 
-              .after-line-block::after {
-                content: '';
-                display: block;
-                width: 5rem;
-                height: 2px;
-                background: black;
-                margin-top: 30px;
-              }
-            </style>
+            .short-cut:hover {
+              background-color: #666;
+              color: #fff;
+              text-decoration: none;
+            }
+
+            .title-anchor {
+              color: #000000;
+              font-size: 17px;
+              text-decoration: none
+            }
+
+            .title-anchor:hover {
+              color: #777777;
+              font-size: 17px;
+              text-decoration: none
+            }
+
+            .title-image:hover {
+              pointer: cursor;
+              opacity: 0.7;
+            }
+          </style>
 
 
+          </head>
+          <body>
 
-            </head>
-            <body style="padding: 25px">
-
-
-              <article>
-                <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="content-body section-end">
-                      <div>
-                        <h2 class="after-line-block">` + newsLetterMaster.title_en + `</h2>
-                      </div>
-
-                      <div class="paragraph-end"></div>
-
-                      <div class="small-section-end">
-                        <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
-                      </div>
-
-                      <p class="content-text small-section-end">
-                        ` + content_en + `
-                      </p>
+            <table class="table table-responsive master-table">
+              <tbody>
+                <tr>
+                  <td class="td-aboveline text-center">
+                    <h2>` + newsLetterMaster.title_en + `</h2>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-center">
+                    <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      ` + content_en + `
                     </div>
+                  </td>
+                </tr>
 
-                    <div class="small-section-end"></div>
+                <tr>
+                  <td class="td-underline">
+                    <a class="short-cut" href="http://` + host + `/newsletter/` + newsLetterMaster.id + `">Read News Letter</a>
+                    <a class="short-cut" href="http://` + host + `">kangchangho.com</a>
+                  </td>
+                </tr>
 
-                    <div class="content-footer">
-                      <div class="paragraph-end content-anchor writer after-line-block">` + newsLetterMaster.writer_name_en + ` | ` + ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] + `</div>
-                      <div>` + newsLetterMaster.writer_description_en + `</div>
-                    </div>
+                <tr>
+                  <td class="td-underline">
+                    <table class="list-table table-responsive">
+                      <tr>
+                        <td colspan=2>
+                          <h3>Posts & Announces</h3>
+                        </td>
+                      </tr>
 
-                  </div>
-                </div>
-              </article>
+                      ` + announce_en + `
+                      ` + contents_en + `
 
-              <div class="section-end"></div>
-
-              <article>
-                <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <h3 class="after-line-block">Post & Announce</h3>
-
-                    <table class="table table-responsive" style="border: 0">
-                      <tbody>
-                      `
-                        + contents_en +
-                      `<tr></tr>
-                      `
-                        + announce_en +
-                      `
-                      <tbody>
                     </table>
-                  </div>
-                </div>
-            </article>
-          </body>
-        </html>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="td-inverse text-center big-text">
+                    Copyright(c) 2018 KANGCHANGHO.COM <br>
+                    Created and Maintained by Ino Kang [Changho Kang].
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+
+        </body>
+      </html>
         `;
       } else if( lang === "ko" ){
         html = `
-          <DOCTYPE html>
+          <!DOCTYPE html>
           <html>
             <head>
 
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-
-            <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css?family=Roboto:italic" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css?family=Roboto:bold" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css?family=Roboto:bolditalic" rel="stylesheet">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-            <link rel="stylesheet" href="http://` + host + `/kangchangho-com.css">
-
-            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/src/loadingoverlay.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.6.0/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
-
-            <script src="http://` + host + `/kangchangho-com.js"></script>
-            <script src="http://` + host + `/design.js"></script>
-
             <style>
-              .paragraph-end {
-                margin-bottom: 30px;
+              body {
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+                line-height: 1.4rem;
+                max-width: 600px;
+                margin: auto;
+                padding-top: 50px;
+                padding-bottom: 50px;
               }
 
-              .small-section-end {
-                margin-bottom: 60px;
+              .master-table {
+                max-width: 600px;
               }
 
-              .section-end {
-                margin-bottom: 120px;
-              }
-
-              .content-footer .writer {
-                font-size: 16.5px;
-                font-weight: 800;
-              }
-
-              .content-anchor {
-                color: #111111;
-                text-decoration: none;
-              }
-
-              .content-anchor:hover {
-                color: #888888;
-                text-decoration: none;
-                cursor: pointer;
-              }
-
-              .content-anchor:focus {
-                color: #888888;
-                text-decoration: none;
-                cursor: pointer;
-              }
-
-              .content-image {
+              img {
                 max-width: 100%;
               }
 
-              .content-text {
-                line-height: 1.65em;
-                margin-top: 20px;
-                color: #777777;
+              h2 {
+                font-size:30px;
+                margin: 30px 0 30px 0;
               }
 
-              .date {
-                font-size: 12px;
-                color: #777777;
+              h3 {
+                font-size:25px;
+                margin: 30px 0 0px 0;
               }
 
-              .after-line-block::after {
-                content: '';
-                display: block;
-                width: 5rem;
-                height: 2px;
-                background: black;
-                margin-top: 30px;
+              .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+                border: 0;
+                padding-top: 15px;
+                padding-bottom: 15px;
+              }
+
+              .table>tbody>tr>td.td-aboveline {
+                border-top: 1px solid #ddd;
+              }
+
+              .table>tbody>tr>td.td-underline {
+                border-bottom: 1px solid #ddd;
+                padding-top:30px;
+                padding-bottom:30px;
+              }
+
+              .table>tbody>tr>td.td-inverse * {
+                color: #ffffff;
+                background-color: #000000;
+                padding:3px;
+              }
+
+              .list-table td {
+                padding: 15px 5px 15px 5px;
+              }
+
+              .text-center {
+                text-align: center;
+              }
+
+              .text-right {
+                text-align: right;
+              }
+
+              .big-text {
+                font-size: 17.5px;
+              }
+
+              .text-embrassed {
+                font-size: 17.5px;
+                font-weight: 700;
+              }
+
+              .short-cut {
+                padding:15px 15px 15px 15px;
+                background-color: #000;
+                color: #fff;
+                text-decoration: none;
+                display: inline-block;
+              }
+
+              .short-cut:hover {
+                background-color: #666;
+                color: #fff;
+                text-decoration: none;
+              }
+
+              .title-anchor {
+                color: #000000;
+                font-size: 17px;
+                text-decoration: none
+              }
+
+              .title-anchor:hover {
+                color: #777777;
+                font-size: 17px;
+                text-decoration: none
+              }
+
+              .title-image:hover {
+                pointer: cursor;
+                opacity: 0.7;
               }
             </style>
 
 
             </head>
-            <body style="padding: 25px;">
+            <body>
 
-
-              <article>
-                <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="content-body section-end">
-                      <div class="after-line-block">
-                        <h2>` + newsLetterMaster.title_en + `</h2>
-                      </div>
-
-                      <div class="paragraph-end"></div>
-
-                      <div class="small-section-end">
-                        <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
-                      </div>
-
-                      <p class="content-text small-section-end">
+              <table class="table table-responsive master-table">
+                <tbody>
+                  <tr>
+                    <td class="td-aboveline text-center">
+                      <h2>` + newsLetterMaster.title_ko + `</h2>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-center">
+                      <img class="content-image" id="` + newsLetterMaster.image_id + `" src="cid:` + newsLetterMaster.image_path + `" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div>
                         ` + content_ko + `
-                      </p>
-                    </div>
+                      </div>
+                    </td>
+                  </tr>
 
-                    <div class="small-section-end"></div>
+                  <tr>
+                    <td class="td-underline">
+                      <a class="short-cut" href="http://` + host + `/newsletter/` + newsLetterMaster.id + `">뉴스레터 보기</a>
+                      <a class="short-cut" href="http://` + host + `">강창호닷컴 바로가기</a>
+                    </td>
+                  </tr>
 
-                    <div class="content-footer">
-                      <div class="paragraph-end content-anchor writer after-line-block">` + newsLetterMaster.writer_name_ko + ` | ` + ( ( newsLetterMaster.create_date ).toISOString() ).split("T")[0] + `</div>
-                      <div>` + newsLetterMaster.writer_description_ko + `</div>
-                    </div>
+                  <tr>
+                    <td class="td-underline">
+                      <table class="list-table table-responsive">
+                        <tr>
+                          <td colspan=2>
+                            <h3>Posts & Announces</h3>
+                          </td>
+                        </tr>
 
-                  </div>
-                </div>
-              </article>
+                          ` + announce_ko + `
+                          ` + contents_ko + `
 
-              <div class="section-end"></div>
+                      </table>
+                    </td>
+                  </tr>
 
-              <article>
-                <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <h3 class="after-line-block">Post & Announce</h3>
+                  <tr>
+                    <td class="td-inverse text-center big-text">
+                      Copyright(c) 2018 KANGCHANGHO.COM <br>
+                      Created and Maintained by Ino Kang [Changho Kang].
+                    </td>
+                  </tr>
 
-                    <table class="table table-responsive" style="border: 0">
-                      <tbody>
-                      `
-                        + contents_ko +
-                      `<tr></tr>
-                      `
-                        + announce_ko +
-                      `
-                      <tbody>
-                    </table>
-                  </div>
-                </div>
-            </article>
+                </tbody>
+              </table>
+
           </body>
         </html>
         `;
       }
 
-      logger.debug( "==========================" );
       logger.debug( html );
-      logger.debug( "==========================" );
 
       resolve( html );
     } )
@@ -1105,7 +1428,8 @@ function designContent( content ){
 
       $("img").each( function(){
         $(this).attr( "id", "inodient" );
-        $(this).css( {'max-width':'50vw'} )
+        $(this).css( {'width':''} );
+        $(this).css( {'max-width':'100%'} );
         var orgSrc = $(this).attr( "src" );
         $(this).attr( "src", orgSrc.replace( "/", "cid:" ) );
       } );
@@ -1130,7 +1454,7 @@ function designContent( content ){
 
 function createContentThumb( newsLetterContentsList, host, lang ){
   return new Promise( function(resolve, reject){
-    var list = ``;
+    var list = [];
     var title = "";
 
     for( var i=0; i<newsLetterContentsList.length; i++ ){
@@ -1142,13 +1466,35 @@ function createContentThumb( newsLetterContentsList, host, lang ){
           title = newsLetterContentsList[i].title_ko;
         }
 
-        list += `<tr>
-          <td style="border: 0"><a style="text-decoration: underline;" href="http://` + host + `/content/` + newsLetterContentsList[i].link_id + `" class="content-anchor"><p>` + title + `</p></a></td>
-        </tr>`;
+        list.push( `<td class="text-center">
+          <a href="http://` + host + `/content/` + newsLetterContentsList[i].link_id +`"><img class="title-image" style="width: 100%" src="cid:` + newsLetterContentsList[i].image_path + `" /></a>
+          <a class="title-anchor" href="http://` + host + `/content/` + newsLetterContentsList[i].link_id +`">` + title + `</a>
+        </td>` );
       }
     }
 
-    resolve( list );
+    var listString = `<tr>`;
+
+    for( var i=0; i<list.length; i++ ){
+      listString += list[i];
+
+      if( i % 2 == 1 ){
+        if( i === list.length - 1 ){
+          listString += `</tr>`;
+        } else{
+          listString += `</tr><tr>`;
+        }
+      } else {
+        if( i === list.length - 1 ){
+          listString += `
+            <td>
+            </td>
+          `
+          listString += `</tr>`;
+        }
+      }
+    }
+    resolve( listString );
   } );
 }
 
@@ -1167,7 +1513,10 @@ function createAnnounceThumb( newsLetterContentsList, host, lang ){
         }
 
         list += `<tr>
-          <td style="border: 0"><a style="text-decoration: underline;" href="http://` + host + `/announce/` + newsLetterContentsList[i].link_id + `" class="content-anchor"><p>` + title + `</p></a></td>
+          <td colspan=2 class="text-center">
+            <a href="http://` + host + `/announce/` + newsLetterContentsList[i].link_id +`"><img class="title-image" style="width: 100%" src="cid:` + newsLetterContentsList[i].image_path + `" /></a>
+            <a class="title-anchor" href="http://` + host + `/announce/` + newsLetterContentsList[i].link_id +`">` + title + `</a>
+          </td>
         </tr>`;
       }
     }
@@ -1275,6 +1624,7 @@ function getNewsLetterAttachments( parameter, lang ){
     var promises = [];
     promises.push( extractAttachments(newsLetterMaster.content_en) );
     promises.push( extractAttachments(newsLetterMaster.content_ko) );
+    promises.push( getRelatedArticleAttachment(newsLetterContentsList) );
 
     Promise.all( promises )
     .then( function(){
@@ -1282,6 +1632,7 @@ function getNewsLetterAttachments( parameter, lang ){
 
       var content_en = argv[0];
       var content_ko = argv[1];
+      var articles_attach = argv[2];
 
       attachments.push( {
         filename: newsLetterMaster.image_path,
@@ -1295,6 +1646,10 @@ function getNewsLetterAttachments( parameter, lang ){
 
       for( var j=0; j<argv[1].length; j++ ){
         attachments.push( (argv[1])[j] );
+      }
+
+      for( var k=0; k<argv[2].length; k++ ){
+        attachments.push( (argv[2])[k] );
       }
 
       resolve( attachments );
@@ -1321,16 +1676,28 @@ function extractAttachments( content ){
           path: require("path").join( __runningPath, "upload", "image", $(this).attr( "src" ).split("/")[1] ),
           cid: $(this).attr( "src" ).split("/")[1]
         } );
-
-        $(this).css( {'max-width':'50vw'} );
       } );
-
-      logger.error( attachments );
 
       resolve( attachments );
     } catch( err ){
       reject( err );
     }
+  } );
+}
+
+function getRelatedArticleAttachment( newsLetterContentsList ){
+  return new Promise( function(resolve, reject){
+    var attachments = [];
+
+    for( var i=0; i<newsLetterContentsList.length; i++ ){
+      attachments.push( {
+        filename: newsLetterContentsList[i].image_path,
+        path: require("path").join( __runningPath, "upload", "image", newsLetterContentsList[i].image_path ),
+        cid: newsLetterContentsList[i].image_path
+      } );
+    }
+
+    resolve( attachments );
   } );
 }
 
