@@ -51,7 +51,7 @@ exports.getPageList = function( connection, lang, currentPage ){
     dbExecutorContent.getPageList( connection, lang )
     .then( function( results ){
 
-      var totalListCount = ( (results)[0] ).total_count;
+      var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
       var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
       var currentPage = 1;
 
@@ -122,7 +122,7 @@ exports.getPageListWithSearchWord = function( connection, lang, searchWord ){
     .then( function( results ){
 
       if( results.length > 0 ){
-        var totalListCount = ( (results)[0] ).total_count;
+        var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
         var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
         var currentPage = 1;
 
@@ -163,7 +163,7 @@ exports.getPageListWithSearchWordByIndex = function( connection, lang, searchWor
       dbExecutorContent.getPageListWithSearchWordByIndex( connection, lang, "%" + searchWord + "%", pageInfo )
       .then( function( results ){
 
-        var totalListCount = ( (results)[0] ).total_count;
+        var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
         var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
 
         pageInfo.totalListCount = totalListCount;
@@ -201,7 +201,7 @@ exports.getPageListWithCategory = function( connection, lang, targetId ){
     dbExecutorContent.getPageListWithCategory( connection, lang, targetId )
     .then( function( results ){
 
-      var totalListCount = ( (results)[0] ).total_count;
+      var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
       var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
       var currentPage = 1;
 
@@ -237,7 +237,7 @@ exports.getPageListWithCategoryByIndex = function( connection, lang, targetId, p
       dbExecutorContent.getPageListWithCategoryByIndex( connection, lang, targetId, pageInfo )
       .then( function( results ){
 
-        var totalListCount = ( (results)[0] ).total_count;
+        var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
         var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
         var currentPage = parameter.calledPage;
 
@@ -275,7 +275,7 @@ exports.getPageListWithWriter = function( connection, lang, targetId ){
     dbExecutorContent.getPageListWithWriter( connection, lang, targetId )
     .then( function( results ){
 
-      var totalListCount = ( (results)[0] ).total_count;
+      var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
       var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
       var currentPage = 1;
 
@@ -311,7 +311,7 @@ exports.getPageListWithWriterByIndex = function( connection, lang, targetId, par
       dbExecutorContent.getPageListWithWriterByIndex( connection, lang, targetId, pageInfo )
       .then( function( results ){
 
-        var totalListCount = ( (results)[0] ).total_count;
+        var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
         var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
         var currentPage = parameter.calledPage;
 
@@ -349,7 +349,7 @@ exports.getPageListWithHash = function( connection, lang, targetId ){
     dbExecutorContent.getPageListWithHash( connection, lang, targetId )
     .then( function( results ){
 
-      var totalListCount = ( (results)[0] ).total_count;
+      var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
       var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
       var currentPage = 1;
 
@@ -385,7 +385,7 @@ exports.getPageListWithHashByIndex = function( connection, lang, targetId, param
       dbExecutorContent.getPageListWithHashByIndex( connection, lang, targetId, pageInfo )
       .then( function( results ){
 
-        var totalListCount = ( (results)[0] ).total_count;
+        var totalListCount = typeof ( (results)[0] ) === "undefined" ? 0 : ( (results)[0] ).total_count;
         var totalPageCount = totalListCount % 8 == 0 ? totalListCount / 8 : parseInt( (totalListCount / 8) ) + 1 ;
         var currentPage = parameter.calledPage;
 
