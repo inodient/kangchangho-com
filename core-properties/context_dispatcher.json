@@ -9,6 +9,14 @@
             "view": "welcome.ejs"
         },
         {
+            "id": "about",
+            "path": "/about",
+            "controllerJS": "controller_content.js",
+            "controlFunction": "control_about",
+            "viewPath": "",
+            "view": "about.ejs"
+        },
+        {
             "id": "write",
             "path": "/write",
             "controllerJS": "controller_write.js",

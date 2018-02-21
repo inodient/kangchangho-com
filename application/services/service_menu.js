@@ -5,7 +5,8 @@ const dbExecutorMenu = require( require("path").join( __runningPath, "applicatio
 // STATIC - START
 exports.getMenuListByLang = function( connection, contentId, lang, targetId ){
   return new Promise( function(resolve, reject){
-		dbExecutorMenu.getMenuListByLang( connection, contentId, lang, targetId )
+
+    dbExecutorMenu.getMenuListByLang( connection, contentId, lang, targetId )
 		.then( function( results ){
       resolve( {"menu":results}  );
 		} )

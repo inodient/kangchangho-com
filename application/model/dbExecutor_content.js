@@ -53,6 +53,21 @@ exports.getPageListByIndex = function( connection, lang, parameter ){
 
 
 // CONTENT PAGE - START
+exports.getLastAboutContentId = function( connection ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getLastAboutContentId";
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 exports.getContentMaster = function( connection, contentId, lang ){
   return new Promise( function(resolve, reject){
     var params = [];

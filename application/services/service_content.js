@@ -41,6 +41,50 @@ exports.getContent = function( connection, contentId, lang ){
   } );
 }
 
+exports.getAboutContent = function( connection, lang ){
+  return new Promise( function(resolve, reject){
+
+    var promises = [];
+
+    dbExecutorContent.getLastAboutContentId( connection )
+    .then( function( results ){
+
+      var contentId = results[0].id;
+
+      promises.push( dbExecutorContent.getContentMaster( connection, contentId, lang ) );
+      promises.push( dbExecutorMenu.getContentCategory( connection, contentId, lang ) );
+      promises.push( dbExecutorHash.getContentHash( connection, contentId, lang ) );
+      promises.push( dbExecutorImage.getContentImage( connection, contentId, lang ) );
+      promises.push( dbExecutorWriter.getContentWriter( connection, contentId, lang ) );
+      promises.push( dbExecutorContent.getRelatedContents( connection, lang ) );
+      promises.push( dbExecutorContent.increaseContentHitCount( connection, 10, contentId ) );
+
+      Promise.all( promises )
+      .then( function(){
+        var argv = arguments[0];
+
+        resolve( {
+          "contentMaster": argv[0],
+          "contentCategory": argv[1],
+          "contentHash": argv[2],
+          "contentImage": argv[3],
+          "contentWriter": argv[4],
+          "relatedContents": argv[5]
+        } );
+
+      } )
+      .catch( function( err ){
+        reject( err );
+      } );
+
+
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 
 
 

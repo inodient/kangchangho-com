@@ -60,6 +60,8 @@ $(document).ready( function(){
         if( eventFunction == "goToCategory()" ){
           var id = $(this).attr( "id" );
           $(location).attr( "href", "/category/" + id );
+        } else if( eventFunction == "goToAbout()" ){
+          $(location).attr( "href", "/about" );
         }
       }
       event.stopPropagation();
@@ -71,6 +73,8 @@ $(document).ready( function(){
       if( eventFunction == "goToCategory()" ){
         var id = $(this).attr( "id" );
         $(location).attr( "href", "/category/" + id );
+      } else if( eventFunction == "goToAbout()" ){
+        $(location).attr( "href", "/about" );
       }
     } );
 
@@ -84,6 +88,8 @@ $(document).ready( function(){
       if( eventFunction == "goToCategory()" ){
         var id = $(this).attr( "id" );
         $(location).attr( "href", "/category/" + id );
+      } else if( eventFunction == "goToAbout()" ){
+        $(location).attr( "href", "/about" );
       }
     } );
 

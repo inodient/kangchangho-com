@@ -8,12 +8,6 @@ const dbExecutorHistory = require( require("path").join( __runningPath, "applica
 
 
 
-var getClientAddress = function(req) {
-    return (req.headers["X-Forwarded-For"] ||
-            req.headers["x-forwarded-for"] ||
-            '').split(',')[0] ||
-           req.client.remoteAddress;
-};
 
 exports.getStaticInfo = function( req, res, connection, targetId ){
   return new Promise( function(resolve, reject){

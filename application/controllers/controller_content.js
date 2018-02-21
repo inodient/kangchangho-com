@@ -30,3 +30,28 @@ exports.control = function( req, res, connection ){
     } );
 	} );
 }
+
+exports.control_about = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+
+    staticService.getStaticInfo( req, res, connection, "" )
+    .then( function( staticInfo ){
+      var lang = staticInfo.lang;
+      var promises = [];
+
+      promises.push( contentService.getAboutContent( connection, lang ) );
+
+      Promise.all( promises )
+      .then( function(){
+        var argv = arguments[0];
+        resolve( Object.assign( staticInfo, argv[0] ) );
+      } )
+      .catch( function( _err ){
+        reject( _err );
+      } );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+	} );
+}

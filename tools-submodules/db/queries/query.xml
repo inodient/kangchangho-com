@@ -176,8 +176,19 @@
           description,
           case when ( id = ( select category from TB_CONTENT where id = ? )
                    or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ( select category from TB_CONTENT where id = ? ) ) ) )
-                   or ( ( id = ? ) or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ? ) ) )  then 'active' else 'normal' end as active
-                   from TB_MENU ORDER BY group_value, DEPTH, SEQUENCE
+                   or ( ( id = ? ) or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ? ) ) )  then 'active'
+               when (? = '') and (? = '') and (name = 'About') then 'active'
+               else 'normal' end as active
+          from TB_MENU ORDER BY group_value, DEPTH, SEQUENCE
+      ]]>
+    </query>
+
+    <query id='getLastAboutContentId'>
+      <![CDATA[
+        select id
+          from TB_CONTENT
+         where category = ( select id from TB_MENU where name = 'About' )
+         order by create_date desc limit 1
       ]]>
     </query>
 
