@@ -740,8 +740,14 @@ $(document).ready(function() {
         {
           var results = arguments[0]
 
-          alert( "success " + results.contentId ); // show response from the php script.
-          $(location).attr( "href", "/content/" + results.contentId );
+          // about
+          if( results.contentId === "-1" ){
+            alert( "success save about" + results.contentId );
+            $(location).attr( "href", "/about" );
+          } else {
+            alert( "success " + results.contentId ); // show response from the php script.
+            $(location).attr( "href", "/content/" + results.contentId );
+          }
         }
       } );
 

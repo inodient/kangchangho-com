@@ -61,7 +61,9 @@ exports.control_modify = function( req, res, connection ){
 			promises.push( announceService.getAnnounceCategory( connection ) );
 			promises.push( announceService.getAnnounceType( connection ) );
 
-			if( type === "content" ){
+			if( type === "about" ){
+				promises.push( contentService.getModifyAboutContentMaster( connection, id ) );
+			} else if( type === "content" ){
 				promises.push( contentService.getModifyContentMaster( connection, id ) );
 			} else if( type === "announce" ){
 				promises.push( announceService.getModifyAnnounceMaster( connection, id ) );
@@ -154,7 +156,9 @@ exports.control_upload_content = function( req, res, connection ){
 					var contentId = result.contentId;
 
 					if( result.target === "about" ){
-						resolve( result.contentId );
+						logger.debug( "about :", result.contentId );
+
+						resolve( {"contentId": result.contentId} );
 					}
 
 					var _promises = [];
@@ -186,7 +190,9 @@ exports.control_upload_content = function( req, res, connection ){
 					var contentId = result.contentId;
 
 					if( result.target === "about" ){
-						resolve( result.contentId );
+						logger.error( result );
+
+						resolve( {"contentId": result.contentId} );
 					}
 
 					var _promises = [];

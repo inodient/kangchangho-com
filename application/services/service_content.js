@@ -585,7 +585,7 @@ exports.modifyContent = function( connection, parameter ){
       if( isAboutContent ){
         dbExecutorContent.modifyAboutContent( connection, parameter )
         .then( function( modifyId ){
-          resolve( modifyId );
+          resolve( {"status":"succeed", "target":"about", "contentId":"-1"} );
         } )
         .catch( function(err){
           reject( err );
@@ -593,7 +593,7 @@ exports.modifyContent = function( connection, parameter ){
       } else {
         dbExecutorContent.modifyContent( connection, parameter )
         .then( function( modifyId ){
-          resolve( modifyId );
+          resolve( {"status":"succeed", "target":"content", "contentId":modifyId} );
         } )
         .catch( function(err){
           reject( err );
@@ -632,6 +632,21 @@ exports.modifyContent = function( connection, parameter ){
     // .catch( function( err ){
     //   reject( err );
     // } );
+  } );
+}
+
+
+
+
+exports.getModifyAboutContentMaster = function( connection, id ){
+  return new Promise( function( resolve, reject){
+    dbExecutorContent.getModifyAboutContentMaster( connection, id )
+    .then( function( results ){
+      resolve( {"modifyData": results[0]} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
   } );
 }
 

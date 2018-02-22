@@ -546,7 +546,7 @@ exports.modifyAboutContent = function( connection, parameter ){
 
     mysqlHandler.executeQuery( queryId, params, connection )
     .then( function( queryResults ){
-      resolve( parameter.modifyId );
+      resolve( queryResults.results );
     } )
     .catch( function( err ){
       reject( err );
@@ -591,6 +591,23 @@ exports.getModifyContentMaster = function( connection, id ){
     var queryId = "getModifyContentMaster";
 
     params.push( id );
+    params.push( id );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
+exports.getModifyAboutContentMaster = function( connection, id ){
+  return new Promise( function( resolve, reject){
+    var params = [];
+    var queryId = "getModifyAboutContentMaster";
+
     params.push( id );
 
     mysqlHandler.executeQuery( queryId, params, connection )

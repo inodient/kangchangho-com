@@ -107,7 +107,7 @@
             comment_en = ?,
             image_main = ?,
             image_carousel = ?
-        WHERE id = ?
+        WHERE id = ( select id from (select id from TB_ABOUT order by create_date desc limit 1 ) wrap )
       ]]>
     </query>
 
@@ -1269,6 +1269,29 @@
                ( select GROUP_CONCAT( text SEPARATOR ', ' ) from TB_HASH_KV where id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id = ? ) ) as hashes
           from TB_CONTENT con
          where con.id = ?
+      ]]>
+    </query>
+
+    <query id='getModifyAboutContentMaster'>
+      <![CDATA[
+        select about.id,
+               about.category,
+               about.writer,
+               about.create_date,
+               about.title_ko,
+               about.title_en,
+               about.content_ko,
+               about.content_en,
+               about.comment_ko,
+               about.comment_en,
+               about.image_main,
+               '' as image_main_path,
+               about.image_carousel,
+               '' as image_carousel_path,
+               about.hit_count,
+               '' as hashes
+          from TB_ABOUT about
+         where about.id = (select id from TB_ABOUT order by create_date desc limit 1 )
       ]]>
     </query>
 
