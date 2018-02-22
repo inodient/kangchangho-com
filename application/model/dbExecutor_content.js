@@ -130,6 +130,30 @@ exports.increaseContentHitCount = function( connection, increseHitCount, content
 
 
 
+// ABOUT CONTENT PAGE - START
+exports.getAboutContentMaster = function( connection, lang ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getAboutContentMaster";
+
+    params.push( lang );
+    params.push( lang );
+    params.push( lang );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+// ABOUT CONTENT PAGE - END
+
+
+
+
 // SEARCH WORD - START
 exports.getPageListWithSearchWord = function( connection, lang, searchWord ){
   return new Promise( function(resolve, reject){
@@ -406,6 +430,24 @@ exports.getAnnounceContentList = function( connection ){
   } );
 }
 
+exports.checkAboutContent = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "checkAboutContent";
+
+    params.push( parameter.sel_category );
+    logger.error( parameter.sel_category );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 exports.addContent = function( connection, parameter ){
 	return new Promise( function(resolve, reject){
 		var params = [];
@@ -430,6 +472,32 @@ exports.addContent = function( connection, parameter ){
 			reject( err );
 		} );
 	} );
+}
+
+exports.addAboutContent = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "addAboutContent";
+
+    params.push( parameter.sel_category );
+    params.push( parameter.sel_writer );
+    params.push( parameter.title_ko );
+    params.push( parameter.title_en );
+    params.push( parameter.content_ko );
+    params.push( parameter.content_en );
+    params.push( parameter.comment_ko );
+    params.push( parameter.comment_en );
+    params.push( parameter.image_main );
+    params.push( parameter.image_carousel );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( {"status":"succeed"} );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
 }
 
 exports.modifyContent = function( connection, parameter ){
@@ -457,6 +525,33 @@ exports.modifyContent = function( connection, parameter ){
 			reject( err );
 		} );
 	} );
+}
+
+exports.modifyAboutContent = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "modifyAboutContent";
+
+    params.push( parameter.sel_category );
+    params.push( parameter.sel_writer );
+    params.push( parameter.title_ko );
+    params.push( parameter.title_en );
+    params.push( parameter.content_ko );
+    params.push( parameter.content_en );
+    params.push( parameter.comment_ko );
+    params.push( parameter.comment_en );
+    params.push( parameter.image_main );
+    params.push( parameter.image_carousel );
+    params.push( parameter.modifyId );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( parameter.modifyId );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
 }
 
 exports.getInsertedContentId = function( connection, parameter ){

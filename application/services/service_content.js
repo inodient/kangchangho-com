@@ -51,25 +51,31 @@ exports.getAboutContent = function( connection, lang ){
 
       var contentId = typeof results[0] === "undefined" ? -1 : results[0].id;
 
-      promises.push( dbExecutorContent.getContentMaster( connection, contentId, lang ) );
-      promises.push( dbExecutorMenu.getContentCategory( connection, contentId, lang ) );
-      promises.push( dbExecutorHash.getContentHash( connection, contentId, lang ) );
-      promises.push( dbExecutorImage.getContentImage( connection, contentId, lang ) );
-      promises.push( dbExecutorWriter.getContentWriter( connection, contentId, lang ) );
-      promises.push( dbExecutorContent.getRelatedContents( connection, lang ) );
-      promises.push( dbExecutorContent.increaseContentHitCount( connection, 10, contentId ) );
+      // promises.push( dbExecutorContent.getContentMaster( connection, contentId, lang ) );
+      // promises.push( dbExecutorMenu.getContentCategory( connection, contentId, lang ) );
+      // promises.push( dbExecutorHash.getContentHash( connection, contentId, lang ) );
+      // promises.push( dbExecutorImage.getContentImage( connection, contentId, lang ) );
+      // promises.push( dbExecutorWriter.getContentWriter( connection, contentId, lang ) );
+      // promises.push( dbExecutorContent.getRelatedContents( connection, lang ) );
+      // promises.push( dbExecutorContent.increaseContentHitCount( connection, 10, contentId ) );
 
+      promises.push( dbExecutorContent.getAboutContentMaster( connection, lang ) );
+      promises.push( dbExecutorWriter.getAboutContentWriter( connection, lang ) );
+      
       Promise.all( promises )
       .then( function(){
         var argv = arguments[0];
 
         resolve( {
+          // "contentMaster": argv[0],
+          // "contentCategory": argv[1],
+          // "contentHash": argv[2],
+          // "contentImage": argv[3],
+          // "contentWriter": argv[4],
+          // "relatedContents": argv[5]
+
           "contentMaster": argv[0],
-          "contentCategory": argv[1],
-          "contentHash": argv[2],
-          "contentImage": argv[3],
-          "contentWriter": argv[4],
-          "relatedContents": argv[5]
+          "contentWriter": argv[1]   
         } );
 
       } )
@@ -481,20 +487,76 @@ exports.getAnnounceContentList = function( connection ){
 
 exports.addContent = function( connection, parameter ){
   return new Promise( function(resolve, reject){
-    dbExecutorContent.addContent( connection, parameter )
-    .then( function(){
 
-      dbExecutorContent.getInsertedContentId( connection, parameter )
-			.then( function( results ){
-				resolve( results[0]._ID );
-			} )
-			.catch( function( _err ){
-				reject( _err );
-			} );
+    dbExecutorContent.checkAboutContent( connection, parameter )
+    .then( function( results ){
+      var isAboutContent = results[0].is_about_content === 1 ? true : false;
+
+      if( isAboutContent ){
+        dbExecutorContent.addAboutContent( connection, parameter )
+        .then( function(){
+          resolve( {"status":"succeed", "target":"about", "contentId":"-1"} );
+        } )
+        .catch( function(_err){
+          reject( _err );
+        } );
+      } else {
+        dbExecutorContent.addContent( connection, parameter )
+        .then( function(){
+
+          dbExecutorContent.getInsertedContentId( connection, parameter )
+          .then( function( results ){
+            resolve( {"status":"succeed", "target":"content", "contentId":results[0]._ID} );
+          } )
+          .catch( function( __err ){
+            reject( __err );
+          } );
+        } )
+        .catch( function(_err){
+          reject( _err );
+        } );
+      }
     } )
-    .catch( function(err){
+    .catch( function( err ){
       reject( err );
     } );
+
+
+    // dbExecutorContent.checkAboutContent( connection, parameter )
+    // .then( funciton( results ){
+    //   var isAboutContent = results[0] === 1 ? true : false;
+
+    //   logger.debug( "isAboutContent :", isAboutContent );
+
+    //   if( isAboutContent ){
+    //     dbExecutorContent.addAboutContent( connection, parameter )
+    //     .then( function(){
+    //       resolve( {"status":"succeed"} );
+    //     } )
+    //     .catch( function(_err){
+    //       reject( _err );
+    //     } );
+    //   } else {
+    //     dbExecutorContent.addContent( connection, parameter )
+    //     .then( function(){
+
+    //       dbExecutorContent.getInsertedContentId( connection, parameter )
+    //       .then( function( results ){
+    //         resolve( results[0]._ID );
+    //       } )
+    //       .catch( function( __err ){
+    //         reject( __err );
+    //       } );
+    //     } )
+    //     .catch( function(_err){
+    //       reject( _err );
+    //     } );
+    //   }
+    // } )
+    // .catch( function(err){
+    //   reject( err );
+    // } )
+
   } );
 }
 
@@ -516,13 +578,60 @@ exports.getModifyContentMaster = function( connection, id ){
 exports.modifyContent = function( connection, parameter ){
   return new Promise( function(resolve, reject){
 
-    dbExecutorContent.modifyContent( connection, parameter )
-    .then( function( modifyId ){
-      resolve( modifyId );
+    dbExecutorContent.checkAboutContent( connection, parameter )
+    .then( function( results ){
+      var isAboutContent = results[0].is_about_content === 1 ? true : false;
+
+      if( isAboutContent ){
+        dbExecutorContent.modifyAboutContent( connection, parameter )
+        .then( function( modifyId ){
+          resolve( modifyId );
+        } )
+        .catch( function(err){
+          reject( err );
+        } );
+      } else {
+        dbExecutorContent.modifyContent( connection, parameter )
+        .then( function( modifyId ){
+          resolve( modifyId );
+        } )
+        .catch( function(err){
+          reject( err );
+        } );
+      }
+
     } )
-    .catch( function(err){
+    .catch( function( err ){
       reject( err );
-    } );
+    } ); 
+
+    // dbExecutorContent.checkAboutContent( connection, parameter )
+    // .then( funciton( results ){
+    //   var isAboutContent = results[0] === 1 ? true : false;
+
+    //   logger.debug( "isAboutContent :", isAboutContent );
+
+    //   if( isAboutContent ){
+    //     dbExecutorContent.modifyAboutContent( connection, parameter )
+    //     .then( function( modifyId ){
+    //       resolve( modifyId );
+    //     } )
+    //     .catch( function(err){
+    //       reject( err );
+    //     } );
+    //   } else {
+    //     dbExecutorContent.modifyContent( connection, parameter )
+    //     .then( function( modifyId ){
+    //       resolve( modifyId );
+    //     } )
+    //     .catch( function(err){
+    //       reject( err );
+    //     } );
+    //   }
+    // } )
+    // .catch( function( err ){
+    //   reject( err );
+    // } );
   } );
 }
 

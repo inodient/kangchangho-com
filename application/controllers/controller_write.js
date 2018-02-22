@@ -149,7 +149,13 @@ exports.control_upload_content = function( req, res, connection ){
 			if( req.body.writeMode === "insert" ){
 
 				contentService.addContent( connection, req.body )
-				.then( function( contentId ){
+				.then( function( result ){
+
+					var contentId = result.contentId;
+
+					if( result.target === "about" ){
+						resolve( result.contentId );
+					}
 
 					var _promises = [];
 					var hashesList = req.body.hashesList;
@@ -175,7 +181,13 @@ exports.control_upload_content = function( req, res, connection ){
 			} else if( req.body.writeMode === "modify" ){
 
 				contentService.modifyContent( connection, req.body )
-				.then( function( contentId ){
+				.then( function( result ){
+
+					var contentId = result.contentId;
+
+					if( result.target === "about" ){
+						resolve( result.contentId );
+					}
 
 					var _promises = [];
 					var hashesList = req.body.hashesList;

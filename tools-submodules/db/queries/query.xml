@@ -54,6 +54,15 @@
       ]]>
     </query>
 
+    <query id='checkAboutContent'>
+      <![CDATA[
+        SELECT 
+          CASE WHEN name = 'About' THEN 1
+               ELSE 0 END as is_about_content
+          FROM TB_MENU where id = ?
+      ]]>
+    </query>
+
     <query id='addContent'>
       <![CDATA[
         INSERT INTO TB_CONTENT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel)
@@ -61,9 +70,33 @@
       ]]>
     </query>
 
+    <query id='addAboutContent'>
+      <![CDATA[
+        INSERT INTO TB_ABOUT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel)
+        VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)
+      ]]>
+    </query>
+
     <query id='modifyContent'>
       <![CDATA[
         UPDATE TB_CONTENT
+        SET category = ?,
+            writer = ?,
+            title_ko = ?,
+            title_en = ?,
+            content_ko = ?,
+            content_en = ?,
+            comment_ko = ?,
+            comment_en = ?,
+            image_main = ?,
+            image_carousel = ?
+        WHERE id = ?
+      ]]>
+    </query>
+
+    <query id='modifyAboutContent'>
+      <![CDATA[
+        UPDATE TB_ABOUT
         SET category = ?,
             writer = ?,
             title_ko = ?,
@@ -183,14 +216,14 @@
       ]]>
     </query>
 
-    <query id='getLastAboutContentId'>
+    <!-- <query id='getLastAboutContentId'>
       <![CDATA[
         select id
           from TB_CONTENT
          where category = ( select id from TB_MENU where name = 'About' )
          order by create_date desc limit 1
       ]]>
-    </query>
+    </query> -->
 
     <query id='getContentMaster'>
       <![CDATA[
@@ -209,6 +242,26 @@
                hit_count
           from TB_CONTENT
          where id = ?
+      ]]>
+    </query>
+
+    <query id='getAboutContentMaster'>
+      <![CDATA[
+        select id,
+               category,
+               writer,
+               create_date,
+               case when ? = 'en' then title_en
+                    else title_ko end as title,
+               case when ? = 'en' then content_en
+                    else content_ko end as content,
+               case when ? = 'en' then comment_en
+                    else comment_ko end as comment,
+               image_main,
+               image_carousel,
+               hit_count
+          from TB_ABOUT
+         order by create_date desc limit 1
       ]]>
     </query>
 
@@ -264,6 +317,14 @@
         select id, case when ? = 'en' then name_en else name_ko end as name, case when ? = 'en' then description_en else description_ko end as description, email, create_time
           from TB_WRITER
          where id = ( select writer from TB_CONTENT where id = ?)
+      ]]>
+    </query>
+
+    <query id='getAboutContentWriter'>
+      <![CDATA[
+        select id, case when ? = 'en' then name_en else name_ko end as name, case when ? = 'en' then description_en else description_ko end as description, email, create_time
+          from TB_WRITER
+         where id = ( select writer from TB_ABOUT order by create_date desc limit 1)
       ]]>
     </query>
 

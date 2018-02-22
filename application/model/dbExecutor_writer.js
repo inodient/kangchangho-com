@@ -17,6 +17,24 @@ exports.getContentWriter = function( connection, contentId, lang ){
   } );
 }
 
+exports.getAboutContentWriter = function( connection, lang ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "getAboutContentWriter";
+
+    params.push( lang );
+    params.push( lang );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 exports.getWriterText = function( connection, lang, writerId ){
   return new Promise( function(resolve, reject){
     var params = [];
