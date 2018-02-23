@@ -90,55 +90,59 @@
       <div class="page-content">
         <div class="container-fluid content-container">
 
-          <div class="carousel-container">
-            <div id="announce" class="announce-carousel carousel slide" data-ride="carousel">
+          <% if( mainAnnounces.length > 0 ){ %>
 
-              <div class="carousel-inner">
+            <div class="carousel-container">
+              <div id="announce" class="announce-carousel carousel slide" data-ride="carousel">
 
-                <% for( var i=0; i<mainAnnounces.length; i++ ){ %>
+                <div class="carousel-inner">
 
-                  <div class="item <% if( i == 0 ){ %> active <% } %>">
-                    <figure class="announce-figure">
-                      <img src="/<%- mainAnnounces[i].savedFileName %>" />
+                  <% for( var i=0; i<mainAnnounces.length; i++ ){ %>
 
-                      <figcaption data-announce-id="<%- mainAnnounces[i].announce_id %>" data-announce-type="<%- mainAnnounces[i].type_id %>">
-                        <div data-announce-id="<%- mainAnnounces[i].announce_id %>">
-                          <a  href="/category/<%- mainAnnounces[i].category_id %>" class="content-anchor category" data-category-id=""><%- mainAnnounces[i].category_text %></a>
-                          <h3 data-announce-id="<%- mainAnnounces[i].announce_id %>"><%- mainAnnounces[i].title %></h3>
-                        </div>
+                    <div class="item <% if( i == 0 ){ %> active <% } %>">
+                      <figure class="announce-figure">
+                        <img src="/<%- mainAnnounces[i].savedFileName %>" />
 
-                        <!-- ARROW -->
-                        <a class="left carousel-control" href="#announce" data-slide="prev">
-                          <span class="glyphicon glyphicon-chevron-left"></span>
-                          <span class="sr-only">PREVIOUS</span>
-                        </a>
+                        <figcaption data-announce-id="<%- mainAnnounces[i].announce_id %>" data-announce-type="<%- mainAnnounces[i].type_id %>">
+                          <div data-announce-id="<%- mainAnnounces[i].announce_id %>">
+                            <a  href="/category/<%- mainAnnounces[i].category_id %>" class="content-anchor category" data-category-id=""><%- mainAnnounces[i].category_text %></a>
+                            <h3 data-announce-id="<%- mainAnnounces[i].announce_id %>"><%- mainAnnounces[i].title %></h3>
+                          </div>
 
-                        <a class="right carousel-control" href="#announce" data-slide="next">
-                          <span class="glyphicon glyphicon-chevron-right"></span>
-                          <span class="sr-only">NEXT</span>
-                        </a>
+                          <!-- ARROW -->
+                          <a class="left carousel-control" href="#announce" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                            <span class="sr-only">PREVIOUS</span>
+                          </a>
 
-                        </figcation>
-                    </figure>
-                  </div>
+                          <a class="right carousel-control" href="#announce" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <span class="sr-only">NEXT</span>
+                          </a>
 
-                <% } %>
+                          </figcation>
+                      </figure>
+                    </div>
 
+                  <% } %>
+
+                </div>
+              </div>
+
+              <div class="announce-carousel-indicators">
+                <ol class="carousel-indicators">
+                  <% for( var i=0; i<mainAnnounces.length; i++ ){ %>
+                    <% if( i === 0 ){ %>
+                      <li data-target="#announce" data-slide-to="<%- i %>" class="active"></li>
+                    <% } else { %>
+                      <li data-target="#announce" data-slide-to="<%- i %>"></li>
+                    <% } %>
+                  <% } %>
+                </ol>
               </div>
             </div>
 
-            <div class="announce-carousel-indicators">
-              <ol class="carousel-indicators">
-                <% for( var i=0; i<mainAnnounces.length; i++ ){ %>
-                  <% if( i === 0 ){ %>
-                    <li data-target="#announce" data-slide-to="<%- i %>" class="active"></li>
-                  <% } else { %>
-                    <li data-target="#announce" data-slide-to="<%- i %>"></li>
-                  <% } %>
-                <% } %>
-              </ol>
-            </div>
-          </div>
+          <% } %>
 
           <div class="col-lg-9 col-md-9 article-list-container" data-total-list-count="<%- totalListCount %>" data-total-page-count="<%- totalPageCount %>" data-current-page="<%- currentPage %>">
 
