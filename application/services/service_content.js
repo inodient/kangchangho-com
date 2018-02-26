@@ -17,7 +17,7 @@ exports.getContent = function( connection, contentId, lang ){
     promises.push( dbExecutorHash.getContentHash( connection, contentId, lang ) );
     promises.push( dbExecutorImage.getContentImage( connection, contentId, lang ) );
     promises.push( dbExecutorWriter.getContentWriter( connection, contentId, lang ) );
-    promises.push( dbExecutorContent.getRelatedContents( connection, lang ) );
+    promises.push( dbExecutorContent.getRelatedContents( connection, contentId, lang ) );
     promises.push( dbExecutorContent.increaseContentHitCount( connection, 10, contentId ) );
 
     Promise.all( promises )

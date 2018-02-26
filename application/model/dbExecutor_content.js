@@ -88,7 +88,7 @@ exports.getContentMaster = function( connection, contentId, lang ){
   } );
 }
 
-exports.getRelatedContents = function( connection, lang ){
+exports.getRelatedContents = function( connection, contentId, lang ){
   return new Promise( function(resolve, reject){
     var params = [];
     var queryId = "getRelatedContents";
@@ -97,6 +97,8 @@ exports.getRelatedContents = function( connection, lang ){
     params.push( lang );
     params.push( lang );
     params.push( lang );
+    params.push( contentId );
+    params.push( contentId );
 
     mysqlHandler.executeQuery( queryId, params, connection )
     .then( function( queryResults ){

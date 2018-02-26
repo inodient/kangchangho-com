@@ -357,16 +357,11 @@
 
     <query id='getRelatedContents'>
       <![CDATA[
-        select con.id,
+        select distinct con.id,
                case when ? = 'en' then con.title_en
                     else con.title_ko end as title,
                con.create_date,
-               hash.id as hash_id,
-               hash.text,
-               hash.hit_count,
-               hash.create_date as hash_create_date,
                link.content_id,
-               link.hash_id,
                link.link_count,
                image.savedFileName,
                case when ? = 'en' then menu.display_name_en
@@ -377,13 +372,15 @@
                case when ? = 'en' then con.content_en
                     else con.content_ko end as content
           from TB_CONTENT con, TB_HASH_KV hash, TB_CONTENT_HASH_LINK link, TB_CONTENT_IMAGE image, TB_MENU menu, TB_WRITER author
-         where hash.id = link.hash_id
+         where hash.id in ( select hash_id from TB_CONTENT_HASH_LINK where content_id = ?)
+           and hash.id = link.hash_id
            and link.content_id = con.id
            and con.image_main = image.id
            and con.category = menu.id
            and con.writer = author.id
+           and con.id != ?
          group by link.content_id, hash.id, link_count
-         order by hash.hit_count desc, con.create_date desc limit 6
+         order by con.create_date desc limit 6
       ]]>
     </query>
 
