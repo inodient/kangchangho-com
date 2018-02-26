@@ -155,23 +155,46 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related-post">
                   <h4 class="after-line-block">Related Post</h4>
 
-                  <div class="row small-section-end">
-
+                  
+                    <% var index = 0 %>
                     <% for( var i=0; i<relatedContents.length; i++ ){ %>
-
-                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 thumb-article">
-                        <figure>
-                          <img class="thumb-image" src="/<%- relatedContents[i].savedFileName %>" />
-                          <figcaption>
-                            <div data-href="/content/<%- relatedContents[i].id %>">View Post</div>
-                            </figcation>
-                        </figure>
-                        <center><a href="/content/<%- relatedContents[i].id %>" class="content-anchor"><h4><%- relatedContents[i].title %></h4></a></center>
-                      </div>
-
+                      <% if( i % 3 == 0 ){ %>
+                        <div class="row">      
+                          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 thumb-article">
+                            <figure>
+                              <img class="thumb-image" src="/<%- relatedContents[i].savedFileName %>" />
+                              <figcaption>
+                                <div data-href="/content/<%- relatedContents[i].id %>">View Post</div>
+                                </figcation>
+                            </figure>
+                            <center><a href="/content/<%- relatedContents[i].id %>" class="content-anchor"><h4><%- relatedContents[i].title %></h4></a></center>
+                          </div>
+                      <% } else if( i % 3 == 2 || i == relatedContents.length - 1 ){ %>
+                          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 thumb-article">
+                            <figure>
+                              <img class="thumb-image" src="/<%- relatedContents[i].savedFileName %>" />
+                              <figcaption>
+                                <div data-href="/content/<%- relatedContents[i].id %>">View Post</div>
+                                </figcation>
+                            </figure>
+                            <center><a href="/content/<%- relatedContents[i].id %>" class="content-anchor"><h4><%- relatedContents[i].title %></h4></a></center>
+                          </div>
+                        </div>
+                      <% } else { %>
+                          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 thumb-article">
+                            <figure>
+                              <img class="thumb-image" src="/<%- relatedContents[i].savedFileName %>" />
+                              <figcaption>
+                                <div data-href="/content/<%- relatedContents[i].id %>">View Post</div>
+                                </figcation>
+                            </figure>
+                            <center><a href="/content/<%- relatedContents[i].id %>" class="content-anchor"><h4><%- relatedContents[i].title %></h4></a></center>
+                          </div>
+                      <% } %>
                     <% } %>
 
-                  </div>
+                    <div class="small-section-end"></div>
+
 
                 </div>
               </div>
