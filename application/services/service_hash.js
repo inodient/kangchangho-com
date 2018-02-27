@@ -108,30 +108,37 @@ exports.increaseHashHitCount = function( connection, hashId ){
 exports.addHash = function( connection, contentId, hashText ){
   return new Promise( function(resolve, reject){
 
-		dbExecutorHash.addHash( connection, contentId, hashText )
-		.then( function(){
+    if( hashText != "" ){
 
-			dbExecutorHash.getInsertedHashId( connection, hashText )
-			.then( function( results ){
+      dbExecutorHash.addHash( connection, contentId, hashText )
+      .then( function(){
 
-        var hashId = ( results[0] )._ID;
+        dbExecutorHash.getInsertedHashId( connection, hashText )
+        .then( function( results ){
 
-				dbExecutorHash.addContentHashLink( connection, contentId, hashId )
-				.then( function(){
-					resolve( {"status":"succeed"} );
-				} )
-				.catch( function( __err ){
-					reject( __err );
-				} );
+          var hashId = ( results[0] )._ID;
 
-			} )
-			.catch( function( _err ){
-				reject( _err );
-			} );
-		} )
-		.catch( function( err ){
-			reject( err );
-		} );
+          dbExecutorHash.addContentHashLink( connection, contentId, hashId )
+          .then( function(){
+            resolve( {"status":"succeed"} );
+          } )
+          .catch( function( __err ){
+            reject( __err );
+          } );
+
+        } )
+        .catch( function( _err ){
+          reject( _err );
+        } );
+      } )
+      .catch( function( err ){
+        reject( err );
+      } );
+
+    } else {
+      resolve( {"status":"succeed"} );
+    }
+
 	} );
 }
 
@@ -141,31 +148,34 @@ exports.modifyHash = function( connection, contentId, hashText ){
     dbExecutorHash.deleteHashLink( connection, contentId )
     .then( function(){
 
-      dbExecutorHash.addHashWithSameHitCount( connection, contentId, hashText )
-  		.then( function(){
+      if( hashText != "" ){
+        dbExecutorHash.addHashWithSameHitCount( connection, contentId, hashText )
+        .then( function(){
 
-  			dbExecutorHash.getInsertedHashId( connection, hashText )
-  			.then( function( results ){
+          dbExecutorHash.getInsertedHashId( connection, hashText )
+          .then( function( results ){
 
-          var hashId = ( results[0] )._ID;
+            var hashId = ( results[0] )._ID;
 
-  				dbExecutorHash.addContentHashLink( connection, contentId, hashId )
-  				.then( function(){
-  					resolve( {"status":"succeed"} );
-  				} )
-  				.catch( function( ___err ){
-  					reject( ___err );
-  				} );
+            dbExecutorHash.addContentHashLink( connection, contentId, hashId )
+            .then( function(){
+              resolve( {"status":"succeed"} );
+            } )
+            .catch( function( ___err ){
+              reject( ___err );
+            } );
 
-  			} )
-  			.catch( function( __err ){
-  				reject( __err );
-  			} );
-  		} )
-  		.catch( function( _err ){
-  			reject( _err );
-  		} );
-
+          } )
+          .catch( function( __err ){
+            reject( __err );
+          } );
+        } )
+        .catch( function( _err ){
+          reject( _err );
+        } );
+      } else {
+        resolve( {"status":"succeed"} );
+      }
     } )
     .catch( function( err ){
     } );

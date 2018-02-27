@@ -438,7 +438,6 @@ exports.checkAboutContent = function( connection, parameter ){
     var queryId = "checkAboutContent";
 
     params.push( parameter.sel_category );
-    logger.error( parameter.sel_category );
 
     mysqlHandler.executeQuery( queryId, params, connection )
     .then( function( queryResults ){

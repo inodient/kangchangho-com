@@ -588,7 +588,6 @@ $(document).ready(function() {
   }
 
   function extractHashes( hashes ){
-    // 하면된다할수있다, 강창호닷컴대박, 설연휴, 내년엔장가, 강호동, 돈까스먹고싶다, 내일은뭐할까, 성공하자, 연봉 1억 9천 1백만원, 강경호, 염성희, 강창호, 강리경
     var hashesList = hashes.split( "," );
 
     $(hashesList).each( function(i, item){

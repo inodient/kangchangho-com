@@ -8,8 +8,6 @@ exports.getMainAnnounces = function( connection, lang ){
   return new Promise( function(resolve, reject){
     dbExecutorAnnounce.getMainAnnounces( connection, lang )
     .then( function( results ){
-      logger.debug( "HERE" );
-      logger.debug( results );
       resolve( {"mainAnnounces" : results} );
       resolve( results );
     } )

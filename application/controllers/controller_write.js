@@ -15,31 +15,31 @@ exports.control = function( req, res, connection ){
 
 		var targetId = req.params.id;
 
-    staticService.getStaticInfo( req, res, connection, targetId )
-    .then( function( staticInfo ){
-      var lang = staticInfo.lang;
-      var promises = [];
+	    staticService.getStaticInfo( req, res, connection, targetId )
+	    .then( function( staticInfo ){
+	      var lang = staticInfo.lang;
+	      var promises = [];
 
-			promises.push( menuService.getMenuList( connection ) );
-      promises.push( writerService.getWriterList( connection ) );
-			promises.push( contentService.getAnnounceContentList( connection ) );
-			promises.push( announceService.getNewsletterAnnounceList( connection ) );
-			promises.push( announceService.getAnnounceCategory( connection ) );
-			promises.push( announceService.getAnnounceType( connection ) );
+				promises.push( menuService.getMenuList( connection ) );
+	      promises.push( writerService.getWriterList( connection ) );
+				promises.push( contentService.getAnnounceContentList( connection ) );
+				promises.push( announceService.getNewsletterAnnounceList( connection ) );
+				promises.push( announceService.getAnnounceCategory( connection ) );
+				promises.push( announceService.getAnnounceType( connection ) );
 
-      Promise.all( promises )
-      .then( function(){
-        var argv = arguments[0];
-        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5] ) );
-      } )
-      .catch( function( _err ){
-        reject( _err );
-      } )
+	      Promise.all( promises )
+	      .then( function(){
+	        var argv = arguments[0];
+	        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5] ) );
+	      } )
+	      .catch( function( _err ){
+	        reject( _err );
+	      } )
 
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
+	    } )
+	    .catch( function( err ){
+	      reject( err );
+	    } );
 	} );
 }
 
@@ -164,6 +164,8 @@ exports.control_upload_content = function( req, res, connection ){
 					var _promises = [];
 					var hashesList = req.body.hashesList;
 
+					logger.debug( "hashesList :", hashesList );
+					
 					for( var i=0; i<hashesList.length; i++ ){
 						_promises.push( hashService.addHash( connection, contentId, hashesList[i] ) );
 					}
@@ -198,17 +200,25 @@ exports.control_upload_content = function( req, res, connection ){
 					var _promises = [];
 					var hashesList = req.body.hashesList;
 
-					for( var i=0; i<hashesList.length; i++ ){
-						_promises.push( hashService.modifyHash( connection, contentId, hashesList[i] ) );
-					}
+					if( typeof hashesList != "undefined" ){
 
-					Promise.all( _promises )
-					.then( function(){
+						logger.debug( "HASH?" );
+
+						for( var i=0; i<hashesList.length; i++ ){
+							_promises.push( hashService.modifyHash( connection, contentId, hashesList[i] ) );
+
+							Promise.all( _promises )
+							.then( function(){
+								resolve( {"contentId": contentId} );
+							} )
+							.catch( function( __err ){
+								reject( __err );
+							} );
+						}
+					} else {
+						logger.debug( "HASH!" );
 						resolve( {"contentId": contentId} );
-					} )
-					.catch( function( __err ){
-						reject( __err );
-					} );
+					}
 
 				} )
 				.catch( function(_err){
