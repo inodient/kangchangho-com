@@ -123,6 +123,11 @@ $(document).ready( function(){
 
 
 
+  if( $.cookie( "lang") != $("#language-changer").text() ){
+    alert( "Different Language Setting" );
+  }
+
+
   if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
     $("#language-changer").text( "ko" );
   } else {

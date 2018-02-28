@@ -2,6 +2,8 @@ exports.setDefaultLang = function( req, res ){
   return new Promise( function(resolve, reject){
     var connHandler = new connectionHandler( req, res );
 
+    logger.debug( req.cookies );
+
     connHandler.getCookie( "lang", function(result, err){
       if( err ) reject( err );
 
@@ -15,10 +17,6 @@ exports.setDefaultLang = function( req, res ){
 
         resolve( lang );
       } else {
-        // connHandler.clearCookie( "lang" );
-        // connHandler.setCookie( "lang", result, function(){
-        //   resolve( result );
-        // } );
         resolve( result );
       }
     } );
@@ -31,10 +29,6 @@ exports.setDefaultLang = function( req, res ){
 exports.getLang = function( req, res ){
   var connHandler = new connectionHandler( req, res );
   return connHandler.getCookie( "lang" )
-  // connHandler.getSession( "lang", function(result, err){
-  //   if( err ) return err;
-  //   return result;
-  // } );
 }
 
 
