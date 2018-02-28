@@ -1,3 +1,12 @@
+
+$(document).on( "pageshow", function(){
+  alert( "PAGE SHOW" );
+  
+  if( $.cookie( "lang") != $("#language-changer").text() ){
+    alert( "Different Language Setting" );
+  }
+} );
+
 $(document).ready( function(){
   $(".sns-share-icon").on( "click", function(){
     alert( $(this).children().attr( "class" ) );
@@ -122,10 +131,6 @@ $(document).ready( function(){
 
 
 
-
-  if( $.cookie( "lang") != $("#language-changer").text() ){
-    alert( "Different Language Setting" );
-  }
 
 
   if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
