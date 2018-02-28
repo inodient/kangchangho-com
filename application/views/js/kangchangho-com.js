@@ -1,11 +1,25 @@
 
 $(document).on( "pageshow", function(){
   alert( "PAGE SHOW" );
-  
+
   if( $.cookie( "lang") != $("#language-changer").text() ){
     alert( "Different Language Setting" );
   }
 } );
+
+$(window).bind("pageshow", function(event) {
+
+  alert( "RELOAD..." );
+
+  if( $.cookie( "lang") != $("#language-changer").text() ){
+    alert( "Different Language Setting" );
+  }
+});
+
+
+
+
+
 
 $(document).ready( function(){
   $(".sns-share-icon").on( "click", function(){
@@ -143,7 +157,7 @@ $(document).ready( function(){
 
   $("#language-changer").on( "click", function(){
     if( "ko" == $.cookie( "lang") ){
-      $(this).text( "en" );
+      // $(this).text( "en" );
       removeCookie( "lang" )
       .then( function(){
         $.cookie( "lang", "en", {path: "/"} );
@@ -152,7 +166,7 @@ $(document).ready( function(){
         reject( err );
       } );
     } else if( "en" == $.cookie( "lang") ){
-      $(this).text( "ko" );
+      // $(this).text( "ko" );
       removeCookie( "lang" )
       .then( function(){
         $.cookie( "lang", "ko", {path: "/"} );
