@@ -2,8 +2,6 @@ exports.setDefaultLang = function( req, res ){
   return new Promise( function(resolve, reject){
     var connHandler = new connectionHandler( req, res );
 
-    logger.debug( req.cookies );
-
     connHandler.getCookie( "lang", function(result, err){
       if( err ) reject( err );
 

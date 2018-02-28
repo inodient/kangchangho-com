@@ -1,38 +1,35 @@
 $(window).bind("pageshow", function(event) {
 
+    if( $.cookie( "lang") != sessionStorage.getItem( ( window.location.pathname ).split("/")[1] + "-lang" ) ){
+      if( "ko" == $.cookie( "lang") ){
 
-  if( $.cookie( "lang") != sessionStorage.getItem( ( window.location.pathname ).split("/")[1] + "-lang" ) ){
-    if( "ko" == $.cookie( "lang") ){
+        // alert( "언어설정을 한국어로 변경합니다." );
 
-      alert( "언어설정을 한국어로 변경합니다." );
+        // $(this).text( "en" );
+        $.cookie( "lang", null );
+        $.cookie( "lang", "ko", {path: "/"} );
+        sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
 
-      // $(this).text( "en" );
-      $.cookie( "lang", null );
-      $.cookie( "lang", "ko", {path: "/"} );
-      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
+      } else if( "en" == $.cookie( "lang") ){
 
-    } else if( "en" == $.cookie( "lang") ){
+        // alert( "Language will be changed as English." );
 
-      alert( "Language will be changed as English." );
+        $.cookie( "lang", null );
+        $.cookie( "lang", "en", {path: "/"} );
+        sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "en" );
+      } else {
 
-      $.cookie( "lang", null );
-      $.cookie( "lang", "en", {path: "/"} );
-      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "en" );
-    } else {
+        // alert( "언어설정을 한국어로 변경합니다." );
 
-      alert( "언어설정을 한국어로 변경합니다." );
+        // $(this).text( "en" );
+        $.cookie( "lang", null );
+        $.cookie( "lang", "ko", {path: "/"} );
+        sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
+      }
 
-      // $(this).text( "en" );
-      $.cookie( "lang", null );
-      $.cookie( "lang", "ko", {path: "/"} );
-      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
+      location.reload();
     }
-
-    location.reload();
-  }
-});
-
-
+  });
 
 
 
@@ -156,9 +153,6 @@ $(document).ready( function(){
   $(".banner-list figcaption").on( "click", function(){
     $(location).attr( "href", $(this).data( "href" ) );
   } );
-
-
-
 
 
 
