@@ -121,25 +121,47 @@ $(document).ready( function(){
 
 
 
+
+
   if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
     $("#language-changer").text( "ko" );
   } else {
     $("#language-changer").text( "en" );
   }
 
+  $.cookie.defaults.path = '/';
+
   $("#language-changer").on( "click", function(){
-    if( "ko" == $(this).text() ){
+    if( "ko" == $.cookie( "lang") ){
       $(this).text( "en" );
-      $.removeCookie( "lang" );
-      $.cookie( "lang", "en" );
-    } else if( "en" == $(this).text() ){
+      removeCookie( "lang" )
+      .then( function(){
+        $.cookie( "lang", "en", {path: "/"} );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
+    } else if( "en" == $.cookie( "lang") ){
       $(this).text( "ko" );
-      $.removeCookie( "lang" );
-      $.cookie( "lang", "ko" );
+      removeCookie( "lang" )
+      .then( function(){
+        $.cookie( "lang", "ko", {path: "/"} );
+      } )
+      .catch( function(err){
+        reject( err );
+      } );
     }
 
     location.reload();
   } );
+
+  function removeCookie( key ){
+    return new Promise( function(resolve,reject){
+      $.cookie( "lang", null );
+      resolve( {"status":"succeed"} );
+    } )
+  }
+
 
 
 
