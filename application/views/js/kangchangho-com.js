@@ -1,40 +1,51 @@
-$(window).bind("pageshow", function(event) {
-
-    if( $.cookie( "lang") != sessionStorage.getItem( ( window.location.pathname ).split("/")[1] + "-lang" ) ){
-      if( "ko" == $.cookie( "lang") ){
-
-        // alert( "언어설정을 한국어로 변경합니다." );
-
-        // $(this).text( "en" );
-        $.cookie( "lang", null );
-        $.cookie( "lang", "ko", {path: "/"} );
-        sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
-
-      } else if( "en" == $.cookie( "lang") ){
-
-        // alert( "Language will be changed as English." );
-
-        $.cookie( "lang", null );
-        $.cookie( "lang", "en", {path: "/"} );
-        sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "en" );
-      } else {
-
-        // alert( "언어설정을 한국어로 변경합니다." );
-
-        // $(this).text( "en" );
-        $.cookie( "lang", null );
-        $.cookie( "lang", "ko", {path: "/"} );
-        sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
-      }
-
-      location.reload();
-    }
-  });
-
-
-
-
 $(document).ready( function(){
+
+  if( $.cookie( "lang") != $("body").data("lang") ){
+    if( $.cookie("lang") === "ko" ){
+
+      $("#language_change_modal #language-change-message").html( 
+        `<b>언어 설정 변경</b>
+        <hr>
+        언어설정을 한국어로 변경합니다.`
+      );
+      
+      $("#language_change_modal").modal("show");
+ 
+    } else {
+      $("#language_change_modal #language-change-message").html( 
+        `<b>Notification</b>
+        <hr>
+        Default language setted as English.`
+      );
+
+      $("#language_change_modal").modal("show");
+    }
+  }
+
+  $("#language_change_modal").on("hidden.bs.modal", function(){
+    location.reload();
+  } );
+
+  if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
+    $("#language-changer").text( "ko" );
+  } else {
+    $("#language-changer").text( "en" );
+  }
+
+  $("#language-changer").on( "click", function(){
+    if( "ko" == $.cookie( "lang") ){
+      document.cookie = "lang=en;path=/;" + ";";
+    } else if( "en" == $.cookie( "lang") ){
+      document.cookie = "lang=ko;path=/;" + ";";
+    }
+
+    location.reload();
+  } );
+
+
+
+
+
   $(".sns-share-icon").on( "click", function(){
     alert( $(this).children().attr( "class" ) );
   } );
@@ -154,52 +165,6 @@ $(document).ready( function(){
     $(location).attr( "href", $(this).data( "href" ) );
   } );
 
-
-
-
-  if( sessionStorage.getItem( ( window.location.pathname ).split("/")[1] + "-lang" ) === null ){
-    sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", $.cookie( "lang" ) );
-  }
-
-  if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
-    $("#language-changer").text( "ko" );
-  } else {
-    $("#language-changer").text( "en" );
-  }
-
-  $.cookie.defaults.path = '/';
-
-  $("#language-changer").on( "click", function(){
-    if( "ko" == $.cookie( "lang") ){
-
-      $.cookie( "lang", null );
-      $.cookie( "lang", "en", {path: "/"} );
-      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "en" );
-
-      // removeCookie( "lang" )
-      // .then( function(){
-      //   $.cookie( "lang", "en", {path: "/"} );
-      // } )
-      // .catch( function(err){
-      //   reject( err );
-      // } );
-    } else if( "en" == $.cookie( "lang") ){
-
-      $.cookie( "lang", null );
-      $.cookie( "lang", "ko", {path: "/"} );
-      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
-
-      // removeCookie( "lang" )
-      // .then( function(){
-      //   $.cookie( "lang", "ko", {path: "/"} );
-      // } )
-      // .catch( function(err){
-      //   reject( err );
-      // } );
-    }
-
-    location.reload();
-  } );
 
 
 

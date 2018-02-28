@@ -1589,7 +1589,7 @@ nav {
   }
 }
 
-#subscribe_modal .modal-dialog {
+#subscribe_modal .modal-dialog, #language_change_modal .modal-dialog {
   display: flex;
   align-items: center;
 
@@ -1600,7 +1600,7 @@ nav {
   text-align: center;
 }
 
-#subscribe_modal .modal-dialog .modal-content {
+#subscribe_modal .modal-dialog .modal-content, #language_change_modal .modal-dialog .modal-content{
   width: 100vw;
   height: 45vh;
   padding: 30px;
@@ -1611,7 +1611,7 @@ nav {
   color: #000000;
 }
 
-#subscribe_modal .modal-dialog .modal-content .modal-body {
+#subscribe_modal .modal-dialog .modal-content .modal-body, #language_change_modal .modal-dialog .modal-content .modal-body{
   width: 100%;
   font-size: 2rem;
 }

@@ -16,7 +16,7 @@
 
 
 
-<body>
+<body data-lang="<%- lang %>">
   <% include partials/front_nav.ejs %>
     <hr class="page-divider">
     <div class="doc">
@@ -324,6 +324,8 @@
         </div>
       </div>
     </div>
+
+    <% include partials/language_change.ejs %>
 
     <footer style="background-color: black">
       <div class="jumbotron footer-background">
