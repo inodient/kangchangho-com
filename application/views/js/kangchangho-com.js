@@ -1,18 +1,34 @@
-
-$(document).on( "pageshow", function(){
-  alert( "PAGE SHOW" );
-
-  if( $.cookie( "lang") != $("#language-changer").text() ){
-    alert( "Different Language Setting" );
-  }
-} );
-
 $(window).bind("pageshow", function(event) {
 
-  alert( "RELOAD..." );
 
-  if( $.cookie( "lang") != $("#language-changer").text() ){
-    alert( "Different Language Setting" );
+  if( $.cookie( "lang") != sessionStorage.getItem( ( window.location.pathname ).split("/")[1] + "-lang" ) ){
+    if( "ko" == $.cookie( "lang") ){
+
+      alert( "언어설정을 한국어로 변경합니다." );
+
+      // $(this).text( "en" );
+      $.cookie( "lang", null );
+      $.cookie( "lang", "ko", {path: "/"} );
+      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
+
+    } else if( "en" == $.cookie( "lang") ){
+
+      alert( "Language will be changed as English." );
+
+      $.cookie( "lang", null );
+      $.cookie( "lang", "en", {path: "/"} );
+      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "en" );
+    } else {
+
+      alert( "언어설정을 한국어로 변경합니다." );
+
+      // $(this).text( "en" );
+      $.cookie( "lang", null );
+      $.cookie( "lang", "ko", {path: "/"} );
+      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
+    }
+
+    location.reload();
   }
 });
 
@@ -147,6 +163,10 @@ $(document).ready( function(){
 
 
 
+  if( sessionStorage.getItem( ( window.location.pathname ).split("/")[1] + "-lang" ) === null ){
+    sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", $.cookie( "lang" ) );
+  }
+
   if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
     $("#language-changer").text( "ko" );
   } else {
@@ -157,34 +177,35 @@ $(document).ready( function(){
 
   $("#language-changer").on( "click", function(){
     if( "ko" == $.cookie( "lang") ){
-      // $(this).text( "en" );
-      removeCookie( "lang" )
-      .then( function(){
-        $.cookie( "lang", "en", {path: "/"} );
-      } )
-      .catch( function(err){
-        reject( err );
-      } );
+
+      $.cookie( "lang", null );
+      $.cookie( "lang", "en", {path: "/"} );
+      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "en" );
+
+      // removeCookie( "lang" )
+      // .then( function(){
+      //   $.cookie( "lang", "en", {path: "/"} );
+      // } )
+      // .catch( function(err){
+      //   reject( err );
+      // } );
     } else if( "en" == $.cookie( "lang") ){
-      // $(this).text( "ko" );
-      removeCookie( "lang" )
-      .then( function(){
-        $.cookie( "lang", "ko", {path: "/"} );
-      } )
-      .catch( function(err){
-        reject( err );
-      } );
+
+      $.cookie( "lang", null );
+      $.cookie( "lang", "ko", {path: "/"} );
+      sessionStorage.setItem( ( window.location.pathname ).split("/")[1] + "-lang", "ko" );
+
+      // removeCookie( "lang" )
+      // .then( function(){
+      //   $.cookie( "lang", "ko", {path: "/"} );
+      // } )
+      // .catch( function(err){
+      //   reject( err );
+      // } );
     }
 
     location.reload();
   } );
-
-  function removeCookie( key ){
-    return new Promise( function(resolve,reject){
-      $.cookie( "lang", null );
-      resolve( {"status":"succeed"} );
-    } )
-  }
 
 
 
