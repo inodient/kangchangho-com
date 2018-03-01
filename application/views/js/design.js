@@ -116,6 +116,9 @@ $(document).ready( function(){
 
 
   wrapFigcaption();
+
+
+  tableStyle();
 } );
 
 
@@ -284,4 +287,11 @@ function wrapFigcaption(){
   $(".page-content figcaption, .banner-content figcaption").on( "click", function(){
     $(location).attr( "href", $(this).children().data("href") );
   } );
+}
+
+function tableStyle(){
+  $(".content-body table").removeClass( "table" );
+  $(".content-body table").removeClass( "table-bordered" );
+  $(".content-body table").addClass( "table table-responsive content-table" );
+  $(".content-body table tr:first td").addClass( "td-empty-top" );
 }
