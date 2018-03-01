@@ -293,5 +293,15 @@ function tableStyle(){
   $(".content-body table").removeClass( "table" );
   $(".content-body table").removeClass( "table-bordered" );
   $(".content-body table").addClass( "table table-responsive content-table" );
-  $(".content-body table tr:first td").addClass( "td-empty-top" );
+
+  $(".content-body table tbody").each( function(){
+    var trs = $(this).children();
+
+    if( trs.length > 0 ){
+      $(trs[0]).children().each( function(){
+        $(this).addClass( "td-empty-top" );
+      } );
+      
+    }
+  } );
 }
