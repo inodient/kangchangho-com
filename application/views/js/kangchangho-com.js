@@ -1,3 +1,32 @@
+$(window).on( "pageshow", function(){
+  if( $(window).width() < 1000 ){
+    if( $.cookie( "lang") != $("body").data("lang") ){
+      if( $.cookie("lang") === "ko" ){
+
+        $("#language_change_modal #language-change-message").html( 
+          `<b>언어 설정 변경</b>
+          <hr>
+          언어설정을 한국어로 변경합니다.`
+        );
+        
+        $("#language_change_modal").modal("show");
+   
+      } else {
+        $("#language_change_modal #language-change-message").html( 
+          `<b>Notification</b>
+          <hr>
+          Default language setted as English.`
+        );
+
+        $("#language_change_modal").modal("show");
+      }
+    }
+  }
+} );
+
+
+
+
 $(document).ready( function(){
 
   if( $.cookie( "lang") != $("body").data("lang") ){
@@ -286,5 +315,17 @@ $(document).ready( function(){
 
       }
     }
+  } );
+
+
+
+
+  $("#language_change_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#language_change_modal").modal( "hide" );
   } );
 } );
