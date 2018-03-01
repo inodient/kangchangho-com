@@ -98,13 +98,16 @@
                       <h2 class="after-line-block-center"><%- contentMaster[0].title %></h2></center>
 
                     <center class="paragraph-end"><span class="date"><%- ( ( contentMaster[0].create_date ).toISOString() ).split("T")[0] %></span></center>
-                    <center class="small-section-end">
-                      <% if( contentImage[0].type === "main" ){ %>
-                        <img class="content-image" src="/<%- contentImage[0].savedFileName %>" />
-                      <% } else { %>
-                        <img class="content-image" src="/<%- contentImage[1].savedFileName %>" />
-                      <% } %>
-                    </center>
+
+                    <% if( contentImage.length > 0 ){ %> 
+                      <center class="small-section-end">
+                        <% if( contentImage[0].type === "main" ){ %>
+                          <img class="content-image" src="/<%- contentImage[0].savedFileName %>" />
+                        <% } else { %>
+                          <img class="content-image" src="/<%- contentImage[1].savedFileName %>" />
+                        <% } %>
+                      </center>
+                    <% } %>
 
                     <p class="content-text">
                       <%- contentMaster[0].content %>

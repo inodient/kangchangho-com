@@ -25,42 +25,24 @@ exports.addImage = function( req, connection ){
 exports.setImageType = function( connection, type, savedFileName ){
   return new Promise( function(resolve, reject){
 
-    dbExecutorImage.setImageType( connection, type, savedFileName )
-    .then( function(){
+    if( savedFileName === "" ){
+      resolve( 0 );
+    } else {
+      dbExecutorImage.setImageType( connection, type, savedFileName )
+      .then( function(){
 
-      dbExecutorImage.getUpdatedImageId( connection, savedFileName )
-      .then( function( results ){
-        resolve( ( results[0] ).ID );
+        dbExecutorImage.getUpdatedImageId( connection, savedFileName )
+        .then( function( results ){
+          resolve( ( results[0] ).ID );
+        } )
+        .catch( function( _err ){
+          reject( _err );
+        } );
+
       } )
-      .catch( function( _err ){
-        reject( _err );
+      .catch( function( err ){
+        reject( err );
       } );
-
-    } )
-    .catch( function( err ){
-      reject( err );
-    } );
-
-		// var params = [];
-		// var queryId = "setImageType";
-    //
-		// params.push( type );
-		// params.push( savedFileName );
-    //
-		// mysqlHandler.executeQuery( queryId, params, connection )
-		// .then( function(queryResults){
-    //
-		// 	getUpdatedImageId( connection, savedFileName )
-		// 	.then( function( _queryResults ){
-		// 		resolve( _queryResults );
-		// 	} )
-		// 	.catch( function(_err){
-		// 		reject( _err );
-		// 	} );
-    //
-		// } )
-		// .catch( function(err){
-		// 	reject( err );
-		// } );
+    }
 	} );
 }

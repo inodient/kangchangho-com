@@ -392,7 +392,8 @@ $(document).ready(function() {
       var docData = {};
 
       var image_carousel = $("#id_temp_carousel_image_name").val();
-      image_carousel = $("#id_temp_carousel_image_name").val() == "" ? "default_horizontal.png" : $("#id_temp_carousel_image_name").val()
+      // image_carousel = $("#id_temp_carousel_image_name").val() == "" ? "default_horizontal.png" : $("#id_temp_carousel_image_name").val()
+      image_carousel = $("#id_temp_carousel_image_name").val();
 
       var sel_category = $("#selected_category option:selected").val();
       var sel_writer = $("#selected_writer option:selected").val();
@@ -481,10 +482,12 @@ $(document).ready(function() {
       var title_en = $("#id_title_en").val();
 
       var image_main = $("#id_temp_main_image_name").val();
-      image_main = $("#id_temp_main_image_name").val() == "" ? "default_vertical.png" : $("#id_temp_main_image_name").val();
+      // image_main = $("#id_temp_main_image_name").val() == "" ? "default_vertical.png" : $("#id_temp_main_image_name").val();
+      image_main = $("#id_temp_main_image_name").val();
 
       var image_carousel = $("#id_temp_carousel_image_name").val();
-      image_carousel = $("#id_temp_carousel_image_name").val() == "" ? "default_horizontal.png" : $("#id_temp_carousel_image_name").val()
+      // image_carousel = $("#id_temp_carousel_image_name").val() == "" ? "default_horizontal.png" : $("#id_temp_carousel_image_name").val();
+      image_carousel = $("#id_temp_carousel_image_name").val();
 
       var content_ko =  $("#editor-content-ko" ).summernote( "code" );
       var content_en =  $("#editor-content-en" ).summernote( "code" );
@@ -525,7 +528,8 @@ $(document).ready(function() {
       var docData = {};
 
       var image_main = $("#id_temp_main_image_name").val();
-      image_main = $("#id_temp_main_image_name").val() == "" ? "default_vertical.png" : $("#id_temp_main_image_name").val();
+      // image_main = $("#id_temp_main_image_name").val() == "" ? "default_vertical.png" : $("#id_temp_main_image_name").val();
+      image_main = $("#id_temp_main_image_name").val();
 
       var sel_writer = $("#selected_writer option:selected").val();
       var sel_writer_text = $("#selected_writer option:selected").text();
