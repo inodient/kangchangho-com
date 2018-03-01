@@ -164,30 +164,34 @@
           <hr class="page-divider mobile-show">
 
           <div class="col-lg-3 col-md-3 banner-container">
-            <div class="input-group">
-              <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
-              <div class="input-group-btn">
-                <button id="btn_search" class="btn_important">SEARCH</button>
+
+            <article class="banner-shortcut">
+              <div id="search_input" class="input-group">
+                <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
+                <div class="input-group-btn">
+                  <button id="btn_search" class="btn_important">SEARCH</button>
+                </div>
               </div>
-            </div>
 
-            <hr class="page-divider mobile-hidden">
+              <hr class="page-divider mobile-hidden">
 
-            <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
-              YOUTUBE
-              <br>
-              <span class="btn_important_banner_describe">kangchangho.com channel</span>
-            </button>
+              <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
+                YOUTUBE
+                <br>
+                <span class="btn_important_banner_describe">kangchangho.com channel</span>
+              </button>
 
-            <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
-              summer-mvc
-              <br>
-              <span class="btn_important_banner_describe">Open Source Project</span>
-            </button>
+              <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
+                summer-mvc
+                <br>
+                <span class="btn_important_banner_describe">Open Source Project</span>
+              </button>
 
-            <hr class="page-divider mobile-hidden">
+            </article>
 
-            <article>
+            <hr class="page-divider mobile-hidden tablet-hidden">
+
+            <article class="banner-hashranking">
               <h4 class="title after-line-block-center">HASH RANKING</h4>
               <div class="banner-table table table-responsive small-section-end">
                 <table class="hash-ranking table table-hover table-condensed">
@@ -205,7 +209,7 @@
 
             <hr class="mobile-hidden small-section-end">
 
-            <article>
+            <article class="banner-mostrecent">
               <h4 class="title after-line-block-center">MOST RECENT</h4>
               <div class="banner-list">
                 <ul>
@@ -235,7 +239,7 @@
 
             <hr class="mobile-hidden small-section-end">
 
-            <article>
+            <article class="banner-newsletter tablet-hidden">
               <h4 class="title after-line-block-center">NEWS LETTER</h4>
               <select id="newsletter_select" class="select_important">
                 <option value="-" data-href="">NEWS LETTER</option>
@@ -250,7 +254,7 @@
 
             <hr class="mobile-hidden small-section-end">
 
-            <article>
+            <article class="banner-mostviewed">
               <h4 class="title after-line-block-center">MOST VIEWED</h4>
               <div class="banner-list">
                 <ul>
@@ -283,8 +287,8 @@
             </article>
 
             <hr class="mobile-hidden small-section-end">
-
           </div>
+          
         </div>
       </div>
     </div>

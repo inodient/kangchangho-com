@@ -8,7 +8,7 @@ $(document).ready( function(){
   modalBugFix();
   postVisible();
 
-  if( $(window).width() >= 1000 ){
+  if( $(window).width() >= 1024 ){
     $(".navbar-item").on( "mouseenter", function(){
 
       $(".navbar-item").each( function(){
@@ -94,6 +94,7 @@ $(document).ready( function(){
 
     initScrollInfo();
     scrollAffix();
+    tabletBannerStyle();
   });
 
   $(window).scroll( function( event ){
@@ -101,6 +102,7 @@ $(document).ready( function(){
 
     initScrollInfo();
     scrollAffix();
+    tabletBannerStyle();
   } );
 
   $(window).on( "load", function(){
@@ -108,10 +110,7 @@ $(document).ready( function(){
 
     initScrollInfo();
     scrollAffix();
-  } );
-
-  $(window).on( "popstate", function(){
-    alert( "POPSTATE" );
+    tabletBannerStyle();
   } );
 
 
@@ -167,7 +166,7 @@ function postVisible(){
 }
 
 function scrollAffix(){
-  if( $(window).width() >= 1000 ){
+  if( $(window).width() >= 992 ){
     var scroll = parseInt( $(window).scrollTop() );
     var screenHeight = parseInt( $(window).innerHeight() );
     var bottomIndex = scroll + screenHeight;
@@ -304,4 +303,31 @@ function tableStyle(){
       
     }
   } );
+}
+
+function tabletBannerStyle(){
+  // only for tablet - col-xx-3
+  if( $(window).width() >= 768 && $(window).width() < 992 ) {
+    $(".banner-shortcut").append( $("#newsletter_select") );
+
+    $(".banner-shortcut").addClass( "col-sm-6" );
+    $(".banner-hashranking").addClass( "col-sm-6" );
+    $(".banner-mostrecent").addClass( "col-sm-6" );
+    $(".banner-mostviewed").addClass( "col-sm-6" );
+    
+  } else {
+    $(".banner-newsletter").append( $("#newsletter_select") );
+
+    $(".banner-shortcut").removeClass( "col-sm-6" );
+    $(".banner-hashranking").removeClass( "col-sm-6" );
+    $(".banner-mostrecent").removeClass( "col-sm-6" );
+    $(".banner-mostviewed").removeClass( "col-sm-6" );
+  }
+
+  // real tablet size
+  if( $(window).width() >= 992 || $(window).width() < 768 ){
+    $(".banner-newsletter").append( $("#newsletter_select") );
+  } else {
+    $(".banner-shortcut").append( $("#newsletter_select") );
+  }
 }

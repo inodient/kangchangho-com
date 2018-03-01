@@ -629,127 +629,131 @@
         <hr class="page-divider mobile-show">
 
         <div class="col-lg-3 col-md-3 banner-container">
-          <div class="input-group">
-            <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
-            <div class="input-group-btn">
-              <button id="btn_search" class="btn_important">SEARCH</button>
-            </div>
+
+            <article class="banner-shortcut">
+              <div id="search_input" class="input-group">
+                <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
+                <div class="input-group-btn">
+                  <button id="btn_search" class="btn_important">SEARCH</button>
+                </div>
+              </div>
+
+              <hr class="page-divider mobile-hidden">
+
+              <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
+                YOUTUBE
+                <br>
+                <span class="btn_important_banner_describe">kangchangho.com channel</span>
+              </button>
+
+              <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
+                summer-mvc
+                <br>
+                <span class="btn_important_banner_describe">Open Source Project</span>
+              </button>
+
+            </article>
+
+            <hr class="page-divider mobile-hidden tablet-hidden">
+
+            <article class="banner-hashranking">
+              <h4 class="title after-line-block-center">HASH RANKING</h4>
+              <div class="banner-table table table-responsive small-section-end">
+                <table class="hash-ranking table table-hover table-condensed">
+
+                  <% for( var i=0; i<hashRanking.length; i++ ){ %>
+                    <tr>
+                      <td class="ranking mobile-hidden" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
+                      <td class="hashed" data-id="<%- hashRanking[i].id %>"><span class="mobile-show-inline"><%- hashRanking[i].rank %>.</span>&nbsp;&nbsp;&nbsp;<%- hashRanking[i].text %></td>
+                      <!-- <td class="changed">-</td> -->
+                    </tr>
+                  <% } %>
+                </table>
+              </div>
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+            <article class="banner-mostrecent">
+              <h4 class="title after-line-block-center">MOST RECENT</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<recentContents.length; i++ ){ %>
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="/<%- recentContents[i].savedFileName %>" />
+                            <figcaption data-href="/content/<%- recentContents[i].id %>" >
+                              <div></div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content/<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+                  <% } %>
+                </ul>
+              </div>
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+            <article class="banner-newsletter tablet-hidden">
+              <h4 class="title after-line-block-center">NEWS LETTER</h4>
+              <select id="newsletter_select" class="select_important">
+                <option value="-" data-href="">NEWS LETTER</option>
+                <% for( var i=0; i<newsLetters.length; i++ ){ %>
+                  <option value="<%- newsLetters[i].title %>" data-href="/newsletter/<%- newsLetters[i].id %>"><%- newsLetters[i].title %></option>
+                <% } %>
+                <% if( newsLetters.length >= 5 ){ %>
+                  <option value="Last News Letters" data-href="/newsletterlist">Last News Letters</option>
+                <% } %>
+              </select>
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+            <article class="banner-mostviewed">
+              <h4 class="title after-line-block-center">MOST VIEWED</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<mostViewedContents.length; i++ ){ %>
+
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="/<%- mostViewedContents[i].savedFileName %>" />
+                            <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
+                              <div></div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content/<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+
+                  <% } %>
+
+                </ul>
+              </div>
+
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
           </div>
-
-          <hr class="page-divider mobile-hidden">
-
-          <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
-            YOUTUBE
-            <br>
-            <span class="btn_important_banner_describe">kangchangho.com channel</span>
-          </button>
-
-          <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
-            summer-mvc
-            <br>
-            <span class="btn_important_banner_describe">Open Source Project</span>
-          </button>
-
-          <hr class="page-divider mobile-hidden">
-
-          <article>
-            <h4 class="title after-line-block-center">HASH RANKING</h4>
-            <div class="banner-table table table-responsive small-section-end">
-              <table class="hash-ranking table table-hover table-condensed">
-
-                <% for( var i=0; i<hashRanking.length; i++ ){ %>
-                  <tr>
-                    <td class="ranking mobile-hidden" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
-                    <td class="hashed" data-id="<%- hashRanking[i].id %>"><span class="mobile-show-inline"><%- hashRanking[i].rank %>.</span>&nbsp;&nbsp;&nbsp;<%- hashRanking[i].text %></td>
-                    <!-- <td class="changed">-</td> -->
-                  </tr>
-                <% } %>
-              </table>
-            </div>
-          </article>
-
-          <hr class="mobile-hidden small-section-end">
-
-          <article>
-            <h4 class="title after-line-block-center">MOST RECENT</h4>
-            <div class="banner-list">
-              <ul>
-
-                <% for( var i=0; i<recentContents.length; i++ ){ %>
-                  <li>
-                    <div class="row">
-                      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
-                        <figure>
-                          <img src="/<%- recentContents[i].savedFileName %>" />
-                          <figcaption data-href="/content/<%- recentContents[i].id %>" >
-                            <div></div>
-                            </figcation>
-                        </figure>
-
-                      </div>
-                      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
-                        <h4 class="content-title"><a href="/content/<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
-                        <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
-                      </div>
-                    </div>
-                  </li>
-                <% } %>
-              </ul>
-            </div>
-          </article>
-
-          <hr class="mobile-hidden small-section-end">
-
-          <article>
-            <h4 class="title after-line-block-center">NEWS LETTER</h4>
-            <select id="newsletter_select" class="select_important">
-              <option value="-" data-href="">NEWS LETTER</option>
-              <% for( var i=0; i<newsLetters.length; i++ ){ %>
-                <option value="<%- newsLetters[i].title %>" data-href="/newsletter/<%- newsLetters[i].id %>"><%- newsLetters[i].title %></option>
-              <% } %>
-              <% if( newsLetters.length >= 5 ){ %>
-                <option value="Last News Letters" data-href="/newsletterlist">Last News Letters</option>
-              <% } %>
-            </select>
-          </article>
-
-          <hr class="mobile-hidden small-section-end">
-
-          <article>
-            <h4 class="title after-line-block-center">MOST VIEWED</h4>
-            <div class="banner-list">
-              <ul>
-
-                <% for( var i=0; i<mostViewedContents.length; i++ ){ %>
-
-                  <li>
-                    <div class="row">
-                      <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
-                        <figure>
-                          <img src="/<%- mostViewedContents[i].savedFileName %>" />
-                          <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
-                            <div></div>
-                            </figcation>
-                        </figure>
-
-                      </div>
-                      <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
-                        <h4 class="content-title"><a href="/content/<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
-                        <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
-                      </div>
-                    </div>
-                  </li>
-
-                <% } %>
-
-              </ul>
-            </div>
-
-          </article>
-
-          <hr class="mobile-hidden small-section-end">
-
-        </div>
       </div>
     </div>
   </div>

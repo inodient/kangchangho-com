@@ -538,11 +538,27 @@ nav {
   display: none;
 }
 
+.tablet-show {
+  display: none;
+}
+
+.tablet-show-inline {
+  display: none;
+}
+
 .mobile-hidden {
   display: block;
 }
 
 .mobile-hidden-inline {
+  display: inline;
+}
+
+.tablet-hidden {
+  display: block;
+}
+
+.tablet-hidden-inline {
   display: inline;
 }
 
@@ -560,6 +576,24 @@ nav {
   }
 
   .mobile-hidden-inline {
+    display: none;
+  }
+}
+
+@media screen and (min-width : 768px) and (max-width : 992px) {
+  .tablet-show {
+    display: block;
+  }
+
+  .tablet-hidden {
+    display: none;
+  }
+
+  .tablet-show-inline {
+    display: inline;
+  }
+
+  .tablet-hidden-inline {
     display: none;
   }
 }
@@ -1038,9 +1072,19 @@ nav {
   padding-left: 30px;
 }
 
-@media (max-width: 1100px) {
+@media screen and (min-width : 768px) and (max-width: 1024px) {
+  .banner-container article {
+    margin-bottom: 25px;
+  }
+
+  .banner-container .banner-shortcut {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 1024px) {
   .content-container, .article-list-container, .banner-container {
-    margin: 15px;
+    padding: 15px;
   }
 }
 
@@ -1060,6 +1104,19 @@ nav {
     padding-left: 0px;
   }
 }
+
+/* responsive support - max width is 1100px */
+@media screen and (min-width : 768px) and (max-width: 1100px) {
+  .article-container {
+    padding: 30px;
+    padding-right: 20px;
+  }
+
+  .banner-container {
+    padding: 30px;
+    padding-left: 20px;
+  }
+}
 /* body - hierarchy - Start */
 /* =========================================================== */
 
@@ -1072,7 +1129,7 @@ nav {
   overflow: hidden;
 }
 
-@media screen and (min-width : 768px) and (max-width : 1023) {
+@media screen and (min-width : 768px) and (max-width : 1024) {
   .announce-carousel {
     height: 268px;
   }
@@ -1389,14 +1446,28 @@ nav {
   font-weight: 800;
 }
 
+.related-post .row {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .related-post .thumb-article {
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 @media screen and (min-width : 320px) and (max-width : 767px) {
+  .related-post.mobile-show {
+    padding-left: 30px;
+    padding-right: 30px;
+  } 
+
   .related-post h4 {
-    padding-left: 15px;
+    padding-left: 0px;
+  }
+
+  .related-post.mobile-show .thumb-article{
+    padding: 15px;
   }
 }
 
