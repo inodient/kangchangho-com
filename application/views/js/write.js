@@ -3,7 +3,7 @@ $(document).ready(function() {
   var writeMode = "";
 
   /************************************************************************************************************/
-  // INSERT - END
+  // INSERT - START
   writeMode = "insert";
 
   // 00. Editor Setting , Editor Image Upload ajaxSetting

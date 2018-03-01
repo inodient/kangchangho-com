@@ -21,11 +21,7 @@ exports.control = function( req, res, connection ){
 
       Promise.all( promises )
       .then( function(){
-
         var argv = arguments[0];
-
-        logger.debug( Object.assign( staticInfo, argv[0], argv[1] ) );
-
         resolve( Object.assign( staticInfo, argv[0], argv[1] ) );
       } )
       .catch( function( _err ){

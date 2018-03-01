@@ -1167,6 +1167,10 @@ nav {
 .content-body {
 }
 
+.content-body img {
+  max-width: 100%;
+}
+
 .content-embrassed {
   padding: 35px;
   background-color: #eceeef;
