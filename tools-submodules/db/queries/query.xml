@@ -247,7 +247,7 @@
       ]]>
     </query>
 
-    <query id='getAboutContentMaster'>
+    <!-- <query id='getAboutContentMaster'>
       <![CDATA[
         select id,
                category,
@@ -265,7 +265,7 @@
           from TB_ABOUT
          order by create_date desc limit 1
       ]]>
-    </query>
+    </query> -->
 
     <query id='increaseContentHitCount'>
       <![CDATA[
@@ -322,13 +322,13 @@
       ]]>
     </query>
 
-    <query id='getAboutContentWriter'>
+    <!-- <query id='getAboutContentWriter'>
       <![CDATA[
         select id, case when ? = 'en' then name_en else name_ko end as name, case when ? = 'en' then description_en else description_ko end as description, email, create_time
           from TB_WRITER
          where id = ( select writer from TB_ABOUT order by create_date desc limit 1)
       ]]>
-    </query>
+    </query> -->
 
     <query id='getHashRanking'>
       <![CDATA[
@@ -539,6 +539,7 @@
                 LEFT JOIN TB_MENU menu ON announce.category = menu.id
                 LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                 LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+                where announce.on_main = 0
               ) page_list, (SELECT @rownum :=0) AS R
           order by create_date desc ) total
           limit 16
@@ -585,6 +586,7 @@
               LEFT JOIN TB_MENU menu ON announce.category = menu.id
               LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
               LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
+              where announce.on_main = 0
             ) page_list, (SELECT @rownum :=0) AS R
         order by create_date desc ) total
         limit ?, ?
@@ -639,7 +641,8 @@
                   LEFT JOIN TB_MENU menu ON announce.category = menu.id
                   LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                   LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
-                  where case when ? = 'en' then announce.title_en like ?
+                  where announce.on_main = 0 and 
+                   case when ? = 'en' then announce.title_en like ?
                          else announce.title_ko like ? end
                      or case when ? = 'en' then writer.name_en like ?
                              else writer.name_ko like ? end
@@ -698,7 +701,8 @@
                   LEFT JOIN TB_MENU menu ON announce.category = menu.id
                   LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                   LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
-                  where case when ? = 'en' then announce.title_en like ?
+                  where announce.on_main = 0 and 
+                   case when ? = 'en' then announce.title_en like ?
                          else announce.title_ko like ? end
                      or case when ? = 'en' then writer.name_en like ?
                              else writer.name_ko like ? end
@@ -750,7 +754,7 @@
                   LEFT JOIN TB_MENU menu ON announce.category = menu.id
                   LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                   LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
-                  where menu.id = ?
+                  where announce.on_main = 0 and menu.id = ?
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
@@ -799,7 +803,7 @@
                   LEFT JOIN TB_MENU menu ON announce.category = menu.id
                   LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                   LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
-                  where menu.id = ?
+                  where announce.on_main = 0 and  menu.id = ?
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
@@ -848,7 +852,7 @@
                   LEFT JOIN TB_MENU menu ON announce.category = menu.id
                   LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                   LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
-                  where writer.id = ?
+                  where announce.on_main = 0 and writer.id = ?
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
@@ -897,7 +901,7 @@
                   LEFT JOIN TB_MENU menu ON announce.category = menu.id
                   LEFT JOIN TB_CONTENT_IMAGE image ON announce.announce_image = image.id
                   LEFT JOIN TB_WRITER writer ON announce.writer = writer.id
-                  where writer.id = ?
+                  where announce.on_main = 0 and writer.id = ?
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
