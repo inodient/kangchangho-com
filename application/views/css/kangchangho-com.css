@@ -1718,6 +1718,17 @@ nav {
   font-size: 2rem;
 }
 
+#subscribe_modal .modal-dismiss, #language_change_modal .modal-dismiss {
+  display: block;
+  font-size: 3rem;
+  text-align: right;
+  margin-bottom: 3rem;
+}
+
+#subscribe_modal .modal-dismiss:hover, #language_change_modal .modal-dismiss:hover {
+  cursor: pointer;
+}
+
 .back-to-top {
   position: fixed;
   bottom: 3.5rem;

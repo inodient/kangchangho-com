@@ -326,19 +326,11 @@ $(document).ready( function(){
 
 
   $("#language_change_modal .modal-dialog").on( "click", function(e){
-
-    alert( "HERE" );
-
     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
       e.stopPropagation();
       return;
     }
 
     $("#language_change_modal").modal( "hide" );
-  } );
-
-
-  $("*").on( "click", function(e){
-    console.log( $(e.target) );
   } );
 } );
