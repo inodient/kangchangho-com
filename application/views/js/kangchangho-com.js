@@ -47,7 +47,7 @@ $(window).on( "pageshow", function(){
 
 $(document).on( "pageinit", "#language_change_modal", function(){
 
-  alert( "init launage_change_modal" );
+  console.log( "init launage_change_modal" );
 
   $("#language_change_modal .modal-dialog").on( "click", function(e){
     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
@@ -66,6 +66,9 @@ $(document).ready( function(){
 
   if( $.cookie( "lang") != $("body").data("lang") ){
     if( $.cookie("lang") === "ko" ){
+
+      alert( "Probably Here?" );
+      console.log( "HERE" );
 
       $("#language_change_modal #language-change-message").html( 
         `<b>언어 설정 변경</b>
