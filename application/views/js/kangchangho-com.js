@@ -1,24 +1,25 @@
 $(document).ready( function(){
 
+
+  $("#language_change_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#language_change_modal").modal( "hide" );
+  } );
+
+  $(".modal-dismiss").on( "click", function(){
+    var modal = $(this).parent().parent().parent().parent();
+    modal.modal( "hide" );
+  } );
+
+
+
   if( !$("#lanuage_change_modal").hasClass("in") ){
     if( $.cookie( "lang") != $("body").data("lang") ){
 
-      $("#language_change_modal .modal-dialog").on( "click", function(e){
-        if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-          e.stopPropagation();
-          return;
-        }
-
-        $("#language_change_modal").modal( "hide" );
-      } );
-
-      $(".modal-dismiss").on( "click", function(){
-        var modal = $(this).parent().parent().parent().parent();
-        modal.modal( "hide" );
-      } );
-
-
-      
       if( $.cookie("lang") === "ko" ){
 
         $("#language_change_modal #language-change-message").html( 
