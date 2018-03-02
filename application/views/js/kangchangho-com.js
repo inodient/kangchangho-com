@@ -44,12 +44,12 @@ $(window).on( "pageshow", function(){
   if( iOSDevice() ){
     if( $(window).width() < 1000 && getBrowserLang() != $("body").data("lang") ){
       if( getBrowserLang() === "ko" ){
-        setLanguageChangeModalMessage("ko");
+        $("#language_change_modal #language-change-message").html( setLanguageChangeModalMessage("ko") );
       } else if( getBrowserLang() === "en" ){
-        setLanguageChangeModalMessage("en");
+        $("#language_change_modal #language-change-message").html( setLanguageChangeModalMessage("en") );
       }
 
-      setLanguageChangeModal();
+      setLanguageChangeModalEvent();
       $("#language_change_modal").modal( "show" );
     }
   }
@@ -70,7 +70,7 @@ function getBrowserLang(){
   return userLang.split("-")[0];
 }
 
-function setLanguageChangeModal(){
+function setLanguageChangeModalEvent(){
   $("#language_change_modal .modal-dialog").on( "click", function(e){
     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
       e.stopPropagation();
@@ -83,6 +83,10 @@ function setLanguageChangeModal(){
   $(".modal-dismiss").on( "click", function(){
     var modal = $(this).parent().parent().parent().parent();
     modal.modal( "hide" );
+  } );
+
+  $("#language_change_modal").on("hidden.bs.modal", function(){
+    location.reload();
   } );
 }
 
