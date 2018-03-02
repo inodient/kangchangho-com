@@ -320,7 +320,7 @@ $(window).on( "pageshow", function(){
   if( iOSDevice() ){
 
     if( $.cookie("lang") === undefined ){
-      location.reload();
+      // location.reload();
     }
 
     // if( $(window).width() < 1000 && getBrowserLang() != $("body").data("lang") ){
