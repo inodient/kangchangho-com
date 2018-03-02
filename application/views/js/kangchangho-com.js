@@ -1,3 +1,8 @@
+var languageChangeModalEnable = false;
+
+
+
+
 $(window).on( "pageshow", function(){
   if( $(window).width() < 1000 ){
 
@@ -12,7 +17,9 @@ $(window).on( "pageshow", function(){
           언어설정을 한국어로 변경합니다.`
         );
         
-        $("#language_change_modal").modal("show");
+        languageChangeModalEnable = true;
+
+        // $("#language_change_modal").modal("show");
    
       } else {
         $("#language_change_modal #language-change-message").html( 
@@ -21,7 +28,9 @@ $(window).on( "pageshow", function(){
           Default language setted as English.`
         );
 
-        $("#language_change_modal").modal("show");
+        // $("#language_change_modal").modal("show");
+
+        languageChangeModalEnable = true;
       }
     }
   }
@@ -336,4 +345,10 @@ $(document).ready( function(){
 
     $("#language_change_modal").modal( "hide" );
   } );
+
+
+
+
+
+  $("#language_change_modal").modal("show");
 } );
