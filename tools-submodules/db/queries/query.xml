@@ -54,14 +54,14 @@
       ]]>
     </query>
 
-    <query id='checkAboutContent'>
+    <!-- <query id='checkAboutContent'>
       <![CDATA[
         SELECT 
           CASE WHEN name = 'About' THEN 1
                ELSE 0 END as is_about_content
           FROM TB_MENU where id = ?
       ]]>
-    </query>
+    </query> -->
 
     <query id='addContent'>
       <![CDATA[
@@ -70,12 +70,12 @@
       ]]>
     </query>
 
-    <query id='addAboutContent'>
+   <!--  <query id='addAboutContent'>
       <![CDATA[
         INSERT INTO TB_ABOUT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel)
         VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)
       ]]>
-    </query>
+    </query> -->
 
     <query id='modifyContent'>
       <![CDATA[
@@ -94,7 +94,7 @@
       ]]>
     </query>
 
-    <query id='modifyAboutContent'>
+    <!-- <query id='modifyAboutContent'>
       <![CDATA[
         UPDATE TB_ABOUT
         SET category = ?,
@@ -109,7 +109,7 @@
             image_carousel = ?
         WHERE id = ( select id from (select id from TB_ABOUT order by create_date desc limit 1 ) wrap )
       ]]>
-    </query>
+    </query> -->
 
     <query id='getInsertedContentId'>
       <![CDATA[
@@ -210,8 +210,11 @@
           case when ( id = ( select category from TB_CONTENT where id = ? )
                    or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ( select category from TB_CONTENT where id = ? ) ) ) )
                    or ( ( id = ? ) or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ? ) ) )  then 'active'
-               else 'normal' end as active
-          from TB_MENU ORDER BY group_value, DEPTH, SEQUENCE
+               else 'normal' end as active,
+          case when (select count(id) from TB_CONTENT con where con.category = menu.id) = 1 
+              then CONCAT( '/content/', (select con.id from TB_CONTENT con where con.category = menu.id) )
+              else CONCAT( '/category/', menu.id ) END as redirectPath
+          from TB_MENU menu ORDER BY group_value, DEPTH, SEQUENCE
       ]]>
     </query>
 

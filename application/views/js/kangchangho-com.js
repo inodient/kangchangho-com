@@ -1,5 +1,26 @@
 $(document).ready( function(){
 
+  // language_change_modal event setting - before showing modal - START
+  $("#language_change_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#language_change_modal").modal( "hide" );
+  } );
+
+  $(".modal-dismiss").on( "click", function(){
+    var modal = $(this).parent().parent().parent().parent();
+    modal.modal( "hide" );
+  } );
+
+  $("#language_change_modal").on("hidden.bs.modal", function(){
+    location.reload();
+  } );
+  // language_change_modal event setting - before showing modal - END
+
+
   if( !$("#lanuage_change_modal").hasClass("in") ){
     if( $.cookie( "lang") != $("body").data("lang") ){
 
@@ -47,31 +68,6 @@ $(document).ready( function(){
 
 
 
-    // language_change_modal event setting - before showing modal - START
-  $("#language_change_modal .modal-dialog").on( "click", function(e){
-    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-      e.stopPropagation();
-      return;
-    }
-
-    $("#language_change_modal").modal( "hide" );
-  } );
-
-  $(".modal-dismiss").on( "click", function(){
-    var modal = $(this).parent().parent().parent().parent();
-    modal.modal( "hide" );
-  } );
-
-  $("#language_change_modal").on("hidden.bs.modal", function(){
-    location.reload();
-  } );
-  // language_change_modal event setting - before showing modal - END
-
-
-
-
-
-
   $(".sns-share-icon").on( "click", function(){
     alert( $(this).children().attr( "class" ) );
   } );
@@ -109,6 +105,33 @@ $(document).ready( function(){
     });
 
     // Menu Drop Down
+    $(".site-nav .navbar-nav .navbar-item").on( "click", function(){
+
+      if( $(this).attr( "class" ).indexOf( "open" ) > -1 ){
+
+        // dropdown - close
+        $(".navbar-item").each( function(){
+          $(this).removeClass( "open" );
+        } );
+        $(this).children(".site-nav-menu").children(".dropdown-arrow").removeClass( "fa-angle-up" );
+        $(this).children(".site-nav-menu").children(".dropdown-arrow").addClass( "fa-angle-down" );
+      } else{
+
+        // dropdown - open
+        $(".navbar-item").each( function(){
+          $(this).removeClass( "open" );
+          $(this).children(".site-nav-menu").children(".dropdown-arrow").removeClass( "fa-angle-up" );
+          $(this).children(".site-nav-menu").children(".dropdown-arrow").addClass( "fa-angle-down" );
+        } );
+
+        $(this).addClass( "open" );
+        $(this).children(".site-nav-menu").children(".dropdown-arrow").removeClass( "fa-angle-down" );
+        $(this).children(".site-nav-menu").children(".dropdown-arrow").addClass( "fa-angle-up" );
+      }
+    } );
+
+
+    // Menu Drop Down
     $(".site-nav .navbar-nav .navbar-item .dropdown-arrow").on( "click", function(){
       if( $(this).parent().parent().attr( "class" ).indexOf( "open" ) > -1 ){
         // dropdown - close
@@ -118,7 +141,7 @@ $(document).ready( function(){
         $(this).removeClass( "fa-angle-up" );
         $(this).addClass( "fa-angle-down" );
       } else{
-      // dropdown - open
+        // dropdown - open
         $(".navbar-item").each( function(){
           $(this).removeClass( "open" );
           $(this).children(".site-nav-menu").children(".dropdown-arrow").removeClass( "fa-angle-up" );
@@ -129,48 +152,6 @@ $(document).ready( function(){
         $(this).addClass( "fa-angle-up" );
       }
     } );
-
-    // Hyperlink
-    $(".site-nav-menu, .site-nav-menu *").on( "click", function(){
-      if( $(this).attr( "class" ).indexOf( "dropdown-arrow" ) < 0 ){
-        var eventFunction = $(this).data("href");
-
-        if( eventFunction == "goToCategory()" ){
-          var id = $(this).attr( "id" );
-          $(location).attr( "href", "/category/" + id );
-        } else if( eventFunction == "goToAbout()" ){
-          $(location).attr( "href", "/about" );
-        }
-      }
-      event.stopPropagation();
-    } );
-
-    $(".site-nav-menu-inner").on( "click", function(){
-      var eventFunction = $(this).data("href");
-
-      if( eventFunction == "goToCategory()" ){
-        var id = $(this).attr( "id" );
-        $(location).attr( "href", "/category/" + id );
-      } else if( eventFunction == "goToAbout()" ){
-        $(location).attr( "href", "/about" );
-      }
-    } );
-
-
-  } else {
-
-    $(".site-nav-menu, .site-nav-menu-inner").on( "click", function(){
-
-      var eventFunction = $(this).data("href");
-
-      if( eventFunction == "goToCategory()" ){
-        var id = $(this).attr( "id" );
-        $(location).attr( "href", "/category/" + id );
-      } else if( eventFunction == "goToAbout()" ){
-        $(location).attr( "href", "/about" );
-      }
-    } );
-
   }
 
 

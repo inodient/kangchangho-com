@@ -155,16 +155,8 @@ exports.control_upload_content = function( req, res, connection ){
 
 					var contentId = result.contentId;
 
-					if( result.target === "about" ){
-						logger.debug( "about :", result.contentId );
-
-						resolve( {"contentId": result.contentId} );
-					}
-
 					var _promises = [];
 					var hashesList = req.body.hashesList;
-
-					logger.debug( "hashesList :", hashesList );
 					
 					for( var i=0; i<hashesList.length; i++ ){
 						_promises.push( hashService.addHash( connection, contentId, hashesList[i] ) );
@@ -191,18 +183,10 @@ exports.control_upload_content = function( req, res, connection ){
 
 					var contentId = result.contentId;
 
-					if( result.target === "about" ){
-						logger.error( result );
-
-						resolve( {"contentId": result.contentId} );
-					}
-
 					var _promises = [];
 					var hashesList = req.body.hashesList;
 
 					if( typeof hashesList != "undefined" ){
-
-						logger.debug( "HASH?" );
 
 						for( var i=0; i<hashesList.length; i++ ){
 							_promises.push( hashService.modifyHash( connection, contentId, hashesList[i] ) );
@@ -216,7 +200,6 @@ exports.control_upload_content = function( req, res, connection ){
 							} );
 						}
 					} else {
-						logger.debug( "HASH!" );
 						resolve( {"contentId": contentId} );
 					}
 

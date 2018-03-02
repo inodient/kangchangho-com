@@ -41,9 +41,9 @@
         </div>
 
         <nav class="site-nav navbar">
-          <div class="container-fluid">
+        <div class="container-fluid">
 
-            <hr class="page-divider mobile-show">
+          <hr class="page-divider mobile-show">
 
             <ul class="nav navbar-nav">
               <% for( var i=0; i<menu.length; i++ ){ %>
@@ -54,7 +54,7 @@
                   <% } else { %>
                     <li class="navbar-item">
                   <% } %>
-                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %><i class="dropdown-arrow fa fa-angle-down" aria-hidden="true"></i></a>
+                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].redirectPath %>"><%- menu[i].display_name %><i class="dropdown-arrow fa fa-angle-down" aria-hidden="true"></i></a>
                       <ul class="dropdown-menu">
                         <% i++; %>
                         <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
@@ -63,17 +63,17 @@
                           <% } else { %>
                             <li class="navbar-item-inner">
                           <% } %>
-                              <a class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                              <a href="<%- menu[i].redirectPath %>" class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
                           <% if( i < parseInt(menu.length)-2 && menu[i].group_value != menu[i+1].group_value ){ break; }%>
                           <% i++; %>
                         <% } %>
                       </ul>
-                  </li>
+                    </li>
                 <% } else { %>
                   <% if( menu[i].active == "active" ){ %>
-                    <li class="navbar-item active"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                    <li class="navbar-item active"><a  href="<%- menu[i].redirectPath %>" class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
                   <% } else { %>
-                    <li class="navbar-item"><a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                    <li class="navbar-item"><a  href="<%- menu[i].redirectPath %>" class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
                   <% } %>
                 <% } %>
               <% } %>
@@ -82,8 +82,8 @@
             <div class="paragraph-end mobile-show"></div>
             <hr class="page-divider mobile-show">
 
-          </div>
-        </nav>
+        </div>
+      </nav>
       </header>
 
 

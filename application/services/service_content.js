@@ -488,34 +488,17 @@ exports.getAnnounceContentList = function( connection ){
 exports.addContent = function( connection, parameter ){
   return new Promise( function(resolve, reject){
 
-    dbExecutorContent.checkAboutContent( connection, parameter )
-    .then( function( results ){
-      var isAboutContent = results[0].is_about_content === 1 ? true : false;
+    
+    dbExecutorContent.addContent( connection, parameter )
+    .then( function(){
 
-      if( isAboutContent ){
-        dbExecutorContent.addAboutContent( connection, parameter )
-        .then( function(){
-          resolve( {"status":"succeed", "target":"about", "contentId":"-1"} );
-        } )
-        .catch( function(_err){
-          reject( _err );
-        } );
-      } else {
-        dbExecutorContent.addContent( connection, parameter )
-        .then( function(){
-
-          dbExecutorContent.getInsertedContentId( connection, parameter )
-          .then( function( results ){
-            resolve( {"status":"succeed", "target":"content", "contentId":results[0]._ID} );
-          } )
-          .catch( function( __err ){
-            reject( __err );
-          } );
-        } )
-        .catch( function(_err){
-          reject( _err );
-        } );
-      }
+      dbExecutorContent.getInsertedContentId( connection, parameter )
+      .then( function( results ){
+        resolve( {"status":"succeed", "contentId":results[0]._ID} );
+      } )
+      .catch( function( __err ){
+        reject( __err );
+      } );
     } )
     .catch( function( err ){
       reject( err );
@@ -578,33 +561,14 @@ exports.getModifyContentMaster = function( connection, id ){
 exports.modifyContent = function( connection, parameter ){
   return new Promise( function(resolve, reject){
 
-    dbExecutorContent.checkAboutContent( connection, parameter )
-    .then( function( results ){
-      var isAboutContent = results[0].is_about_content === 1 ? true : false;
-
-      if( isAboutContent ){
-        dbExecutorContent.modifyAboutContent( connection, parameter )
-        .then( function( modifyId ){
-          resolve( {"status":"succeed", "target":"about", "contentId":"-1"} );
-        } )
-        .catch( function(err){
-          reject( err );
-        } );
-      } else {
-        dbExecutorContent.modifyContent( connection, parameter )
-        .then( function( modifyId ){
-          resolve( {"status":"succeed", "target":"content", "contentId":modifyId} );
-        } )
-        .catch( function(err){
-          reject( err );
-        } );
-      }
-
+    dbExecutorContent.modifyContent( connection, parameter )
+    .then( function( modifyId ){
+      resolve( {"status":"succeed", "contentId":modifyId} );
     } )
-    .catch( function( err ){
+    .catch( function(err){
       reject( err );
-    } ); 
-
+    } );
+    
     // dbExecutorContent.checkAboutContent( connection, parameter )
     // .then( funciton( results ){
     //   var isAboutContent = results[0] === 1 ? true : false;
