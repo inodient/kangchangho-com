@@ -84,8 +84,13 @@ $(document).ready( function(){
   } );
 
   $(".modal-dismiss").on( "click", function(){
-    $("#header_search_modal").modal( "hide" );
-    $("#moadl_searchword").val( '' );
+
+    var modal = $(this).parent().parent().parent().parent();
+    modal.modal( "hide" );
+
+    if( modal.attr("id") === "header_search_modal" ){
+      $("#moadl_searchword").val( '' );
+    }    
   } );
 
   $(".site-title-span").on( "click", function(){
@@ -229,7 +234,7 @@ $(document).ready( function(){
     }
   } );
 
-  $("*").on( "click", function(e){
+  $("#modal_searchword .modal-body").on( "click", function(e){
     if( $(e.target) && $(e.target).attr("class") && $(e.target).attr("class").indexOf( "modal-body" ) > -1 ){
       $("#header_search_modal").modal( "hide" );
       $("#modal_searchword").val( '' );
@@ -321,6 +326,9 @@ $(document).ready( function(){
 
 
   $("#language_change_modal .modal-dialog").on( "click", function(e){
+
+    alert( "HERE" );
+
     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
       e.stopPropagation();
       return;
