@@ -41,6 +41,20 @@ $(window).on( "pageshow", function(){
   }
 } );
 
+$(document).on( "pageinit", "#language_change_modal", function(){
+
+  alert( "init launage_change_modal" );
+
+  $("#language_change_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#language_change_modal").modal( "hide" );
+  } );
+});
+
 
 
 
