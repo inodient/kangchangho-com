@@ -25,12 +25,12 @@ $(document).ready( function(){
         $("#language_change_modal #language-change-message").html( 
           `<b>언어 설정 변경</b>
           <hr>
-          언어설정을 한국어로 변경합니다.`
+          언어 설정을 한국어로 변경합니다.`
         );
         
         $("#language_change_modal").modal("show");
    
-      } else {
+      } else if( $.cookie("lang") === "en" ) {
         $("#language_change_modal #language-change-message").html( 
           `<b>Notification</b>
           <hr>
@@ -38,6 +38,8 @@ $(document).ready( function(){
         );
 
         $("#language_change_modal").modal("show");
+      } else {
+        document.cookie = "lang=" + $("body").data("lang") + ";path=/;" + ";";
       }
     }
   }
