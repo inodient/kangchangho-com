@@ -9,7 +9,17 @@ $(window).on( "pageshow", function(){
           <hr>
           언어설정을 한국어로 변경합니다.`
         );
-        
+   
+        $("#language_change_modal .modal-dialog").on( "click", function(e){
+          if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+            e.stopPropagation();
+            return;
+          }
+
+          $("#language_change_modal").modal( "hide" );
+        } );
+
+
         $("#language_change_modal").modal("show");
    
       } else {
@@ -18,6 +28,15 @@ $(window).on( "pageshow", function(){
           <hr>
           Default language setted as English.`
         );
+
+        $("#language_change_modal .modal-dialog").on( "click", function(e){
+          if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+            e.stopPropagation();
+            return;
+          }
+
+          $("#language_change_modal").modal( "hide" );
+        } );
 
         $("#language_change_modal").modal("show");
       }
