@@ -14,37 +14,31 @@ $(window).on( "pageshow", function(){
 
       alert( $.cookie( "lang" ) );
 
-      if( $.cookie( "lang" ) ){
-
         if( $.cookie( "lang") != $("body").data("lang") ){
           if( $.cookie("lang") === "ko" ){
 
-            // $("#language_change_modal #language-change-message").html( 
-            //   `<b>언어 설정 변경</b>
-            //   <hr>
-            //   언어설정을 한국어로 변경합니다.`
-            // );
+            $("#language_change_modal #language-change-message").html( 
+              `<b>언어 설정 변경</b>
+              <hr>
+              언어설정을 한국어로 변경합니다.`
+            );
        
-            alert( "언어설정을 한국어로 변경합니다." );
+            $("#language_change_modal").modal("show");
 
-            // $("#language_change_modal").modal("show");
+            // alert( "언어설정을 한국어로 변경합니다." );
        
           } else {
-            // $("#language_change_modal #language-change-message").html( 
-            //   `<b>Notification</b>
-            //   <hr>
-            //   Default language will be setted as English.`
-            // );
+            $("#language_change_modal #language-change-message").html( 
+              `<b>Notification</b>
+              <hr>
+              Default language will be setted as English.`
+            );
 
-            alert( "Default language will be setted as English." );
+            $("#language_change_modal").modal("show");
 
-            // $("#language_change_modal").modal("show");
+            // alert( "Default language will be setted as English." );
           }
         }
-
-      } else {
-        location.reload();
-      }
 
     }
   }
@@ -55,25 +49,27 @@ $(window).on( "pageshow", function(){
 
 $(document).ready( function(){
 
-  if( $.cookie( "lang") != $("body").data("lang") ){
-    if( $.cookie("lang") === "ko" ){
+  if( !$("#lanuage_change_modal").hasClass("in") ){
+    if( $.cookie( "lang") != $("body").data("lang") ){
+      if( $.cookie("lang") === "ko" ){
 
-      $("#language_change_modal #language-change-message").html( 
-        `<b>언어 설정 변경</b>
-        <hr>
-        언어설정을 한국어로 변경합니다.`
-      );
-      
-      $("#language_change_modal").modal("show");
- 
-    } else {
-      $("#language_change_modal #language-change-message").html( 
-        `<b>Notification</b>
-        <hr>
-        Default language will be setted as English.`
-      );
+        $("#language_change_modal #language-change-message").html( 
+          `<b>언어 설정 변경</b>
+          <hr>
+          언어설정을 한국어로 변경합니다.`
+        );
+        
+        $("#language_change_modal").modal("show");
+   
+      } else {
+        $("#language_change_modal #language-change-message").html( 
+          `<b>Notification</b>
+          <hr>
+          Default language will be setted as English.`
+        );
 
-      $("#language_change_modal").modal("show");
+        $("#language_change_modal").modal("show");
+      }
     }
   }
 
