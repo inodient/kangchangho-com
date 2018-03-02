@@ -336,4 +336,9 @@ $(document).ready( function(){
 
     $("#language_change_modal").modal( "hide" );
   } );
+
+
+  $("*").on( "click", function(e){
+    console.log( $(e.target) );
+  } );
 } );
