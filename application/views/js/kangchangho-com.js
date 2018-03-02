@@ -1,6 +1,6 @@
 $(document).ready( function(){
 
-
+  // language_change_modal event setting - before showing modal - START
   $("#language_change_modal .modal-dialog").on( "click", function(e){
     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
       e.stopPropagation();
@@ -15,6 +15,10 @@ $(document).ready( function(){
     modal.modal( "hide" );
   } );
 
+  $("#language_change_modal").on("hidden.bs.modal", function(){
+    location.reload();
+  } );
+  // language_change_modal event setting - before showing modal - END
 
 
   if( !$("#lanuage_change_modal").hasClass("in") ){
@@ -43,10 +47,6 @@ $(document).ready( function(){
       }
     }
   }
-
-  $("#language_change_modal").on("hidden.bs.modal", function(){
-    location.reload();
-  } );
 
   if( $.cookie( "lang" ).indexOf( "ko" ) > -1 ){
     $("#language-changer").text( "ko" );
@@ -338,67 +338,56 @@ $(document).ready( function(){
 
 $(window).on( "pageshow", function(){
   if( iOSDevice() ){
-
-    if( $.cookie("lang") === undefined ){
-      // location.reload();
+    if( $.cookie("lang") != $("body").data("lang") ){
+      document.cookie = "lang=" + $("body").data("lang") + ";path=/;" + ";";
+      location.reload();
     }
-
-    // if( $(window).width() < 1000 && getBrowserLang() != $("body").data("lang") ){
-    //   if( getBrowserLang() === "ko" ){
-    //     $("#language_change_modal #language-change-message").html( setLanguageChangeModalMessage("ko") );
-    //   } else if( getBrowserLang() === "en" ){
-    //     $("#language_change_modal #language-change-message").html( setLanguageChangeModalMessage("en") );
-    //   }
-
-    //   setLanguageChangeModalEvent();
-    //   $("#language_change_modal").modal( "show" );
-    // }
   }
 } );
 
-function iOSDevice(){
-  var ua = navigator.userAgent,
-  iOS = /iPad|iPhone|iPod/.test(ua),
-  iOS11 = /OS 11_0_1|OS 11_0_2|OS 11_0_3|OS 11_1|OS 11_1_1|OS 11_1_2|OS 11_2|OS 11_2_1/.test(ua);
+// function iOSDevice(){
+//   var ua = navigator.userAgent,
+//   iOS = /iPad|iPhone|iPod/.test(ua),
+//   iOS11 = /OS 11_0_1|OS 11_0_2|OS 11_0_3|OS 11_1|OS 11_1_1|OS 11_1_2|OS 11_2|OS 11_2_1/.test(ua);
 
-  return iOS && iOS11;
-}
+//   return iOS && iOS11;
+// }
 
-function getBrowserLang(){
-  var userLang = navigator.language || navigator.userLanguage;
-  return userLang.split("-")[0];
-}
+// function getBrowserLang(){
+//   var userLang = navigator.language || navigator.userLanguage;
+//   return userLang.split("-")[0];
+// }
 
-function setLanguageChangeModalEvent(){
-  $("#language_change_modal .modal-dialog").on( "click", function(e){
-    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-      e.stopPropagation();
-      return;
-    }
+// function setLanguageChangeModalEvent(){
+//   $("#language_change_modal .modal-dialog").on( "click", function(e){
+//     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+//       e.stopPropagation();
+//       return;
+//     }
 
-    $("#language_change_modal").modal( "hide" );
-  } );
+//     $("#language_change_modal").modal( "hide" );
+//   } );
 
-  $(".modal-dismiss").on( "click", function(){
-    var modal = $(this).parent().parent().parent().parent();
-    modal.modal( "hide" );
-  } );
+//   $(".modal-dismiss").on( "click", function(){
+//     var modal = $(this).parent().parent().parent().parent();
+//     modal.modal( "hide" );
+//   } );
 
-  $("#language_change_modal").on("hidden.bs.modal", function(){
-    location.reload();
-  } );
-}
+//   $("#language_change_modal").on("hidden.bs.modal", function(){
+//     location.reload();
+//   } );
+// }
 
-function setLanguageChangeModalMessage( lang ){
-  if( lang === "ko" ){
-    return `<b>언어 설정 변경</b>
-      <hr>
-      브라우저 종료 시점의 언어는 영어 입니다.<br>
-      언어설정을 한국어로 변경합니다.`
-  } else {
-    return `<b>Notification</b>
-      <hr>
-      The setted language when closed browser is Korean.<br>
-      Default language will be setted as English.`
-  }
-}
+// function setLanguageChangeModalMessage( lang ){
+//   if( lang === "ko" ){
+//     return `<b>언어 설정 변경</b>
+//       <hr>
+//       브라우저 종료 시점의 언어는 영어 입니다.<br>
+//       언어설정을 한국어로 변경합니다.`
+//   } else {
+//     return `<b>Notification</b>
+//       <hr>
+//       The setted language when closed browser is Korean.<br>
+//       Default language will be setted as English.`
+//   }
+// }
