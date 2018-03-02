@@ -1,26 +1,5 @@
 $(document).ready( function(){
 
-  // language_change_modal event setting - before showing modal - START
-  $("#language_change_modal .modal-dialog").on( "click", function(e){
-    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-      e.stopPropagation();
-      return;
-    }
-
-    $("#language_change_modal").modal( "hide" );
-  } );
-
-  $(".modal-dismiss").on( "click", function(){
-    var modal = $(this).parent().parent().parent().parent();
-    modal.modal( "hide" );
-  } );
-
-  $("#language_change_modal").on("hidden.bs.modal", function(){
-    location.reload();
-  } );
-  // language_change_modal event setting - before showing modal - END
-
-
   if( !$("#lanuage_change_modal").hasClass("in") ){
     if( $.cookie( "lang") != $("body").data("lang") ){
 
@@ -63,6 +42,31 @@ $(document).ready( function(){
 
     location.reload();
   } );
+
+
+
+
+
+    // language_change_modal event setting - before showing modal - START
+  $("#language_change_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#language_change_modal").modal( "hide" );
+  } );
+
+  $(".modal-dismiss").on( "click", function(){
+    var modal = $(this).parent().parent().parent().parent();
+    modal.modal( "hide" );
+  } );
+
+  $("#language_change_modal").on("hidden.bs.modal", function(){
+    location.reload();
+  } );
+  // language_change_modal event setting - before showing modal - END
+
 
 
 
