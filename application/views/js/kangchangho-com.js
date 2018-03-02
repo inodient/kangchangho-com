@@ -1,4 +1,8 @@
 $(window).on( "pageshow", function(){
+
+  console.log( $.cookie("lang") );
+  console.log( $.cookie("lang") != undefined );
+
   if( $(window).width() < 1000 && $.cookie("lang") != undefined ){
 
     if( $.cookie( "lang") != $("body").data("lang") ){
