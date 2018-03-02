@@ -1,63 +1,45 @@
 $(window).on( "pageshow", function(){
 
-  console.log( $.cookie("lang") );
-  console.log( $.cookie("lang") != undefined );
 
-  if( $(window).width() < 1000 && $.cookie("lang") != undefined ){
 
-    if( $.cookie( "lang") != $("body").data("lang") ){
-      if( $.cookie("lang") === "ko" ){
 
-        $("#language_change_modal #language-change-message").html( 
-          `<b>언어 설정 변경</b>
-          <hr>
-          언어설정을 한국어로 변경합니다.`
-        );
-   
-        $("#language_change_modal").modal("show");
-        $("#language_change_modal .modal-dialog").on( "click", function(e){
-          if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-            e.stopPropagation();
-            return;
-          }
 
-          $("#language_change_modal").modal( "hide" );
-        } );
-   
-      } else {
-        $("#language_change_modal #language-change-message").html( 
-          `<b>Notification</b>
-          <hr>
-          Default language setted as English.`
-        );
 
-        $("#language_change_modal").modal("show");
-        $("#language_change_modal .modal-dialog").on( "click", function(e){
-          if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-            e.stopPropagation();
-            return;
-          }
+  var ua = navigator.userAgent,
+  iOS = /iPad|iPhone|iPod/.test(ua),
+  iOS11 = /OS 11_0_1|OS 11_0_2|OS 11_0_3|OS 11_1|OS 11_1_1|OS 11_1_2|OS 11_2|OS 11_2_1/.test(ua);
 
-          $("#language_change_modal").modal( "hide" );
-        } );
+  if ( iOS && iOS11 ) {
+    if( $(window).width() < 1000 ){
+
+      if( $.cookie( "lang") != $("body").data("lang") ){
+        if( $.cookie("lang") === "ko" ){
+
+          // $("#language_change_modal #language-change-message").html( 
+          //   `<b>언어 설정 변경</b>
+          //   <hr>
+          //   언어설정을 한국어로 변경합니다.`
+          // );
+     
+          alert( "언어설정을 한국어로 변경합니다." );
+
+          // $("#language_change_modal").modal("show");
+     
+        } else {
+          // $("#language_change_modal #language-change-message").html( 
+          //   `<b>Notification</b>
+          //   <hr>
+          //   Default language will be setted as English.`
+          // );
+
+          alert( "Default language will be setted as English." );
+
+          // $("#language_change_modal").modal("show");
+        }
       }
     }
   }
 } );
-
-$(document).on( "pageinit", "#language_change_modal", function(){
-
-  console.log( "init launage_change_modal" );
-
-  $("#language_change_modal .modal-dialog").on( "click", function(e){
-    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-      e.stopPropagation();
-      return;
-    }
-
-    $("#language_change_modal").modal( "hide" );
-  } );
-});
 
 
 
@@ -67,13 +49,10 @@ $(document).ready( function(){
   if( $.cookie( "lang") != $("body").data("lang") ){
     if( $.cookie("lang") === "ko" ){
 
-      alert( "Probably Here?" );
-      console.log( "HERE" );
-
       $("#language_change_modal #language-change-message").html( 
         `<b>언어 설정 변경</b>
         <hr>
-        언어설정을 한국어로 변경합니다...`
+        언어설정을 한국어로 변경합니다.`
       );
       
       $("#language_change_modal").modal("show");
@@ -82,7 +61,7 @@ $(document).ready( function(){
       $("#language_change_modal #language-change-message").html( 
         `<b>Notification</b>
         <hr>
-        Default language setted as English...`
+        Default language will be setted as English.`
       );
 
       $("#language_change_modal").modal("show");
