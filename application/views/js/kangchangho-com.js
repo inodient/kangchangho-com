@@ -345,13 +345,13 @@ $(window).on( "pageshow", function(){
   }
 } );
 
-// function iOSDevice(){
-//   var ua = navigator.userAgent,
-//   iOS = /iPad|iPhone|iPod/.test(ua),
-//   iOS11 = /OS 11_0_1|OS 11_0_2|OS 11_0_3|OS 11_1|OS 11_1_1|OS 11_1_2|OS 11_2|OS 11_2_1/.test(ua);
+function iOSDevice(){
+  var ua = navigator.userAgent,
+  iOS = /iPad|iPhone|iPod/.test(ua),
+  iOS11 = /OS 11_0_1|OS 11_0_2|OS 11_0_3|OS 11_1|OS 11_1_1|OS 11_1_2|OS 11_2|OS 11_2_1/.test(ua);
 
-//   return iOS && iOS11;
-// }
+  return iOS && iOS11;
+}
 
 // function getBrowserLang(){
 //   var userLang = navigator.language || navigator.userLanguage;
