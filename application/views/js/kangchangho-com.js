@@ -347,10 +347,12 @@ $(document).ready( function(){
 
     $("#language_change_modal").modal( "hide" );
   } );
+} );
 
 
 
 
+$(window).load( function(){
   if( languageChangeModalEnable ){
     if( $.cookie( "lang") != $("body").data("lang") ){
       if( $.cookie("lang") === "ko" ){
