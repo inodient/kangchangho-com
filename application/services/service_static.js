@@ -9,7 +9,7 @@ const dbExecutorHistory = require( require("path").join( __runningPath, "applica
 
 
 
-exports.getStaticInfo = function( req, res, connection, targetId ){
+exports.getStaticInfo = function( req, res, connection, targetId, menuId ){
   return new Promise( function(resolve, reject){
     langService.setDefaultLang( req, res )
     .then( function( lang ){
@@ -17,7 +17,7 @@ exports.getStaticInfo = function( req, res, connection, targetId ){
       var promises = [];
 
       promises.push( headerService.getHeaderInfo( connection, lang ) );
-      promises.push( menuService.getMenuListByLang( connection, "", lang, targetId ) );
+      promises.push( menuService.getMenuListByLang( connection, targetId, lang, menuId ) );
       promises.push( bannerService.getBanner( connection, lang ) );
       promises.push( footerService.getFooterInfo( connection, lang ) );
 

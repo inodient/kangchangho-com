@@ -210,7 +210,6 @@
           case when ( id = ( select category from TB_CONTENT where id = ? )
                    or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ( select category from TB_CONTENT where id = ? ) ) ) )
                    or ( ( id = ? ) or id = ( select id from TB_MENU where id = (select parent_id from TB_MENU where id = ? ) ) )  then 'active'
-               when (? = '') and (? = '') and (name = 'About') then 'active'
                else 'normal' end as active
           from TB_MENU ORDER BY group_value, DEPTH, SEQUENCE
       ]]>

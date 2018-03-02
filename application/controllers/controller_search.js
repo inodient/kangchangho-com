@@ -126,7 +126,7 @@ exports.control_search_category = function( req, res, connection ){
 
     var targetId = req.params.id;
 
-    staticService.getStaticInfo( req, res, connection, targetId )
+    staticService.getStaticInfo( req, res, connection, "", targetId )
     .then( function( staticInfo ){
       var lang = staticInfo.lang;
       var promises = [];
@@ -181,7 +181,7 @@ exports.control_search_writer = function( req, res, connection ){
 
     var targetId = req.params.id;
 
-    staticService.getStaticInfo( req, res, connection, targetId )
+    staticService.getStaticInfo( req, res, connection )
     .then( function( staticInfo ){
       var lang = staticInfo.lang;
       var promises = [];
@@ -236,7 +236,7 @@ exports.control_search_hash = function( req, res, connection ){
 
     var targetId = req.params.id;
 
-    staticService.getStaticInfo( req, res, connection, targetId )
+    staticService.getStaticInfo( req, res, connection )
     .then( function( staticInfo ){
       var lang = staticInfo.lang;
       var promises = [];
@@ -291,7 +291,7 @@ exports.control_search_newsletter = function( req, res, connection ){
 
     var targetId = req.params.id;
 
-    staticService.getStaticInfo( req, res, connection, targetId )
+    staticService.getStaticInfo( req, res, connection )
     .then( function( staticInfo ){
       var lang = staticInfo.lang;
       var promises = [];

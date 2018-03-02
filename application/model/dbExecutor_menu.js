@@ -10,8 +10,7 @@ exports.getMenuListByLang = function( connection, contentId, lang, targetId ){
     params.push( contentId );
     params.push( targetId );
     params.push( targetId );
-    params.push( contentId );
-    params.push( targetId );
+
 
     mysqlHandler.executeQuery( queryId, params, connection )
 		.then( function( queryResults ){
