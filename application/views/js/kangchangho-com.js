@@ -1,7 +1,7 @@
 $(window).on( "pageshow", function(){
   if( $(window).width() < 1000 ){
 
-    alert( "Safari?" );
+    alert( "Safari? " + $.cookie( "lang") );
 
     if( $.cookie( "lang") != $("body").data("lang") ){
       if( $.cookie("lang") === "ko" ){

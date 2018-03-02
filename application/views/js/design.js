@@ -136,7 +136,7 @@ function modalBugFix(){
   // ios 11 bug caret position
   if ( iOS && iOS11 ) {
       // Add CSS class to body
-      $("body").addClass("iosBugFixCaret");
+      // $("body").addClass("iosBugFixCaret");
   }
 }
 
