@@ -20,6 +20,7 @@ $(window).on( "pageshow", function(){
             $("#language_change_modal #language-change-message").html( 
               `<b>언어 설정 변경</b>
               <hr>
+              브라우저 종료 시점의 언어는 영어 입니다.<br>
               언어설정을 한국어로 변경합니다.`
             );
        
@@ -31,6 +32,7 @@ $(window).on( "pageshow", function(){
             $("#language_change_modal #language-change-message").html( 
               `<b>Notification</b>
               <hr>
+              The setted language when closed browser is Korean.<br>
               Default language will be setted as English.`
             );
 
@@ -42,10 +44,6 @@ $(window).on( "pageshow", function(){
 
     }
   }
-
-  $("*").on( "click", function(){
-    alert( "EVENT" );
-  } );
 
   $("#language_change_modal .modal-dialog").on( "click", function(e){
     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
