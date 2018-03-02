@@ -1,39 +1,26 @@
-var languageChangeModalEnable = false;
-
-
-
-
 $(window).on( "pageshow", function(){
-  if( $(window).width() < 1000 ){
-
-    alert( "Safari? " + $.cookie( "lang") );
+  if( $(window).width() < 1000 && $.cookie("lang") != undefined ){
 
     if( $.cookie( "lang") != $("body").data("lang") ){
-      // if( $.cookie("lang") === "ko" ){
+      if( $.cookie("lang") === "ko" ){
 
-      //   $("#language_change_modal #language-change-message").html( 
-      //     `<b>언어 설정 변경</b>
-      //     <hr>
-      //     언어설정을 한국어로 변경합니다.`
-      //   );
+        $("#language_change_modal #language-change-message").html( 
+          `<b>언어 설정 변경</b>
+          <hr>
+          언어설정을 한국어로 변경합니다.`
+        );
         
-      //   languageChangeModalEnable = true;
-
-      //   // $("#language_change_modal").modal("show");
+        $("#language_change_modal").modal("show");
    
-      // } else {
-      //   $("#language_change_modal #language-change-message").html( 
-      //     `<b>Notification</b>
-      //     <hr>
-      //     Default language setted as English.`
-      //   );
+      } else {
+        $("#language_change_modal #language-change-message").html( 
+          `<b>Notification</b>
+          <hr>
+          Default language setted as English.`
+        );
 
-      //   // $("#language_change_modal").modal("show");
-
-      //   languageChangeModalEnable = true;
-      // }
-
-      languageChangeModalEnable = true;
+        $("#language_change_modal").modal("show");
+      }
     }
   }
 } );
@@ -347,32 +334,4 @@ $(document).ready( function(){
 
     $("#language_change_modal").modal( "hide" );
   } );
-} );
-
-
-
-
-$(window).load( function(){
-  if( languageChangeModalEnable ){
-    if( $.cookie( "lang") != $("body").data("lang") ){
-      if( $.cookie("lang") === "ko" ){
-
-        $("#language_change_modal #language-change-message").html( 
-          `<b>언어 설정 변경</b>
-          <hr>
-          언어설정을 한국어로 변경합니다.`
-        );
-           
-      } else {
-        $("#language_change_modal #language-change-message").html( 
-          `<b>Notification</b>
-          <hr>
-          Default language setted as English.`
-        );
-      }
-    }
-
-    $("#language_change_modal").modal("show");
-    languageChangeModalEnable = false;
-  }
 } );
