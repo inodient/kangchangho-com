@@ -42,6 +42,19 @@ $(window).on( "pageshow", function(){
 
     }
   }
+
+  $("*").on( "click", function(){
+    alert( "EVENT" );
+  } );
+
+  $("#language_change_modal .modal-dialog").on( "click", function(e){
+    if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
+      e.stopPropagation();
+      return;
+    }
+
+    $("#language_change_modal").modal( "hide" );
+  } );
 } );
 
 
