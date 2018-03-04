@@ -70,8 +70,6 @@ exports.getSearchHashes = function( connection, lang, searchWord ){
 
     mysqlHandler.executeQuery( queryId, params, connection )
     .then( function( queryResults ){
-      logger.debug( queryResults.results );
-
       resolve( queryResults.results );
     } )
     .catch( function(err){

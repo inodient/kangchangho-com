@@ -651,7 +651,7 @@ function extractContentText( contentHTML, lang ){
 
       var contentText = "";
 
-      $("*").each( function(){
+      $("p, h1, h2, h3, h4, h5, h6, span").each( function(){
         contentText += " " + $(this).text();
       } );
 
