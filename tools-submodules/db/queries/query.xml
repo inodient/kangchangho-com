@@ -522,7 +522,8 @@
                  LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
                  LEFT JOIN TB_MENU menu ON con.category = menu.id
                  LEFT JOIN TB_WRITER writer ON con.writer = writer.id
-                 where con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                 where con.title_en != '' and con.title_ko != '' and con.image_main != 0
+
                 union all
 
                 select announce.id as id, 'announce' as type,
@@ -569,7 +570,7 @@
                LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
                LEFT JOIN TB_MENU menu ON con.category = menu.id
                LEFT JOIN TB_WRITER writer ON con.writer = writer.id
-               where con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+               where con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
               union all
 
@@ -625,7 +626,7 @@
                               else con.content_ko like ? end
                       or case when ? = 'en' then con.comment_en like ?
                               else con.comment_ko like ? end
-                    and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                    and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
                   union all
 
@@ -686,7 +687,7 @@
                               else con.content_ko like ? end
                       or case when ? = 'en' then con.comment_en like ?
                               else con.comment_ko like ? end
-                    and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                    and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
                   union all
 
@@ -740,7 +741,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where menu.id = ?
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
                   union all
 
@@ -790,7 +791,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where menu.id = ?
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
                   union all
 
@@ -840,7 +841,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where writer.id = ?
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
                   union all
 
@@ -890,7 +891,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where writer.id = ?
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
                   union all
 
@@ -940,7 +941,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where con.id in ( select distinct(content_id) from TB_CONTENT_HASH_LINK where hash_id = ? )
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
@@ -972,7 +973,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where con.id in ( select distinct(content_id) from TB_CONTENT_HASH_LINK where hash_id = ? )
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
@@ -1004,7 +1005,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where con.id in ( select content_id from TB_ANNOUNCE_LIST where announce_id = ? order by seq )
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0  
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
@@ -1036,7 +1037,7 @@
                    LEFT JOIN TB_MENU menu ON con.category = menu.id
                    LEFT JOIN TB_WRITER writer ON con.writer = writer.id
                    where con.id in ( select content_id from TB_ANNOUNCE_LIST where announce_id = ? order by seq )
-                   and con.title_en != '' and con.title_ko != '' and con.image_main != '' and con.image_carousel != ''
+                   and con.title_en != '' and con.title_ko != '' and con.image_main != 0
 
             ) page_list, (SELECT @rownum :=0) AS R
          order by create_date desc ) total
