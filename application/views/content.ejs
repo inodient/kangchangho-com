@@ -18,7 +18,11 @@
   <meta property="og:type"               content="blog" />
   <meta property="og:title"              content="<%- windowTitle %> - <%- contentMaster[0].title %>" />
   <meta property="og:description"        content="" />
-  <meta property="og:image"              content="http://www.summermvc.com:4001/<%- contentImage[0].savedFileName %>" />
+  <% if( contentImage.length > 0 ){ %>
+    <meta property="og:image"              content="http://www.summermvc.com:4001/<%- contentImage[0].savedFileName %>" />
+  <% } else { %>
+    <meta property="og:image"              content="" />
+  <% } %>
   <!-- opengraph meta - end -->
 
   <title><%- windowTitle %> - <%- contentMaster[0].title %></title>
