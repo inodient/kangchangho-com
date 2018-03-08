@@ -9,7 +9,19 @@
 
   <% include partials/include.ejs %>
 
-    <title><%- windowTitle %> - <%- newsLetterMaster.title %></title>
+  <!-- opengraph meta - start -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="<%- windowTitle %> - <%- newsLetterMaster.title %>" />
+  <meta name="twitter:creator" content="Ino Kang [Changho Kang]" />
+
+  <meta property="og:url"                content="http://www.summermvc.com:4001" />
+  <meta property="og:type"               content="blog" />
+  <meta property="og:title"              content="<%- windowTitle %> - <%- newsLetterMaster.title %>" />
+  <meta property="og:description"        content="" />
+  <meta property="og:image"              content="http://www.summermvc.com:4001/1.png" />
+  <!-- opengraph meta - end -->
+
+  <title><%- windowTitle %> - <%- newsLetterMaster.title %></title>
 </head>
 
 

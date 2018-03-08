@@ -9,13 +9,25 @@
 
   <% include partials/include.ejs %>
 
+  <!-- opengraph meta - start -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="<%- windowTitle %>" />
+  <meta name="twitter:creator" content="Ino Kang [Changho Kang]" />
+
+  <meta property="og:url"                content="http://www.summermvc.com:4001" />
+  <meta property="og:type"               content="blog" />
+  <meta property="og:title"              content="<%- windowTitle %>" />
+  <meta property="og:description"        content="" />
+  <meta property="og:image"              content="http://www.summermvc.com:4001/1.png" />
+  <!-- opengraph meta - end -->
+
   <!-- include summernote css/js-->
   <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css" rel="stylesheet">
   <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
 
   <script src="/write.js"></script>
 
-  <title>Kang Chang Ho . com</title>
+  <title><%- windowTitle %></title>
 </head>
 
 

@@ -69,7 +69,7 @@ $(document).ready( function(){
 
 
   $(".sns-share-icon").on( "click", function(){
-    alert( $(this).children().attr( "class" ) );
+    shareInSocial( $(this).children().attr( "class" ) );
   } );
 
   $(".header-search").on( "click", function(){
