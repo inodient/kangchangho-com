@@ -10,7 +10,7 @@
     "ERROR" : true
   },
   "file" : {
-    "path" : "__defaultLogFilePath",
+    "path" : "/root/.pm2/logs",
     "fileNamePrefix" : "kangchangho-com-test"
   }
 }
