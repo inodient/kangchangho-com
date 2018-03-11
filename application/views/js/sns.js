@@ -141,42 +141,42 @@ function shareLinkedIn( title, link, hashes ){
 
 // // ** Facebook
 
-    // // let appId = 355672798282806;
-    // // let popupUrl = "";
-    // // let option = 'sharer';
-    // // let size = 'toolbar=0, status=0, width=626, height=436';
+// // let appId = 355672798282806;
+// // let popupUrl = "";
+// // let option = 'sharer';
+// // let size = 'toolbar=0, status=0, width=626, height=436';
 
 
-    // let appId = 355672798282806;
-    // let popupUrl = "";
-    // let option = 'sharer';
-    // let size = 'toolbar=0, status=0, width=626, height=436';
+// let appId = 355672798282806;
+// let popupUrl = "";
+// let option = 'sharer';
+// let size = 'toolbar=0, status=0, width=626, height=436';
 
-    // // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
-    // // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
-    // // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
-    // // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
+// // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
+// // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
+// // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
+// // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
 
-    // // popupUrl = 'https://www.facebook.com/dialog/feed?app_id=' + appId + '&link=' + _Url + '&name=' + _Title + '&caption=' + "Well Formed IT" + '&description=' + _Description + '&picture=' + _Image + '&redirect_uri=' + _Url + '';
-    // popupUrl = 'https://www.facebook.com/dialog/feed?app_id=' + appId + '&link=' + 'http://localhost:4001' + '&name=' + '제목' + '&description=' + '묘사' + '&redirect_uri=' + "http://localhost:4001" + '';
+// // popupUrl = 'https://www.facebook.com/dialog/feed?app_id=' + appId + '&link=' + _Url + '&name=' + _Title + '&caption=' + "Well Formed IT" + '&description=' + _Description + '&picture=' + _Image + '&redirect_uri=' + _Url + '';
+// popupUrl = 'https://www.facebook.com/dialog/feed?app_id=' + appId + '&link=' + 'http://localhost:4001' + '&name=' + '제목' + '&description=' + '묘사' + '&redirect_uri=' + "http://localhost:4001" + '';
 
-    // // popupUrl = `
-    // //   https://www.facebook.com/dialog/feed?app_id=` + appId + `
-    // //   &link=` + _Url + `
-    // //   &name=` + _Title + `
-    // //   &caption=` + "Well Formed IT" + `
-    // //   &description=` + _Description + `
-    // //   &picture=` + _Image + `
-    // //   &redirect_uri=` + _Url + `
-    // // `;
+// // popupUrl = `
+// //   https://www.facebook.com/dialog/feed?app_id=` + appId + `
+// //   &link=` + _Url + `
+// //   &name=` + _Title + `
+// //   &caption=` + "Well Formed IT" + `
+// //   &description=` + _Description + `
+// //   &picture=` + _Image + `
+// //   &redirect_uri=` + _Url + `
+// // `;
 
-    // // popupUrl = `
-    // //   https://www.facebook.com/sharer/sharer.php?u=` + _Url + `
-    // // `;
+// // popupUrl = `
+// //   https://www.facebook.com/sharer/sharer.php?u=` + _Url + `
+// // `;
 
-    // console.log( popupUrl );
+// console.log( popupUrl );
 
-    // window.open( popupUrl, option, size );
+// window.open( popupUrl, option, size );
 
 
 
@@ -184,15 +184,15 @@ function shareLinkedIn( title, link, hashes ){
 
 
 
-    // ** Twitter
+// ** Twitter
 
-  //   let popupUrl = "";
-  //   let option = 'sharer';
-  //   let size = 'toolbar=0, status=0, width=626, height=436';
+//   let popupUrl = "";
+//   let option = 'sharer';
+//   let size = 'toolbar=0, status=0, width=626, height=436';
 
-  //   popupUrl = "https://twitter.com/share";
+//   popupUrl = "https://twitter.com/share";
 
-  //   window.open( popupUrl, option, size );
+//   window.open( popupUrl, option, size );
 
 
 
@@ -200,28 +200,28 @@ function shareLinkedIn( title, link, hashes ){
 
 
 
-    // // ** Linked In
-    // let popupUrl = "";
-    // let option = 'sharer';
-    // let size = 'toolbar=0, status=0, width=626, height=436';
+// // ** Linked In
+// let popupUrl = "";
+// let option = 'sharer';
+// let size = 'toolbar=0, status=0, width=626, height=436';
 
-    // // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
-    // // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
-    // // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
-    // // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
-    // // let _Source = encodeURIComponent( "http://www.wellformedit.com" );
+// // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
+// // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
+// // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
+// // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
+// // let _Source = encodeURIComponent( "http://www.wellformedit.com" );
 
-    // popupUrl = `
-    //   http://www.linkedin.com/shareArticle?mini=true` + `
-    //   &url=` + "http://localhost:4001/category/1" + `
-    //   &title=` + '제목' + `
-    //   &summary=` + '묘사' + `
-    //   &source=` + 'http://localhost:4001' + `
-    // `;
+// popupUrl = `
+//   http://www.linkedin.com/shareArticle?mini=true` + `
+//   &url=` + "http://localhost:4001/category/1" + `
+//   &title=` + '제목' + `
+//   &summary=` + '묘사' + `
+//   &source=` + 'http://localhost:4001' + `
+// `;
 
-    // // popupUrl = 'http://www.linkedin.com/shareArticle?mini=true' + '&url=' + _Url + '&title=' + _Title + '&summary=' + _Description + '&source=' + _Source;
+// // popupUrl = 'http://www.linkedin.com/shareArticle?mini=true' + '&url=' + _Url + '&title=' + _Title + '&summary=' + _Description + '&source=' + _Source;
 
-    // window.open( popupUrl, option, size );
+// window.open( popupUrl, option, size );
 
 
 
@@ -232,41 +232,41 @@ function shareLinkedIn( title, link, hashes ){
 
 
 
-    // // ** pinterest
-    // let popupUrl = "";
-    // let option = 'sharer';
-    // let size = 'toolbar=0, status=0, width=626, height=436';
+// // ** pinterest
+// let popupUrl = "";
+// let option = 'sharer';
+// let size = 'toolbar=0, status=0, width=626, height=436';
 
-    // // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
-    // // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
-    // // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
-    // // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
-    // // let _Source = encodeURIComponent( "http://www.wellformedit.com" );
+// // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
+// // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
+// // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
+// // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
+// // let _Source = encodeURIComponent( "http://www.wellformedit.com" );
 
-    // // popupUrl = `
-    // //   https://pinterest.com/pin/create/button/` + `
-    // //   ?url=` + "http://localhost:4001/category/1" + `
-    // //   &media=` + "http://localhost:4001/ayhfBHs2lSTnUHJKhL2GmGCttdKBwZSE92jr1xyYpGs2ab9Cui2UOeDykicO9anA_rikyoung.jpg" + `
-    // //   &description=` + "묘사" + `
-    // // `;
+// // popupUrl = `
+// //   https://pinterest.com/pin/create/button/` + `
+// //   ?url=` + "http://localhost:4001/category/1" + `
+// //   &media=` + "http://localhost:4001/ayhfBHs2lSTnUHJKhL2GmGCttdKBwZSE92jr1xyYpGs2ab9Cui2UOeDykicO9anA_rikyoung.jpg" + `
+// //   &description=` + "묘사" + `
+// // `;
 
 
-    // popupUrl = `
-    //   https://pinterest.com/pin/create/button/` + `
-    //   ?url=` + "http://localhost:4001/category/1" + `
-    //   &media=` + "http://sports.news.naver.com/kbaseball/news/read.nhn?oid=076&aid=0003224724" + `
-    //   &description=` + "묘사" + `
-    // `;
+// popupUrl = `
+//   https://pinterest.com/pin/create/button/` + `
+//   ?url=` + "http://localhost:4001/category/1" + `
+//   &media=` + "http://sports.news.naver.com/kbaseball/news/read.nhn?oid=076&aid=0003224724" + `
+//   &description=` + "묘사" + `
+// `;
 
-    // // popupUrl = `
-    // //   http://www.linkedin.com/shareArticle?mini=true` + `
-    // //   &url=` + "http://localhost:4001/category/1" + `
-    // //   &title=` + '제목' + `
-    // //   &summary=` + '묘사' + `
-    // //   &source=` + 'http://localhost:4001' + `
-    // // `;
+// // popupUrl = `
+// //   http://www.linkedin.com/shareArticle?mini=true` + `
+// //   &url=` + "http://localhost:4001/category/1" + `
+// //   &title=` + '제목' + `
+// //   &summary=` + '묘사' + `
+// //   &source=` + 'http://localhost:4001' + `
+// // `;
 
-    // window.open( popupUrl, option, size );
+// window.open( popupUrl, option, size );
 
 
 
@@ -275,47 +275,47 @@ function shareLinkedIn( title, link, hashes ){
 
 
 
-    // // ** tumblr
-    // let popupUrl = "";
-    // let option = 'sharer';
-    // let size = 'toolbar=0, status=0, width=626, height=436';
+// // ** tumblr
+// let popupUrl = "";
+// let option = 'sharer';
+// let size = 'toolbar=0, status=0, width=626, height=436';
 
-    // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
-    // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
-    // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
-    // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
-    // let _Source = encodeURIComponent( "http://www.wellformedit.com" );
+// let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
+// let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
+// let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
+// let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
+// let _Source = encodeURIComponent( "http://www.wellformedit.com" );
 
-    // popupUrl = `
-    //   http://www.tumblr.com/share/link` + `
-    //     &url=` + "http://localhost:4001/category/1" + `
-    //    &name=` + '제목' + `
-    //    &source=` + 'http://localhost:4001' + `
-    // `;
+// popupUrl = `
+//   http://www.tumblr.com/share/link` + `
+//     &url=` + "http://localhost:4001/category/1" + `
+//    &name=` + '제목' + `
+//    &source=` + 'http://localhost:4001' + `
+// `;
 
-    // window.open( popupUrl, option, size );
+// window.open( popupUrl, option, size );
 
 
 
 
 
-    // // ** instagram
-    // let popupUrl = "";
-    // let option = 'sharer';
-    // let size = 'toolbar=0, status=0, width=626, height=436';
+// // ** instagram
+// let popupUrl = "";
+// let option = 'sharer';
+// let size = 'toolbar=0, status=0, width=626, height=436';
 
-    // let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
-    // let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
-    // let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
-    // let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
-    // let _Source = encodeURIComponent( "http://www.wellformedit.com" );
+// let _Url = encodeURIComponent( $("meta[property='og\\:url']").attr("content") );
+// let _Title = encodeURIComponent( $("meta[property='og\\:title']").attr("content") );
+// let _Description = encodeURIComponent( $("meta[property='og\\:description']").attr("content") );
+// let _Image = encodeURIComponent( $("meta[property='og\\:image']").attr("content") );
+// let _Source = encodeURIComponent( "http://www.wellformedit.com" );
 
-    // popupUrl = `
-    //   https://www.linkedin.com/shareArticle?mini=true
-    //   &url=http://localhost:4001
-    //   &title=제목
-    //   &summary=요약
-    //   &source=http://localhost:4001
-    // `;
+// popupUrl = `
+//   https://www.linkedin.com/shareArticle?mini=true
+//   &url=http://localhost:4001
+//   &title=제목
+//   &summary=요약
+//   &source=http://localhost:4001
+// `;
 
-    // window.open( popupUrl, option, size );
+// window.open( popupUrl, option, size );
