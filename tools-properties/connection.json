@@ -1,6 +1,6 @@
 {
 	"session-setting" : {
-		"enable-redis-store" : false,
+		"enable-redis-store" : true,
 		"enable-custom-id-generator" : true,
 		"enable-custom-name" : true
 	},
@@ -15,7 +15,7 @@
 		}
 	},
 	"redis-info" : {
-		"host" : "127.0.0.1",
+		"host" : "13.125.189.219",
 		"port" : "6379",
 		"prefix" : "session:",
 		"db" : 0

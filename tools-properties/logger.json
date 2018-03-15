@@ -11,6 +11,6 @@
   },
   "file" : {
     "path" : "/root/.pm2/logs",
-    "fileNamePrefix" : "kangchangho-com-test"
+    "fileNamePrefix" : "kangchangho-com-production"
   }
 }
