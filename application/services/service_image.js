@@ -1,4 +1,4 @@
-const dbExecutorImage = require( require("path").join( __runningPath, "application", "model", "dbExecutor_image.js" ) );
+var dbExecutorImage = require( require("path").join( __runningPath, "application", "model", "dbExecutor_image.js" ) );
 
 
 

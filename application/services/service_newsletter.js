@@ -1,4 +1,4 @@
-const dbExecutorNewsLetter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_newsletter.js" ) );
+var dbExecutorNewsLetter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_newsletter.js" ) );
 
 
 

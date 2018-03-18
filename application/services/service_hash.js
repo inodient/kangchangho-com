@@ -1,4 +1,4 @@
-const dbExecutorHash = require( require("path").join( __runningPath, "application", "model", "dbExecutor_hash.js" ) );
+var dbExecutorHash = require( require("path").join( __runningPath, "application", "model", "dbExecutor_hash.js" ) );
 
 
 

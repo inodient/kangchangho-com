@@ -1,4 +1,4 @@
-const staticService = require( require("path").join( __runningPath, "application", "services", "service_static.js" ) );
+var staticService = require( require("path").join( __runningPath, "application", "services", "service_static.js" ) );
 
 
 

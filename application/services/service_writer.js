@@ -1,4 +1,4 @@
-const dbExecutorWriter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_writer.js") );
+var dbExecutorWriter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_writer.js") );
 
 
 

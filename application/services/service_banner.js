@@ -1,6 +1,6 @@
-const dbExecutorContent = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_content.js" ) );
-const dbExecutorHash = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_hash.js" ) );
-const dbExecutorNewsletter = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_newsletter.js" ) );
+var dbExecutorContent = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_content.js" ) );
+var dbExecutorHash = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_hash.js" ) );
+var dbExecutorNewsletter = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_newsletter.js" ) );
 
 
 

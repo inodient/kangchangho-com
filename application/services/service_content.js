@@ -1,8 +1,8 @@
-const dbExecutorContent = require( require("path").join( __runningPath, "application", "model", "dbExecutor_content.js" ) );
-const dbExecutorMenu = require( require("path").join( __runningPath, "application", "model", "dbExecutor_menu.js" ) );
-const dbExecutorHash = require( require("path").join( __runningPath, "application", "model", "dbExecutor_hash.js" ) );
-const dbExecutorImage = require( require("path").join( __runningPath, "application", "model", "dbExecutor_image.js" ) );
-const dbExecutorWriter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_writer.js" ) );
+var dbExecutorContent = require( require("path").join( __runningPath, "application", "model", "dbExecutor_content.js" ) );
+var dbExecutorMenu = require( require("path").join( __runningPath, "application", "model", "dbExecutor_menu.js" ) );
+var dbExecutorHash = require( require("path").join( __runningPath, "application", "model", "dbExecutor_hash.js" ) );
+var dbExecutorImage = require( require("path").join( __runningPath, "application", "model", "dbExecutor_image.js" ) );
+var dbExecutorWriter = require( require("path").join( __runningPath, "application", "model", "dbExecutor_writer.js" ) );
 
 
 

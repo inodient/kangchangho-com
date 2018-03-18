@@ -1,11 +1,11 @@
-const staticService = require( require("path").join( __runningPath, "application", "services", "service_static.js" ) );
-const menuService = require( require("path").join( __runningPath, "application", "services", "service_menu.js" ) );
-const contentService = require( require("path").join( __runningPath, "application", "services", "service_content.js" ) );
-const writerService = require( require("path").join( __runningPath, "application", "services", "service_writer.js" ) );
-const announceService = require( require("path").join( __runningPath, "application", "services", "service_announce.js" ) );
-const newsletterService = require( require("path").join( __runningPath, "application", "services", "service_newsletter.js" ) );
-const imageService = require( require("path").join( __runningPath, "application", "services", "service_image.js" ) );
-const hashService = require( require("path").join( __runningPath, "application", "services", "service_hash.js" ) );
+var staticService = require( require("path").join( __runningPath, "application", "services", "service_static.js" ) );
+var menuService = require( require("path").join( __runningPath, "application", "services", "service_menu.js" ) );
+var contentService = require( require("path").join( __runningPath, "application", "services", "service_content.js" ) );
+var writerService = require( require("path").join( __runningPath, "application", "services", "service_writer.js" ) );
+var announceService = require( require("path").join( __runningPath, "application", "services", "service_announce.js" ) );
+var newsletterService = require( require("path").join( __runningPath, "application", "services", "service_newsletter.js" ) );
+var imageService = require( require("path").join( __runningPath, "application", "services", "service_image.js" ) );
+var hashService = require( require("path").join( __runningPath, "application", "services", "service_hash.js" ) );
 
 
 

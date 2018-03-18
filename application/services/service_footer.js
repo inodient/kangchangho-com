@@ -1,4 +1,4 @@
-const dbExecutorStd = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_std.js" ) );
+var dbExecutorStd = require( require("path").join( process.cwd(), "application", "model", "dbExecutor_std.js" ) );
 
 
 

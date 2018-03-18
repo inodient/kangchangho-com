@@ -1,4 +1,4 @@
-const dbExecutorAnnounce = require( require("path").join( __runningPath, "application", "model", "dbExecutor_announce.js" ) );
+var dbExecutorAnnounce = require( require("path").join( __runningPath, "application", "model", "dbExecutor_announce.js" ) );
 
 
 

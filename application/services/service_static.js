@@ -1,9 +1,9 @@
-const langService = require( require("path").join( __runningPath, "application", "services", "service_lang.js" ) );
-const menuService = require( require("path").join( __runningPath, "application", "services", "service_menu.js" ) );
-const bannerService = require( require("path").join( __runningPath, "application", "services", "service_banner.js" ) );
-const headerService = require( require("path").join( __runningPath, "application", "services", "service_header.js" ) );
-const footerService = require( require("path").join( __runningPath, "application", "services", "service_footer.js" ) );
-const dbExecutorHistory = require( require("path").join( __runningPath, "application", "model", "dbExecutor_history.js" ) );
+var langService = require( require("path").join( __runningPath, "application", "services", "service_lang.js" ) );
+var menuService = require( require("path").join( __runningPath, "application", "services", "service_menu.js" ) );
+var bannerService = require( require("path").join( __runningPath, "application", "services", "service_banner.js" ) );
+var headerService = require( require("path").join( __runningPath, "application", "services", "service_header.js" ) );
+var footerService = require( require("path").join( __runningPath, "application", "services", "service_footer.js" ) );
+var dbExecutorHistory = require( require("path").join( __runningPath, "application", "model", "dbExecutor_history.js" ) );
 
 
 
