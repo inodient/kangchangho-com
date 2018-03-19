@@ -129,7 +129,7 @@
   "static_folders" : [ "/static", "/static/upload", "/static/img", "/application/views/css", "/application/views/js", "/upload/image", "/upload/template/image",
     {
       "url" : "/",
-      "path" : "/var/__upload/image/kangchangho.com-development"
+      "path" : "/var/__upload/kangchangho.com-development/image"
     } 
   ]
 }
