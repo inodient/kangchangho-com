@@ -10,7 +10,7 @@
     "ERROR" : true
   },
   "file" : {
-    "path" : "/root/.pm2/logs",
-    "fileNamePrefix" : "kangchangho-com-test"
+    "path" : "/var/__log/kangchangho.com-development",
+    "fileNamePrefix" : "kangchangho.com-development"
   }
 }

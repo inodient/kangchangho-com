@@ -1,7 +1,10 @@
 {
   "connectionLimit" : 100,
-  "host" : "kangchangho.com",
+  "host" : "localhost",
   "user" : "root",
   "password" : "123Qwer@",
-  "database" : "kangchangho-com-test"
+  "database" : "kangchangho-com-test",
+  "queries" : [
+  	"/tools-submodules/db/queries/query.xml"
+  ]
 }
