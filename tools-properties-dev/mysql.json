@@ -5,6 +5,6 @@
   "password" : "123Qwer@",
   "database" : "kangchangho-com-test",
   "queries" : [
-  	"/tools-submodules/db/queries/query.xml"
+  	"/tools-submodules/db/queries/kangchangho.com-development.xml"
   ]
 }
