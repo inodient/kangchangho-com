@@ -10,7 +10,7 @@
     "ERROR" : true
   },
   "file" : {
-    "path" : "/var/__log/kangchangho.com-development",
-    "fileNamePrefix" : "kangchangho.com-development"
+    "path" : "/var/__log/kangchangho.com-production",
+    "fileNamePrefix" : "kangchangho.com-production"
   }
 }
