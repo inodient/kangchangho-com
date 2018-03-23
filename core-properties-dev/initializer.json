@@ -1,9 +1,9 @@
 {
     "options": {
-        "use_https": "true",
         "use_annotation": "true",
         "remove_and_rebuild": "false",
-        "auto_structure_creation": "true"
+        "auto_structure_creation": "true",
+        "use_https": "true"
     },
     "protocol": {
         "http": {
@@ -44,6 +44,10 @@
         },
         {
             "folder": "/__logs",
+            "files": []
+        },
+        {
+            "folder": "/core-properties-dev/https",
             "files": []
         },
         {

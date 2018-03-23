@@ -1,135 +1,174 @@
 {
-  "options" : {
-    "use_https" : "true",
-    "use_annotation" : "true",
-    "remove_and_rebuild" : "false",
-    "auto_structure_creation" : "true"
-  },
-
-  "protocol" : {
-    "http" : {
-      "port" : 4000
+    "options": {
+        "use_annotation": "true",
+        "remove_and_rebuild": "false",
+        "auto_structure_creation": "true",
+        "use_https": "true"
     },
-    "https" : {
-      "port" : 8443,
-      "certification_path" : "/core-properties/https",
-      "keyFileName" : "key.pem",
-      "certFileName" : "cert.pem"
-    }
-  },
-
-  "port" : 3000,
-  "context_architecture" : [
-    {
-      "folder" : "/core-properties",
-      "files" : [ "context_dispatcher.json", "initializer.json" ]
-    },
-    {
-      "folder" : "/application/views",
-      "files" : [ "index.ejs", "error.html" ]
-    },
-    {
-      "folder" : "/static/upload",
-      "files" : []
-    },
-    {
-      "folder" : "/static",
-      "files" : [ "test_download.txt" ]
-    },
-    {
-      "folder" : "/__logs",
-      "files" : []
-    },
-    {
-      "folder" : "/core-properties/https",
-      "files" : []
-    }
-  ],
-  "views" : {
-    "engine" : "ejs"
-  },
-  "tools" : [
-  	{
-  		"name" : "logger",
-  		"enable" : true,
-  		"toolFiles" : [
-  			{
-	  			"folder" : "/tools-properties",
-	  			"files" : [ "logger.json" ]
-  			},
-        {
-	  			"folder" : "/__logs",
-	  			"files" : []
-  			}
-  		]
-  	},
-  	{
-  		"name" : "errorHandler",
-  		"enable" : true,
-  		"toolFiles" : [
-  			{
-	  			"folder" : "/tools-submodules",
-	  			"files" : [ "clientErrorHandler.js" ]
-  			}
-  		]
-  	},
-  	{
-  		"name" : "connectionHandler",
-  		"enable" : true,
-  		"toolFiles" : [
-  			{
-	  			"folder" : "/tools-properties",
-	  			"files" : [ "connection.json" ]
-  			},
-        {
-          "folder" : "/tools-submodules",
-          "files" : [ "connectionHandlerSubmodules.js" ]
+    "protocol": {
+        "http": {
+            "port": 4000
+        },
+        "https": {
+            "port": 8443,
+            "certification_path": "/core-properties/https",
+            "keyFileName": "key.pem",
+            "certFileName": "cert.pem"
         }
-  		]
-  	},
-  	{
-  		"name" : "fileHandler",
-  		"enable" : true,
-  		"toolFiles" : [
-  			{
-	  			"folder" : "/tools-properties",
-	  			"files" : [ "file.json" ]
-  			},
+    },
+    "port": 3000,
+    "context_architecture": [
         {
-          "folder" : "/tools-submodules",
-          "files" : [ "fileSubmodules.js" ]
+            "folder": "/core-properties",
+            "files": [
+                "context_dispatcher.json",
+                "initializer.json"
+            ]
+        },
+        {
+            "folder": "/application/views",
+            "files": [
+                "index.ejs",
+                "error.html"
+            ]
+        },
+        {
+            "folder": "/static/upload",
+            "files": []
+        },
+        {
+            "folder": "/static",
+            "files": [
+                "test_download.txt"
+            ]
+        },
+        {
+            "folder": "/__logs",
+            "files": []
+        },
+        {
+            "folder": "/core-properties/https",
+            "files": []
+        },
+        {
+            "folder": "/core-properties/https",
+            "files": []
         }
-  		]
-  	},
-  	{
-  		"name" : "mysqlHandler",
-  		"enable" : true,
-  		"toolFiles" : [
-  			{
-	  			"folder" : "/tools-properties",
-	  			"files" : [ "mysql.json" ]
-  			},
-  			{
-	  			"folder" : "/tools-submodules/db/queries",
-	  			"files" : [ "query.json" ]
-  			}
-  		]
-  	},
-  	{
-  		"name" : "exitHandler",
-  		"enable" : true,
-  		"toolFiles" : [
-  			{
-	  			"folder" : "/tools-submodules",
-	  			"files" : [ "clientExitHandler.js" ]
-  			}
-  		]
-  	}
-  ],
-  "static_folders" : [ "/static", "/static/upload", "/static/img", "/application/views/css", "/application/views/js", "/upload/image", "/upload/template/image",
-    {
-      "url" : "/",
-      "path" : "/var/__upload/kangchangho.com-production/image"
-    } 
-  ]
+    ],
+    "views": {
+        "engine": "ejs"
+    },
+    "tools": [
+        {
+            "name": "logger",
+            "enable": true,
+            "toolFiles": [
+                {
+                    "folder": "/tools-properties",
+                    "files": [
+                        "logger.json"
+                    ]
+                },
+                {
+                    "folder": "/__logs",
+                    "files": []
+                }
+            ]
+        },
+        {
+            "name": "errorHandler",
+            "enable": true,
+            "toolFiles": [
+                {
+                    "folder": "/tools-submodules",
+                    "files": [
+                        "clientErrorHandler.js"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "connectionHandler",
+            "enable": true,
+            "toolFiles": [
+                {
+                    "folder": "/tools-properties",
+                    "files": [
+                        "connection.json"
+                    ]
+                },
+                {
+                    "folder": "/tools-submodules",
+                    "files": [
+                        "connectionHandlerSubmodules.js"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "fileHandler",
+            "enable": true,
+            "toolFiles": [
+                {
+                    "folder": "/tools-properties",
+                    "files": [
+                        "file.json"
+                    ]
+                },
+                {
+                    "folder": "/tools-submodules",
+                    "files": [
+                        "fileSubmodules.js"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "mysqlHandler",
+            "enable": true,
+            "toolFiles": [
+                {
+                    "folder": "/tools-properties",
+                    "files": [
+                        "mysql.json"
+                    ]
+                },
+                {
+                    "folder": "/tools-submodules/db/queries",
+                    "files": [
+                        "query.xml"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "exitHandler",
+            "enable": true,
+            "toolFiles": [
+                {
+                    "folder": "/tools-submodules",
+                    "files": [
+                        "clientExitHandler.js"
+                    ]
+                }
+            ]
+        }
+    ],
+    "static_folders": [
+        "/static",
+        "/static/upload",
+        "/static/img",
+        "/application/views/css",
+        "/application/views/js",
+        "/upload/image",
+        "/upload/template/image",
+        {
+            "url": "/",
+            "path": "/var/__upload/kangchangho.com-production/image"
+        },
+        {
+            "url": "/image",
+            "path": "/Users/changhokang/Downloads/upload/template/image"
+        }
+    ]
 }
