@@ -165,10 +165,6 @@
         {
             "url": "/",
             "path": "/var/__upload/kangchangho.com-production/image"
-        },
-        {
-            "url": "/image",
-            "path": "/Users/changhokang/Downloads/upload/template/image"
         }
     ]
 }
