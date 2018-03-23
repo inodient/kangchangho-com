@@ -54,28 +54,12 @@
       ]]>
     </query>
 
-    <!-- <query id='checkAboutContent'>
-      <![CDATA[
-        SELECT 
-          CASE WHEN name = 'About' THEN 1
-               ELSE 0 END as is_about_content
-          FROM TB_MENU where id = ?
-      ]]>
-    </query> -->
-
     <query id='addContent'>
       <![CDATA[
         INSERT INTO TB_CONTENT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel)
         VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)
       ]]>
     </query>
-
-   <!--  <query id='addAboutContent'>
-      <![CDATA[
-        INSERT INTO TB_ABOUT (category, writer, create_date, title_ko, title_en, content_ko, content_en, comment_ko, comment_en, image_main, image_carousel)
-        VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)
-      ]]>
-    </query> -->
 
     <query id='modifyContent'>
       <![CDATA[
