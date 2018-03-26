@@ -162,6 +162,11 @@
         "/application/views/js",
         "/upload/image",
         "/upload/template/image",
+
+
+
+
+        
         {
             "url": "/",
             "path": "/var/__upload/kangchangho.com-development/image"
