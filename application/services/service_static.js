@@ -51,6 +51,25 @@ exports.getStaticInfo = function( req, res, connection, targetId, menuId ){
   } );
 }
 
+exports.getAjaxStaticInfo = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+    langService.setDefaultLang( req, res )
+    .then( function( lang ){
+
+      addAccessHistory( connection, req, lang )
+      .then( function(){
+        resolve( lang );
+      } )
+      .catch( function( ___err ){
+        reject( ___err );
+      } );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
 
 
 

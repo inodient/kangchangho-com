@@ -9,6 +9,8 @@ var newsletterService = require( require("path").join( __runningPath, "applicati
 
 
 
+
+
 // SEARCH ANNOUNCE - START
 exports.control_search_announce = function( req, res, connection ){
   return new Promise( function(resolve, reject){
@@ -45,19 +47,23 @@ exports.control_search_announce = function( req, res, connection ){
 exports.control_other_announce_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
 
-      var targetId = req.body.targetId;
+        var targetId = req.body.targetId;
 
-      announceService.getPageListOfAnnounceByIndex( connection, lang, targetId, req.body )
-      .then( function(results){
-        resolve( results );
-      } )
-      .catch( function(err){
-        reject( err );
-      } );
-    } );
+        announceService.getPageListOfAnnounceByIndex( connection, lang, targetId, req.body )
+        .then( function(results){
+          resolve( results );
+        } )
+        .catch( function(err){
+          reject( err );
+        } );
+
+    } )
+    .catch( function(_err){
+      reject( _err );
+    } )
   } );
 }
 // SEARCH ANNOUNCE - END
@@ -100,7 +106,7 @@ exports.control_search_word = function( req, res, connection ){
 exports.control_other_search_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
 
       var searchWord = decodeURI( req.body.targetText );
@@ -154,7 +160,7 @@ exports.control_search_category = function( req, res, connection ){
 exports.control_other_category_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
 
       var targetId = req.body.targetId;
@@ -209,7 +215,7 @@ exports.control_search_writer = function( req, res, connection ){
 exports.control_other_writer_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
 
       var targetId = req.body.targetId;
@@ -265,7 +271,7 @@ exports.control_search_hash = function( req, res, connection ){
 exports.control_other_hash_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
 
       var targetId = req.body.targetId;
@@ -319,7 +325,7 @@ exports.control_search_newsletter = function( req, res, connection ){
 exports.control_other_newsletter_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
 
       newsletterService.getPageListOfNewsLetterByIndex( connection, lang, req.body )

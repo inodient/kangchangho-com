@@ -489,11 +489,11 @@ $(document).ready(function() {
       // image_carousel = $("#id_temp_carousel_image_name").val() == "" ? "default_horizontal.png" : $("#id_temp_carousel_image_name").val();
       image_carousel = $("#id_temp_carousel_image_name").val();
 
-      var content_ko =  $("#editor-content-ko" ).summernote( "code" );
-      var content_en =  $("#editor-content-en" ).summernote( "code" );
+      var content_ko =  $("#editor-content-ko" ).summernote( "code" ) === "<p><br></p>" ? "" : $("#editor-content-ko" ).summernote( "code" );
+      var content_en =  $("#editor-content-en" ).summernote( "code" ) === "<p><br></p>" ? "" : $("#editor-content-en" ).summernote( "code" );
 
-      var comment_ko =  $("#editor-comment-ko" ).summernote( "code" );
-      var comment_en =  $("#editor-comment-en" ).summernote( "code" );
+      var comment_ko =  $("#editor-comment-ko" ).summernote( "code" ) === "<p><br></p>" ? "" : $("#editor-comment-ko" ).summernote( "code" );
+      var comment_en =  $("#editor-comment-en" ).summernote( "code" ) === "<p><br></p>" ? "" : $("#editor-comment-en" ).summernote( "code" );
 
       var hashes = $("#id_hashes").val();
       var hashesList = extractHashes( hashes );

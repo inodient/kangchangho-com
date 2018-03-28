@@ -37,7 +37,7 @@ exports.control = function( req, res, connection ){
 exports.control_other_pages = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 
-    langService.setDefaultLang( req, res )
+    staticService.getAjaxStaticInfo( req, res )
     .then( function( lang ){
       contentService.getPageListByIndex( connection, lang, req.body )
       .then( function(results){
