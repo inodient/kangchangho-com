@@ -131,13 +131,13 @@
 
               <hr class="page-divider mobile-hidden">
 
-              <button class="btn_important_banner" onclick="javascript:location.href='https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber'">
+              <button class="btn_important_banner" onclick="javascript:window.open('https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber') ">
                 YOUTUBE
                 <br>
                 <span class="btn_important_banner_describe">kangchangho.com channel</span>
               </button>
 
-              <button class="btn_important_banner" onclick="javascript:location.href='http://www.summermvc.com'">
+              <button class="btn_important_banner" onclick="javascript:window.open('http://www.summermvc.com') ">
                 summer-mvc
                 <br>
                 <span class="btn_important_banner_describe">Open Source Project</span>
@@ -175,7 +175,7 @@
                       <div class="row">
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
                           <figure>
-                            <img src="/<%- recentContents[i].savedFileName %>" />
+                            <img src="/<%- recentContents[i].thumbnailFileName %>" />
                             <figcaption data-href="/content/<%- recentContents[i].id %>" >
                               <div></div>
                               </figcation>
@@ -221,7 +221,7 @@
                       <div class="row">
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
                           <figure>
-                            <img src="/<%- mostViewedContents[i].savedFileName %>" />
+                            <img src="/<%- mostViewedContents[i].thumbnailFileName %>" />
                             <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
                               <div></div>
                               </figcation>

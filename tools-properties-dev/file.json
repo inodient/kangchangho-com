@@ -1,4 +1,4 @@
 {
-	"default-pre-path" : "/var/__upload",
-	"default-path" : "/kangchangho.com-development"
+	"default-pre-path" : "/var",
+	"default-path" : "/__upload/kangchangho.com-development"
 }

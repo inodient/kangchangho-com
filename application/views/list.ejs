@@ -155,7 +155,7 @@
                 <% if( pageList[i].type === "announce" ){ %>
                   <article class="inner-announce post-hidden">
                     <figure>
-                      <img src="/<%- pageList[i].savedFileName %>" />
+                      <img src="/<%- pageList[i].thumbnailFileName %>" />
                       <figcaption data-href="/announce/<%- pageList[i].id %>">
                         <div data-href="/announce/<%- pageList[i].id %>">
                           <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>
@@ -167,7 +167,7 @@
                 <% } else if( pageList[i].type === "newsletter" ){ %>
                   <article class="inner-announce post-hidden">
                     <figure>
-                      <img src="/<%- pageList[i].savedFileName %>" />
+                      <img src="/<%- pageList[i].thumbnailFileName %>" />
                       <figcaption data-href="/newsletter/<%- pageList[i].id %>">
                         <div data-href="/newsletter/<%- pageList[i].id %>">
                           <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>
@@ -182,7 +182,7 @@
                     <div class="row">
                       <div class="col-lg-4 col-md-4 col-sm-4">
                         <figure>
-                          <img src="/<%- pageList[i].savedFileName %>" />
+                          <img src="/<%- pageList[i].thumbnailFileName %>" />
                           <figcaption>
                             <div data-href="/content/<%- pageList[i].id %>">View Post</div>
                             </figcation>
@@ -267,7 +267,7 @@
                       <div class="row">
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
                           <figure>
-                            <img src="/<%- recentContents[i].savedFileName %>" />
+                            <img src="/<%- recentContents[i].thumbnailFileName %>" />
                             <figcaption data-href="/content/<%- recentContents[i].id %>" >
                               <div></div>
                               </figcation>
@@ -313,7 +313,7 @@
                       <div class="row">
                         <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
                           <figure>
-                            <img src="/<%- mostViewedContents[i].savedFileName %>" />
+                            <img src="/<%- mostViewedContents[i].thumbnailFileName %>" />
                             <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
                               <div></div>
                               </figcation>
@@ -335,6 +335,7 @@
             </article>
 
             <hr class="mobile-hidden small-section-end">
+
           </div>
           
         </div>

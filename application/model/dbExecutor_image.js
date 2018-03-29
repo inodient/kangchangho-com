@@ -27,6 +27,7 @@ exports.addImage = function( connection, parameter ){
 		params.push( "" );
 		params.push( parameter.originalFileName );
 		params.push( parameter.savedFileName );
+		params.push( parameter.thumbnailFileName );
 		params.push( parameter.destDir );
 		params.push( parameter.encoding );
 		params.push( parameter.mimetype );

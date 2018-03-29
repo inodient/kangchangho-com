@@ -152,8 +152,8 @@
 
     <query id='addImage'>
       <![CDATA[
-        INSERT INTO TB_CONTENT_IMAGE (type, savedDate, originalFileName, savedFileName, savedPath, encoding, mimetype)
-        VALUES (?, NOW(), ?, ?, ?, ?, ?)
+        INSERT INTO TB_CONTENT_IMAGE (type, savedDate, originalFileName, savedFileName, thumbnailFileName, savedPath, encoding, mimetype)
+        VALUES (?, NOW(), ?, ?, ?, ?, ?, ?)
       ]]>
     </query>
 
@@ -325,7 +325,7 @@
 
     <query id='getRecentContents'>
       <![CDATA[
-        select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, con.hit_count
+        select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, image.thumbnailFileName, con.hit_count
           from TB_CONTENT con, TB_CONTENT_IMAGE image
          where con.image_main = image.id
          order by create_date desc, hit_count desc limit 3
@@ -334,7 +334,7 @@
 
     <query id='getMostViewedContents'>
       <![CDATA[
-        select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, con.hit_count
+        select con.id, case when ? = 'en' then title_en else title_ko end as title, con.create_date, image.savedFileName, image.thumbnailFileName, con.hit_count
           from TB_CONTENT con, TB_CONTENT_IMAGE image
          where con.image_main = image.id
          order by hit_count desc, create_date desc limit 5
@@ -350,6 +350,7 @@
                link.content_id,
                link.link_count,
                image.savedFileName,
+               image.thumbnailFileName,
                case when ? = 'en' then menu.display_name_en
                     else menu.display_name_ko end as category,
                case when ? = 'en' then author.name_en
@@ -470,7 +471,8 @@
                case when ? = 'en' then menu.display_name_en
                     else menu.display_name_ko end as category_text,
                announce_image as image_id,
-               image.savedFileName as savedFileName
+               image.savedFileName as savedFileName,
+               image.thumbnailFileName as thumbnailFileName
           from TB_ANNOUNCE announce,
                TB_ANNOUNCE_TYPE announce_type,
                TB_MENU menu,
@@ -488,19 +490,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
             from
               ( select con.id as id, 'content' as type,
                     '' as announce_type_id, '' as announce_type_text,
                     case when ? = 'en' then con.title_en else con.title_ko end as title,
                     con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                     menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                    image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                    image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                     writer.email as writer_email
                  from TB_CONTENT con
                  LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -516,7 +518,7 @@
                        case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                        announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                        menu.id as category_id, '',
-                       image.savedFileName as savedFileName, writer.id as writer_id,
+                       image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                        case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                        writer.email as writer_email
                 from TB_ANNOUNCE announce
@@ -536,19 +538,19 @@
       select
         total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
         total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-        total.category_id, total.content, total.savedFileName, @rownum as total_count
+        total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
       from
         ( select
             page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
             page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-            page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+            page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
           from
             ( select con.id as id, 'content' as type,
                   '' as announce_type_id, '' as announce_type_text,
                   case when ? = 'en' then con.title_en else con.title_ko end as title,
                   con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                   menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                  image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                  image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                   writer.email as writer_email
                from TB_CONTENT con
                LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -564,7 +566,7 @@
                      case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                      announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                      menu.id as category_id, '',
-                     image.savedFileName as savedFileName, writer.id as writer_id,
+                     image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                      case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                      writer.email as writer_email
               from TB_ANNOUNCE announce
@@ -584,19 +586,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -620,7 +622,7 @@
                          case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                          announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                          menu.id as category_id, '',
-                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                          case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                          writer.email as writer_email
                   from TB_ANNOUNCE announce
@@ -645,19 +647,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -681,7 +683,7 @@
                          case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                          announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                          menu.id as category_id, '',
-                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                          case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                          writer.email as writer_email
                   from TB_ANNOUNCE announce
@@ -706,19 +708,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -735,7 +737,7 @@
                          case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                          announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                          menu.id as category_id, '',
-                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                          case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                          writer.email as writer_email
                   from TB_ANNOUNCE announce
@@ -756,19 +758,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -785,7 +787,7 @@
                          case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                          announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                          menu.id as category_id, '',
-                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                          case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                          writer.email as writer_email
                   from TB_ANNOUNCE announce
@@ -806,19 +808,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -835,7 +837,7 @@
                          case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                          announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                          menu.id as category_id, '',
-                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                          case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                          writer.email as writer_email
                   from TB_ANNOUNCE announce
@@ -856,19 +858,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -885,7 +887,7 @@
                          case when ? = 'en' then announce.title_en else announce.title_ko end as title,
                          announce.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                          menu.id as category_id, '',
-                         image.savedFileName as savedFileName, writer.id as writer_id,
+                         image.savedFileName as savedFileName, image.thumbnailFileName as thumbnailFileName, writer.id as writer_id,
                          case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                          writer.email as writer_email
                   from TB_ANNOUNCE announce
@@ -906,19 +908,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -938,19 +940,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -970,19 +972,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -1002,19 +1004,19 @@
         select
           total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
           total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-          total.category_id, total.content, total.savedFileName, @rownum as total_count
+          total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
         from
           ( select
               page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
               page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-              page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+              page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
               from
                 ( select con.id as id, 'content' as type,
                       '' as announce_type_id, '' as announce_type_text,
                       case when ? = 'en' then con.title_en else con.title_ko end as title,
                       con.create_date, case when ? = 'en' then menu.display_name_en else menu.display_name_ko end as category,
                       menu.id as category_id, case when ? = 'en' then con.content_en else con.content_ko end as content,
-                      image.savedFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
+                      image.savedFileName, image.thumbnailFileName, writer.id as writer_id, case when ? = 'en' then writer.name_en else writer.name_ko end as writer,
                       writer.email as writer_email
                    from TB_CONTENT con
                    LEFT JOIN TB_CONTENT_IMAGE image ON con.image_main = image.id
@@ -1034,12 +1036,12 @@
           select
             total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
             total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-            total.category_id, total.content, total.savedFileName, @rownum as total_count
+            total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
           from
             ( select
                 page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
                 page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-                page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+                page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
                 from
                   ( select newsletter.id as id,
                            'newsletter' as type,
@@ -1068,12 +1070,12 @@
           select
             total.id, total.type, total.announce_type_id, total.announce_type_text, total.title,
             total.writer_id, total.writer, total.writer_email, total.create_date, total.category,
-            total.category_id, total.content, total.savedFileName, @rownum as total_count
+            total.category_id, total.content, total.savedFileName, total.thumbnailFileName, @rownum as total_count
           from
             ( select
                 page_list.id, page_list.type, page_list.announce_type_id, page_list.announce_type_text, page_list.title,
                 page_list.writer_id, page_list.writer, page_list.writer_email, page_list.create_date, page_list.category,
-                page_list.category_id, page_list.content, page_list.savedFileName, @rownum := @rownum + 1 as RNUM
+                page_list.category_id, page_list.content, page_list.savedFileName, page_list.thumbnailFileName, @rownum := @rownum + 1 as RNUM
                 from
                   ( select newsletter.id as id,
                            'newsletter' as type,
@@ -1420,8 +1422,8 @@
                newsletter_id,
                seq,
                link_type,
-               case when 'content' = link_type then ( select savedFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
-                    else ( select savedFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_ANNOUNCE where id = link_id) ) end as image_path,
+               case when 'content' = link_type then ( select thumbnailFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
+                    else ( select thumbnailFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_ANNOUNCE where id = link_id) ) end as image_path,
                link_id,
                case when ('content' = link_type and ? = 'en') then ( select title_en from TB_CONTENT where id = link_id )
                     when ('content' = link_type and ? = 'ko') then ( select title_ko from TB_CONTENT where id = link_id )
@@ -1440,8 +1442,8 @@
                newsletter_id,
                seq,
                link_type,
-               case when 'content' = link_type then ( select savedFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
-                    else ( select savedFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_ANNOUNCE where id = link_id) ) end as image_path,
+               case when 'content' = link_type then ( select thumbnailFileName from TB_CONTENT_IMAGE where id = (select image_main from TB_CONTENT where id = link_id) )
+                    else ( select thumbnailFileName from TB_CONTENT_IMAGE where id = (select announce_image from TB_ANNOUNCE where id = link_id) ) end as image_path,
                link_id,
                case when 'content' = link_type then ( select title_en from TB_CONTENT where id = link_id )
                     when 'announce' = link_type then ( select title_en from TB_ANNOUNCE where id = link_id ) end as title_en,
