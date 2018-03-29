@@ -46,6 +46,16 @@ table td:hover {
   outline: none;
 }
 
+figure {
+  width: 100%;
+  max-width: 100%;
+}
+
+figure img {
+  width: 100%;
+  max-width: 100%;
+}
+
 /* =========================================================== */
 /* 01. input - Start */
 .input_embrassed {
@@ -1213,6 +1223,11 @@ nav {
 
 .content-summary {
 
+}
+
+.content-summary figure, .content-summary img {
+  max-width: 100%;
+  width: 100%;
 }
 
 @media screen and (min-width : 320px) and (max-width : 767px) {
