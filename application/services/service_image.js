@@ -72,7 +72,7 @@ function makeThumbnail( savedFileName ){
     var Thumbnail = require( "thumbnail" );
     var thumbnail = new Thumbnail( path.join(uploadPath, "image"), path.join(uploadPath, "image") );
 
-    var thumbnailSize = 250;
+    var thumbnailSize = 450;
 
     thumbnail.ensureThumbnail( savedFileName, thumbnailSize, null, function(err, filename){
       if( err ){

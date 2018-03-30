@@ -159,7 +159,9 @@
               <% for( var i=0; i<newsLetterContentsList.length; i++ ){ %>
                 <% if( newsLetterContentsList[i].link_type === "announce" ){ %>
                   <figure>
-                    <img src="/<%- newsLetterContentsList[i].image_path %>" />
+                    <div class="announce-image">
+                      <img src="/<%- newsLetterContentsList[i].image_path %>" />
+                    </div>
                     <figcaption>
                       <div data-href="/announce/<%- newsLetterContentsList[i].link_id %>"><%- newsLetterContentsList[i].title %></div>
                       </figcation>

@@ -46,16 +46,6 @@ table td:hover {
   outline: none;
 }
 
-figure {
-  width: 100%;
-  max-width: 100%;
-}
-
-figure img {
-  width: 100%;
-  max-width: 100%;
-}
-
 /* =========================================================== */
 /* 01. input - Start */
 .input_embrassed {
@@ -284,9 +274,18 @@ figure *, figure *::before, figure *::after{
 
 figure{
   overflow: hidden;
+  width: 100%;
   position: relative;
   display: inline-block;
   vertical-align: top;
+}
+
+figure div {
+  overflow: auto;
+}
+
+figure div::-webkit-scrollbar { 
+  display: none; 
 }
 
 figcaption{
@@ -323,6 +322,7 @@ figcaption div:after{
 
 figure img{
   max-width: 100%;
+  width: 100%;
   -webkit-transition: all 0.5s linear;
           transition: all 0.5s linear;
   -webkit-transform: scale3d(1, 1, 1);
@@ -1346,6 +1346,10 @@ nav {
 .inner-announce {
   overflow: hidden;
 }
+
+./*inner-announce-image {
+  height: 290px;
+}*/
 
 .inner-announce figcaption{
   background: rgba(64,64,64,0.20);

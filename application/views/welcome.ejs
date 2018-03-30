@@ -114,7 +114,9 @@
 
                     <div class="item <% if( i == 0 ){ %> active <% } %>">
                       <figure class="announce-figure">
-                        <img src="/<%- mainAnnounces[i].thumbnailFileName %>" />
+                        <div class="announce-image">
+                          <img src="/<%- mainAnnounces[i].savedFileName %>" />
+                        </div>
 
                         <figcaption data-announce-id="<%- mainAnnounces[i].announce_id %>" data-announce-type="<%- mainAnnounces[i].type_id %>">
                           <div data-announce-id="<%- mainAnnounces[i].announce_id %>">
@@ -176,7 +178,9 @@
                 <% if( pageList[i].type === "announce" ){ %>
                   <article class="inner-announce post-hidden">
                     <figure>
-                      <img src="/<%- pageList[i].thumbnailFileName %>" />
+                      <div class="announce-image">
+                        <img src="/<%- pageList[i].thumbnailFileName %>" />
+                      </div>
                       <figcaption data-href="/announce/<%- pageList[i].id %>">
                         <div data-href="/announce/<%- pageList[i].id %>">
                           <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>

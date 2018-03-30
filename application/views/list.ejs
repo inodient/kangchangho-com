@@ -155,7 +155,9 @@
                 <% if( pageList[i].type === "announce" ){ %>
                   <article class="inner-announce post-hidden">
                     <figure>
-                      <img src="/<%- pageList[i].thumbnailFileName %>" />
+                      <div class="announce-image">
+                        <img src="/<%- pageList[i].thumbnailFileName %>" />
+                      </div>
                       <figcaption data-href="/announce/<%- pageList[i].id %>">
                         <div data-href="/announce/<%- pageList[i].id %>">
                           <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>
@@ -167,7 +169,9 @@
                 <% } else if( pageList[i].type === "newsletter" ){ %>
                   <article class="inner-announce post-hidden">
                     <figure>
-                      <img src="/<%- pageList[i].thumbnailFileName %>" />
+                      <div class="announce-image">
+                        <img src="/<%- pageList[i].thumbnailFileName %>" />
+                      </div>
                       <figcaption data-href="/newsletter/<%- pageList[i].id %>">
                         <div data-href="/newsletter/<%- pageList[i].id %>">
                           <a href="/category/<%- pageList[i].category_id %>" class="content-anchor category"><%- pageList[i].category %></a>

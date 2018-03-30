@@ -42,6 +42,8 @@ $(document).ready( function(){
 
 
   $('.announce-carousel').on('slide.bs.carousel',function(e){
+      announceImageScroll();
+
       var slideFrom = $(this).find('.active').index();
       var slideTo = $(e.relatedTarget).index();
 
@@ -49,12 +51,12 @@ $(document).ready( function(){
 
       $(indicators[slideFrom]).toggleClass( "active" );
       $(indicators[slideTo]).toggleClass( "active" );
-
   });
 
   $(".announce-carousel .figcaption").on( "click", function(){
     $(location).attr( "href", $(this).children().data("href") );
   } );
+
 
 
 
@@ -90,6 +92,7 @@ $(document).ready( function(){
   scrollAffix();
 
   $(window).resize(function(){
+    announceImageScroll();
     postVisible();
 
     initScrollInfo();
@@ -98,6 +101,7 @@ $(document).ready( function(){
   });
 
   $(window).scroll( function( event ){
+    announceImageScroll();
     postVisible();
 
     initScrollInfo();
@@ -106,6 +110,7 @@ $(document).ready( function(){
   } );
 
   $(window).on( "load", function(){
+    announceImageScroll();
     postVisible();
 
     initScrollInfo();
@@ -264,6 +269,19 @@ function initScrollInfo(){
 }
 
 function wrapFigcaption(){
+  $(".announce-carousel .announce-image").each( function(){
+    if( $(window).width() >= 1024 ){
+      // Laptop, Pad
+      $(this).css( "height", "402px" );
+    } else if( $(window).width() < 1024 && $(window).width() >= 768 ){
+      // Laptop, Pad
+      $(this).css( "height", "270px" );
+    } else {
+      // Mobile
+      $(this).css( "height", "150px" );
+    }
+  } );
+
   $(".announce-carousel figcaption").each( function(){
     if( $(window).width() >= 1024 ){
       // Laptop, Pad
@@ -277,9 +295,23 @@ function wrapFigcaption(){
     }
   } );
 
+  $(".inner-announce .announce-image").each( function(){
+    if( $(window).width() >= 1024 ){
+      // Laptop, Pad
+      $(this).css( "height", "290px" );
+    } else if( $(window).width() < 1024 && $(window).width() >= 768 ){
+      // Laptop, Pad
+      $(this).css( "height", "290px" );
+    } else {
+      // Mobile
+      $(this).css( "height", "290px" );
+    }
+  } );
+
   $(".page-content figcaption, .banner-content figcaption").each( function(){
     if ( !$(this).parent().attr( "class" ) ){
-      $(this).css( "height", parseInt( $(this).siblings("img").css("height").replace("px") ) + 2 );
+      $(this).css( "height", $(this).parent().css("height") );
+      // $(this).css( "height", parseInt( $(this).siblings("img").css("height").replace("px") ) + 2 );
     }
   } );
 
@@ -330,4 +362,11 @@ function tabletBannerStyle(){
   } else {
     $(".banner-shortcut").append( $("#newsletter_select") );
   }
+}
+
+function announceImageScroll(){
+  $(".announce-image").each( function(){
+    var innerImgOffset = ( 2 * $(window).height() + $(this).children("img").height() ) * $(window).scrollTop() / $(document).height();
+    $(this).scrollTop( innerImgOffset );
+  } );
 }
