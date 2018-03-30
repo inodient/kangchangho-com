@@ -269,6 +269,12 @@ function initScrollInfo(){
 }
 
 function wrapFigcaption(){
+  $(".announce-carousel figure").each( function(){
+    if( $(window).width() < 768 ){
+      $(this).css( "height", $(window).width() * 2 / 3 );
+    }
+  } );
+
   $(".announce-carousel .announce-image").each( function(){
     if( $(window).width() >= 1024 ){
       // Laptop, Pad
@@ -278,7 +284,16 @@ function wrapFigcaption(){
       $(this).css( "height", "270px" );
     } else {
       // Mobile
-      $(this).css( "height", "150px" );
+      // $(this).css( "height", "150px" );
+      $(this).css( "height", $(window).width() * 2 / 3 );
+    }
+  } );
+
+  $(".announce-carousel .announce-image img").each( function(){
+    if( $(window).width() < 768 
+      && $(this).parent().parent().parent().attr("class").indexOf("active") > -1
+      && $(this).height() < $(this).parent().height() ){
+      $(this).css( "height", $(window).width() * 2 / 3 );
     }
   } );
 
@@ -291,7 +306,8 @@ function wrapFigcaption(){
       $(this).css( "height", "270px" );
     } else {
       // Mobile
-      $(this).css( "height", "150px" );
+      // $(this).css( "height", "150px" );
+      $(this).css( "height", $(window).width() * 2 / 3 );
     }
   } );
 
