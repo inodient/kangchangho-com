@@ -40,8 +40,8 @@ $(document).ready( function(){
 
 
 
-
-  $('.announce-carousel').on('slide.bs.carousel',function(e){
+  // before silding
+  $('.announce-carousel').bind('slide.bs.carousel',function(e){
       announceImageScroll();
 
       var slideFrom = $(this).find('.active').index();
@@ -51,6 +51,27 @@ $(document).ready( function(){
 
       $(indicators[slideFrom]).toggleClass( "active" );
       $(indicators[slideTo]).toggleClass( "active" );
+
+      $(".announce-carousel .announce-image img").each( function(){
+        if( $(window).width() < 768 
+          && $(this).parent().parent().parent().attr("class").indexOf("active") > -1
+          && $(this).height() < $(this).parent().height() ){
+
+          $(this).css( "height", $(window).width() * 2 / 3 );
+        }
+      } );
+  });
+
+  // after sliding
+  $('.announce-carousel').bind('slid.bs.carousel',function(e){
+      $(".announce-carousel .announce-image img").each( function(){
+        if( $(window).width() < 768 
+          && $(this).parent().parent().parent().attr("class").indexOf("active") > -1
+          && $(this).height() < $(this).parent().height() ){
+
+          $(this).css( "height", $(window).width() * 2 / 3 );
+        }
+      } );
   });
 
   $(".announce-carousel .figcaption").on( "click", function(){
@@ -285,14 +306,6 @@ function wrapFigcaption(){
     } else {
       // Mobile
       // $(this).css( "height", "150px" );
-      $(this).css( "height", $(window).width() * 2 / 3 );
-    }
-  } );
-
-  $(".announce-carousel .announce-image img").each( function(){
-    if( $(window).width() < 768 
-      && $(this).parent().parent().parent().attr("class").indexOf("active") > -1
-      && $(this).height() < $(this).parent().height() ){
       $(this).css( "height", $(window).width() * 2 / 3 );
     }
   } );
