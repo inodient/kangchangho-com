@@ -42,6 +42,15 @@ $(document).ready( function(){
 
   // before silding
   $('.announce-carousel').bind('slide.bs.carousel',function(e){
+      $(".announce-carousel .announce-image img").each( function(){
+        if( $(window).width() < 768 
+          && $(this).parent().parent().parent().attr("class").indexOf("active") > -1
+          && $(this).height() < $(this).parent().height() ){
+
+          $(this).css( "height", $(window).width() * 2 / 3 );
+        }
+      } );
+
       announceImageScroll();
 
       var slideFrom = $(this).find('.active').index();
