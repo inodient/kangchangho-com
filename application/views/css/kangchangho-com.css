@@ -205,7 +205,8 @@ table td:hover {
 /* 05. button Banner Inverse - End */
 /* =========================================================== */
 
-input-group {
+.input-group {
+  width: 100%;
 }
 
 /* =========================================================== */
@@ -1633,8 +1634,8 @@ nav {
 /* =========================================================== */
 /* body - file-input - Start */
 .file-input{
-  width: 40vw !important;
-  max-width: 40vw !important;
+  /*width: 40vw !important;
+  max-width: 40vw !important;*/
 }
 /* body - preview-modal - End */
 /* =========================================================== */
