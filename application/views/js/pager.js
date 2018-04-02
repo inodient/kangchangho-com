@@ -148,7 +148,9 @@ function createPages( pageInfo ){
             page.append(
               $("<article class='inner-announce post-hidden'>").append(
                 $("<figure>").append(
-                  $("<img>").attr( "src", "/" + specificData.savedFileName )
+                  $("<div class='announce-image'>").append(
+                    $("<img>").attr( "src", "/" + specificData.savedFileName )
+                  )
                 ).append(
                   $("<figcaption data-href='/announce/" + specificData.id + "'>").append(
                     $("<div data-href='/announce/" + specificData.id + "'>").append(
@@ -164,7 +166,9 @@ function createPages( pageInfo ){
             page.append(
               $("<article class='inner-announce post-hidden'>").append(
                 $("<figure>").append(
-                  $("<img>").attr( "src", "/" + specificData.savedFileName )
+                  $("<div class='announce-image'>").append(
+                    $("<img>").attr( "src", "/" + specificData.savedFileName )
+                  )
                 ).append(
                   $("<figcaption data-href='/newsletter/" + specificData.id + "'>").append(
                     $("<div data-href='/newsletter/" + specificData.id + "'>").append(

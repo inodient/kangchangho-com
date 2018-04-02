@@ -389,7 +389,7 @@ function tabletBannerStyle(){
 
 function setAnnounceImageRatio(){
   if( $(window).width() < 768 ) {
-    $(".announce-carousel .announce-image").each( function(){
+    $(".announce-image").each( function(){
 
       var imageDiv = $(this);
       var tmpImg = new Image();
@@ -416,7 +416,18 @@ function setAnnounceImageRatio(){
 
 function announceImageScroll(){
   $(".announce-image").each( function(){
-    var innerImgOffset = ( 2 * $(window).height() + $(this).children("img").height() ) * $(window).scrollTop() / $(document).height();
-    $(this).scrollTop( innerImgOffset );
+
+    var upperSpace = $(this).offset().top < $(window).height() ? $(this).offset().top : $(window).height();
+    var lowerSpace = $(document).height() - $(this).offset().top + $(this).height() < $(window).height() ? $(document).height() - $(this).offset().top + $(this).height() : $(window).height();
+
+    if( $(window).scrollTop() > $(this).offset().top - upperSpace
+      && $(window).scrollTop() < $(this).offset().top + $(this).height() + lowerSpace ){
+
+      var renderRange = upperSpace + $(this).height() + lowerSpace;
+      var scrollInRange = $(window).scrollTop() - ( $(this).offset().top - upperSpace );
+      var imageScrollRange = scrollInRange * $(this).children("img").height() / renderRange; 
+
+      $(this).scrollTop( imageScrollRange );
+    }
   } );
 }
