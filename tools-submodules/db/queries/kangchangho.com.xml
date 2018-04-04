@@ -198,7 +198,7 @@
           case when (select count(id) from TB_CONTENT con where con.category = menu.id) = 1 
               then CONCAT( '/content/', (select con.id from TB_CONTENT con where con.category = menu.id) )
               else CONCAT( '/category/', menu.id ) END as redirectPath
-          from TB_MENU menu ORDER BY group_value, DEPTH, SEQUENCE
+          from TB_MENU menu WHERE enable = 'Y' ORDER BY group_value, DEPTH, SEQUENCE
       ]]>
     </query>
 

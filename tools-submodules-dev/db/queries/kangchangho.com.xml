@@ -198,7 +198,7 @@
           case when (select count(id) from TB_CONTENT con where con.category = menu.id) = 1 
               then CONCAT( '/content/', (select con.id from TB_CONTENT con where con.category = menu.id) )
               else CONCAT( '/category/', menu.id ) END as redirectPath
-          from TB_MENU menu ORDER BY group_value, DEPTH, SEQUENCE
+          from TB_MENU menu WHERE enable = 'Y' ORDER BY group_value, DEPTH, SEQUENCE
       ]]>
     </query>
 
@@ -1198,12 +1198,12 @@
     <query id='getHeaderInfo'>
       <![CDATA[
         select
-        	id,
-        	type,
-        	sequence,
-        	case when ? = 'en' then display_name_en
-        		 else display_name_ko end as display_name,
-        	event
+          id,
+          type,
+          sequence,
+          case when ? = 'en' then display_name_en
+             else display_name_ko end as display_name,
+          event
         from TB_STD
         where type = 'window_title' or type = 'header_title'
         order by type, sequence
@@ -1213,12 +1213,12 @@
     <query id='getFooterInfo'>
       <![CDATA[
         select
-        	id,
-        	type,
-        	sequence,
-        	case when ? = 'en' then display_name_en
-        		 else display_name_ko end as display_name,
-        	event
+          id,
+          type,
+          sequence,
+          case when ? = 'en' then display_name_en
+             else display_name_ko end as display_name,
+          event
         from TB_STD
         where type = 'footer'
         order by type, sequence
