@@ -5,7 +5,7 @@
 
 
 /* Window Aspect Ratio - Start */
-@media (max-aspect-ratio: 1/1) { /* height / width */
+@media (min-width: 1024px) and (max-aspect-ratio: 1/1) { /* height / width */
   .page-content {
     margin-left: 5% !important;
     margin-right: 5% !important;
