@@ -42,8 +42,9 @@ head {
 
 body {
   font-family: 'Roboto', sans-serif;
-  font-size: 14.5px;
+  font-size: 1.7rem;
   margin: auto;
+  line-height: 1.75;
 }
 
 body.iosBugFixCaret.modal-open {
@@ -70,6 +71,10 @@ table tr:hover td:hover {
 
 table td:hover {
   cursor: pointer;
+}
+
+pre {
+  font-size: 1.8rem;
 }
 
 *:focus {
@@ -1298,7 +1303,7 @@ nav {
   border-left: 5px solid #a94442;
   padding-top: 5px;
   padding-bottom: 5px;
-  font-size: 14.5px;
+  font-size: 1.7rem;
 }
 
 .content-body code {
