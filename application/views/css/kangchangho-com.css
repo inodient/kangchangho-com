@@ -42,9 +42,8 @@ head {
 
 body {
   font-family: 'Roboto', sans-serif;
-  font-size: 1.8rem;
+  font-size: 14.5px;
   margin: auto;
-  line-height: 1.75;
 }
 
 body.iosBugFixCaret.modal-open {
@@ -1297,6 +1296,8 @@ nav {
 }
 
 .content-body {
+  font-size: 1.8rem;
+  line-height: 1.75;
 }
 
 .content-body blockquote {
