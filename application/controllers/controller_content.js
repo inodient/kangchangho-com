@@ -14,6 +14,11 @@ exports.control = function( req, res, connection ){
       var lang = staticInfo.lang;
       var promises = [];
 
+
+
+
+
+
       promises.push( contentService.getContent( connection, targetId, lang ) );
 
       Promise.all( promises )
