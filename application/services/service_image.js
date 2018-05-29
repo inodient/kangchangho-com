@@ -64,28 +64,29 @@ exports.setImageType = function( connection, type, savedFileName ){
 
 function makeThumbnail( savedFileName ){
   return new Promise( function(resolve, reject){
-    var path = require( "path" );
-    var fs = require( "fs" );
+    resolve( {"thumbnailFileName":savedFileName} );
+    // var path = require( "path" );
+    // var fs = require( "fs" );
 
-    var uploadPath = path.join( require(__fileHandlerInfo)[ "default-pre-path" ], require(__fileHandlerInfo)[ "default-path" ] );
+    // var uploadPath = path.join( require(__fileHandlerInfo)[ "default-pre-path" ], require(__fileHandlerInfo)[ "default-path" ] );
 
-    var Thumbnail = require( "thumbnail" );
-    var thumbnail = new Thumbnail( path.join(uploadPath, "image"), path.join(uploadPath, "image") );
+    // var Thumbnail = require( "thumbnail" );
+    // var thumbnail = new Thumbnail( path.join(uploadPath, "image"), path.join(uploadPath, "image") );
 
-    var thumbnailSize = 450;
+    // var thumbnailSize = 450;
 
-    thumbnail.ensureThumbnail( savedFileName, thumbnailSize, null, function(err, filename){
-      if( err ){
-        reject( err );
-      } else{
-        var extension = require( "path" ).extname( savedFileName );
-        var suffix = filename.replace( savedFileName.replace(extension, ""), "" );
-        var thumbnailFileName = filename.replace( suffix, "_thumb" + extension );
+    // thumbnail.ensureThumbnail( savedFileName, thumbnailSize, null, function(err, filename){
+    //   if( err ){
+    //     reject( err );
+    //   } else{
+    //     var extension = require( "path" ).extname( savedFileName );
+    //     var suffix = filename.replace( savedFileName.replace(extension, ""), "" );
+    //     var thumbnailFileName = filename.replace( suffix, "_thumb" + extension );
 
-        fs.renameSync( path.join(uploadPath, "image", filename), path.join(uploadPath, "image", thumbnailFileName) );
+    //     fs.renameSync( path.join(uploadPath, "image", filename), path.join(uploadPath, "image", thumbnailFileName) );
 
-        resolve( {"thumbnailFileName":thumbnailFileName} );
-      }
-    } );    
+    //     resolve( {"thumbnailFileName":thumbnailFileName} );
+    //   }
+    // } );    
   } );
 }

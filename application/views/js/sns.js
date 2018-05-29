@@ -91,10 +91,10 @@ function shareFacebook( link, redirect_uri ){
     let option = 'sharer';
     let size = 'toolbar=0, status=0, width=626, height=436';
 
-    popupUrl = `https://www.facebook.com/dialog/feed?app_id=` + appId + `
-  				&display=popup&amp;caption=An%20example%20caption 
-  				&link=` + link + `
-  				&redirect_uri=` + redirect_uri;
+    popupUrl = 'https://www.facebook.com/dialog/feed?app_id=' + appId + 
+  				'&display=popup&amp;caption=An%20example%20caption' +  
+  				'&link=' + link + 
+  				'&redirect_uri=' + redirect_uri;
 
 
 	window.open( popupUrl, option, size );	
@@ -108,7 +108,7 @@ function shareTwitter( title, link, hashes){
 
     title = title.replace( "KANGCHANGHO.COM - ", "" );
 
-    popupUrl = `https://twitter.com/intent/tweet?url=` + link + `&text=` + title + `&hashtags=` + hashes;
+    popupUrl = 'https://twitter.com/intent/tweet?url=' + link + '&text=' + title + '&hashtags=' + hashes;
 
     window.open( encodeURI(popupUrl), option, size );
     // window.open( popupUrl, option );
@@ -119,13 +119,13 @@ function shareLinkedIn( title, link, hashes ){
     let option = 'sharer';
     let size = 'toolbar=0, status=0, width=626, height=436';
 
-    popupUrl = `
-      http://www.linkedin.com/shareArticle?mini=true` + `
-      &url=` + link + `
-      &title=` + title + `
-      &summary=` + hashes + `
-      &source=` + link + `
-    `;
+    popupUrl = 
+      'http://www.linkedin.com/shareArticle?mini=true' + 
+      '&url=' + link + 
+      '&title=' + title + 
+      '&summary=' + hashes + 
+      '&source=' + link 
+    ;
 
     window.open( popupUrl, option, size );
     // window.open( popupUrl, option );
