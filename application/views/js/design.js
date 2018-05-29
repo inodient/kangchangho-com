@@ -39,10 +39,11 @@ $(document).ready( function(){
   } );
 
   $(".hash-ranking td").on("mouseleave", function(){
-    $(this).parent().css( {backgroundColor: "initial"} );
+    $(this).parent().css( {backgroundColor: "white"} );
     $(this).parent().children().css( {color: "#000000"} );
     $(this).parent().children().css( {paddingLeft: "5px"} );
   } );
+
 
 
 
