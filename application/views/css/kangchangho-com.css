@@ -1595,6 +1595,23 @@ nav {
   }
 }
 
+.user-comment .row {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+@media screen and (min-width : 320px) and (max-width : 767px) {
+  .user-comment {
+    padding-left: 30px;
+    padding-right: 30px;
+  } 
+
+  .user-comment h4 {
+    padding-left: 0px;
+  }
+}
+
+
 /* body - article-container > content-body,
           content-embrassed,
           content-hashed,
