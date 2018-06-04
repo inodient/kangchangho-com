@@ -11,6 +11,8 @@ var targetHeight, targetWidth, targetInitialTop, targetInitialLeft, unTargetWidt
 
 $(document).ready( function(){
 
+  var browser = getBrowser();
+
   modalBugFix();
   postVisible();
 
@@ -148,6 +150,23 @@ $(document).ready( function(){
 
 
 
+function getBrowser(){
+    var userAgent = navigator.userAgent.toLowerCase();
+    var browser = "";
+
+    if( userAgent.indexOf( "chrome") > -1 ){
+      browser = "chrome";
+    } else if( userAgent.indexOf( "safari" ) > -1 ){
+      browser = "safari";
+    } else if( userAgent.indexOf( "firefox") > -1 ){
+      browser = "firefox";
+    } else if( userAgent.indexOf( "ms-") > -1 ){
+      browser = "ie"
+    }
+
+    return browser;
+}
+
 function modalBugFix(){
   // Detect ios 11_x_x affected
   // NEED TO BE UPDATED if new versions are affected
@@ -188,7 +207,9 @@ function postVisible(){
 }
 
 function scrollAffix(){
-  if( $(window).width() >= 992 && $(window).height() / $(window).width() < 1){
+
+  if( getBrowser() === "chrome" ){
+    if( $(window).width() >= 992 && $(window).height() / $(window).width() < 1){
     var scroll = parseInt( $(window).scrollTop() );
     var screenHeight = parseInt( $(window).innerHeight() );
     var bottomIndex = scroll + screenHeight;
@@ -251,6 +272,7 @@ function scrollAffix(){
         unTarget.css( "width", unTargetWidth );
       }
     }
+  }
   }
 }
 

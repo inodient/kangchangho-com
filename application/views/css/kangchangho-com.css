@@ -292,6 +292,14 @@ pre {
   border-radius: 0;
 
   background: black no-repeat right 1rem center url(/arrow_background.png);
+
+
+
+  /* For FireFox - Start */
+  -moz-appearance: none;
+  text-indent: 0.01px;
+  text-overflow: "";
+  /* For FireFox - End */
 }
 
 .select_important::-ms-expand {
@@ -1239,6 +1247,10 @@ nav {
   max-width: 1100px;
   max-height: 400px;
   overflow: hidden;
+}
+
+.announce-carousel * {
+  overflow: -moz-scrollbars-none;   
 }
 
 @media screen and (min-width : 768px) and (max-width : 1024) {
