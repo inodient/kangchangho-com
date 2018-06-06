@@ -392,17 +392,22 @@ function iOSDevice(){
 
 
 function getLicenseInfo(){
-  $.ajax( {
-    type: "GET",
-    url: "/license",
 
-    success: function(){
-      var table = arguments[0];
+  if( $("#license_modal .modal-body table").length === 0 ){
+    $.ajax( {
+      type: "GET",
+      url: "/license",
 
-      $("#license_modal .modal-body").append( table );
-      $("#license_modal").modal( "show" );
-    }
-  } );
+      success: function(){
+        var table = arguments[0];
+
+        $("#license_modal .modal-body").append( table );
+        $("#license_modal").modal( "show" );
+      }
+    } );
+  } else {
+    $("#license_modal").modal( "show" );
+  }
 }
 
 // function getBrowserLang(){
