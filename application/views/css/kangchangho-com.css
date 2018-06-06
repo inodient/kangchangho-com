@@ -1834,6 +1834,13 @@ nav {
   padding-top: 25px;
 }
 
+.footer-footer a {
+  text-decoration: none;
+  /*color: #a0a0a0;
+  font-weight: 700;*/
+  color: white;
+}
+
 @media screen and (min-width : 320px) and (max-width : 767px) {
   .footer-heading .description {
     font-size: 14.5px;
@@ -1880,6 +1887,23 @@ nav {
 
 #subscribe_modal .modal-dismiss:hover, #language_change_modal .modal-dismiss:hover {
   cursor: pointer;
+}
+
+#license_modal {
+  color: #000000;
+}
+
+#license_modal table * {
+  text-align: center;
+  color: #000000;
+}
+
+#license_modal a {
+  color: #000000;
+}
+
+#license_modal h4 {
+  margin-bottom: 20px;
 }
 
 .back-to-top {

@@ -111,6 +111,14 @@
             "controlFunction": "control_sharepageclose",
             "viewPath": "",
             "view": "sharepageclose.ejs"
+        },
+        {
+            "id": "license",
+            "path": "/license",
+            "controllerJS": "controller_license.js",
+            "controlFunction": "control_get_license",
+            "viewPath": "",
+            "view": ""  
         }
 
     ],

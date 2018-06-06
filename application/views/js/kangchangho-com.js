@@ -139,6 +139,13 @@ $(document).ready( function(){
 
 
 
+
+
+
+
+
+
+
   if( $(window).width() < 1000 ){
 
     // Whole Menu toggle
@@ -379,6 +386,23 @@ function iOSDevice(){
   iOS11 = /OS 11_0_1|OS 11_0_2|OS 11_0_3|OS 11_1|OS 11_1_1|OS 11_1_2|OS 11_2|OS 11_2_1/.test(ua);
 
   return iOS && iOS11;
+}
+
+
+
+
+function getLicenseInfo(){
+  $.ajax( {
+    type: "GET",
+    url: "/license",
+
+    success: function(){
+      var table = arguments[0];
+
+      $("#license_modal .modal-body").append( table );
+      $("#license_modal").modal( "show" );
+    }
+  } );
 }
 
 // function getBrowserLang(){
