@@ -361,6 +361,29 @@ $(document).ready( function(){
 
     $("#language_change_modal").modal( "hide" );
   } );
+
+
+
+
+
+
+
+
+  $(".user-comment #comment").focus( function(){
+    $(this).attr( "rows", "6" );
+    $(this).siblings(".comment-submit").fadeIn( "fast" );
+  } );
+
+  $(".user-comment-submitted p").on( "click", function(){
+    $(this).siblings( ".comment-submit" ).toggle();
+  } );
+
+  $(".user-comment-reply p").on( "click", function(){
+    $(this).siblings( ".comment-submit" ).toggle();
+  } );
+
+
+
 } );
 
 
