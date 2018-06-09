@@ -1495,4 +1495,56 @@
       ]]>
     </query>
 
+    <query id="addComment_Comment">
+      <![CDATA[
+        INSERT INTO TB_COMMENT 
+          (content_id, level, comment_en, comment_ko, name, password, parent_id, create_date)
+        VALUES
+          (#CONTENTID#, #LEVEL#, #COMMENTEN#, #COMMENTKO#, #NAME#, #PASSWORD#, #PARENTID#, #DATE#)
+      ]]>
+    </query>
+
+    <query id="addComment">
+      <![CDATA[
+        INSERT INTO TB_COMMENT 
+          (content_id, level, comment_en, comment_ko, name, password, parent_id, create_date)
+        SELECT #CONTENTID#, #LEVEL#, #COMMENTEN#, #COMMENTKO#, #NAME#, #PASSWORD#, 
+          ( select (auto_increment) as lastId
+            from information_schema.tables
+            where table_name = 'TB_COMMENT' )
+        , #DATE#
+        FROM TB_COMMENT LIMIT 1
+      ]]>
+    </query>
+
+    <query id="getComment">
+      <![CDATA[
+        SELECT id, content_id, level, 
+          case when #LANG# = 'en' then comment_en
+          else comment_ko end as comment, name, password, parent_id, 
+          case when DATEDIFF( NOW(), create_date) = 0 then 'Today'
+          when DATEDIFF( NOW(), create_date) = 1 then 'Yesterday'
+          else CONCAT( DATEDIFF( NOW(), create_date), ' days ago') end as create_date
+        FROM TB_COMMENT
+        WHERE content_id = #CONTENTID#
+          AND CASE WHEN #LANG# = 'en' then comment_en != "" ELSE TRUE END
+          AND CASE WHEN #LANG# = 'ko' then comment_ko != "" ELSE TRUE END
+        ORDER BY parent_id desc, level, id desc
+      ]]>
+    </query>
+
+    <query id="getCommentPassword">
+      <![CDATA[
+        SELECT password
+        FROM TB_COMMENT
+        WHERE id = #ID#
+      ]]>
+    </query>
+
+    <query id="deleteComment">
+      <![CDATA[
+        DELETE FROM TB_COMMENT WHERE ID in ( #ID# )
+      ]]>
+    </query>
+
   </queries>

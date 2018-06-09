@@ -368,8 +368,8 @@ $(document).ready( function(){
 
 
 
-
-  $(".user-comment #comment").focus( function(){
+  // Comment - Start
+  $(".user-comment-assign #comment").focus( function(){
     $(this).attr( "rows", "6" );
     $(this).siblings(".comment-submit").fadeIn( "fast" );
   } );
@@ -378,10 +378,126 @@ $(document).ready( function(){
     $(this).siblings( ".comment-submit" ).toggle();
   } );
 
-  $(".user-comment-reply p").on( "click", function(){
-    $(this).siblings( ".comment-submit" ).toggle();
+  $(".comment-submit-btn").on( "click", function(){
+
+    $.LoadingOverlay("show", { color: "rgba(255, 255, 255, 0.8)" });
+
+    if( !mandatoryValidator(this) ){
+      $.LoadingOverlay("hide");
+      return;
+    }
+
+    var comment = $(this).parent().siblings( "textarea" ).val();
+    var name = $(this).siblings( ".ip_name" ).val();
+    var password = $(this).siblings( ".ip_pw" ).val();
+
+    var contentId = $(location).attr( "href" ).split("/content/")[1];
+    var parentId = $(this).parent().parent().parent().parent().parent().attr( "id" );
+
+    var data = {
+      "comment" : comment,
+      "name" : name,
+      "password" : password,
+      "contentid" : contentId,
+      "parentid" : parentId
+    };
+
+    $.ajax( {
+      data: data,
+      type: "POST",
+      url: "/comment",
+
+      success: function(){
+        data.insertId = arguments[0].insertId;
+
+        if( parentId === undefined ){
+          $( getCommentHtml(data) ).insertAfter(".user-comment-assign");
+        } else {
+          $(".user-comment-submitted").each( function(){
+            if( $(this).attr( "id" ) === parentId ){
+              $( getCommentHtml(data) ).insertAfter( $(this) );
+            }
+          } );
+        }
+
+        $( ".user-comment textarea" ).val( "" );
+        $( ".user-comment .ip_name" ).val( "" );
+        $( ".user-comment .ip_pw" ).val( "" );
+
+        $( ".user-comment .user-comment-submitted .comment-submit" ).css( "display", "none" );
+
+        addDeleteEventHandler();
+        $.LoadingOverlay("hide");
+      },
+      error: function(){
+        $.LoadingOverlay("hide");
+        alert( "An erro occured when submitting comments. Please contact adminstrator.");
+      }
+    } );
   } );
 
+  $(".del-btn").on( "click", function(){
+
+    var targetIds = [];
+
+    if( $(this).parent().parent().parent().attr( "class" ).indexOf( "user-comment-submitted") > -1 ){
+      var targetId = $(this).parent().parent().parent().attr( "id" );
+
+      targetIds.push( targetId );
+
+      $(".user-comment-reply").each( function(){
+        if( targetId == $(this).data( "parent") ){
+          targetIds.push( $(this).attr( "id" ) );
+        }
+      } );
+
+    } else if( $(this).parent().parent().attr( "class" ).indexOf( "user-comment-reply" ) > -1 ){
+      targetIds.push( $(this).parent().parent().attr( "id" ) );
+    }
+
+    $("#password_modal").data( "target", targetIds );
+    $("#password_modal").modal("show");
+  } );
+
+  $("#password_modal #confirm").on( "click", function(){
+
+    $.ajax( {
+      data: { "targetIds" : $("#password_modal").data("target"), "password" : $(this).parent().siblings("#pw").val() },
+      type: "POST",
+      url: "/delcomment",
+
+      success: function(results){
+        if( results.STATUS === "WRONG_PASSWORD" ){
+          alert( "Password is incorrect." );
+        } else if( results.STATUS === "SUCCEED" ){
+          var targetIds = ( $("#password_modal").data("target") ).toString().split(",");
+
+          for( var i=0; i<targetIds.length; i++ ){
+            $(".user-comment-submitted").each( function(){
+              if( $(this).attr( "id" ) === targetIds[i] ) $(this).remove();
+            } );
+            $(".user-comment-reply").each( function(){
+              if( $(this).attr( "id" ) === targetIds[i] ) $(this).remove();
+            } );
+          }
+        }
+      },
+      error: function(){
+        alert( "An error occured when deleting comments. Please contact adminstrator.");
+      }
+    } );
+
+    $(this).parent().siblings("input").val("");
+    $(this).parent().parent().parent().parent().parent().attr("data-target", "");
+    $(this).parent().parent().parent().parent().parent().modal("hide");
+  } );
+
+  $("#password_modal #cancel").on( "click", function(){
+    $(this).parent().siblings("input").val("");
+    $(this).parent().parent().parent().parent().parent().attr("data-target", "");
+    $(this).parent().parent().parent().parent().parent().modal("hide");
+  } );
+  // Comment - End
 
 
 } );
@@ -431,6 +547,96 @@ function getLicenseInfo(){
   } else {
     $("#license_modal").modal( "show" );
   }
+}
+
+function mandatoryValidator( target ){
+  if( $(target).parent().siblings( "#comment" ).val() === "" ){
+    alert( "PLEASE INSERT YOUR COMMENTS." );
+    return false;
+  }
+  if( $(target).siblings( ".ip_name" ).val() === "" ){
+    alert( "PLEASE INSERT YOUR NAME." );
+    return false;
+  }
+  if( $(target).siblings( ".ip_pw" ).val() === "" ){
+    alert( "PLEASE SET PASSWORD OF YOUR COMMENT." );
+    return false;
+  }
+  return true;
+}
+
+function getCommentHtml( comment ){
+
+  var commentStr = "";
+
+  if( comment.parentid === undefined ){
+    commentStr = `
+      <div class="row user-comment-submitted" id="` + comment.insertId + `">
+        <div class="col-lg-2 col-md-2 col-sm-2 user-comment-image mobile-hidden">
+          <img src="/comment_default.png" />
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-12 comment-content">
+          <div class="comment-title">
+              <span class="writer">` + comment.name + `</span>
+              <span class="spent-date">` + 'now' + `</span>
+              <button class="btn_important del-btn">DEL</button>
+          </div>
+          <div class="comment-body">
+            <p>` + comment.comment + `</p>
+            <div class="comment-submit form-group">
+              <textarea class="form-control" rows="3" id="comment"></textarea>
+              <div>
+                <input class="input_important ip_name" type=text placeholder="NAME"  required />
+                <input class="input_important ip_pw" type=password placeholder="PASSWORD" required />
+                <button class="btn_important comment-submit-btn">SUBMIT</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    commentStr = `
+      <div class="row user-comment-reply" id="` + comment.insertId + `" data-parent="` + comment.parentid + `">
+        <div class="col-lg-2 col-md-2 col-sm-1 col-xs-1">
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-11 col-xs-11">
+          <hr class="comment-divider">
+          <i class="fa fa-reply" aria-hidden="true"></i>
+          <span class="writer">` + comment.name + `</span>
+          <span class="spent-date">` + 'NOW' + `</span>
+          <button class="btn_important del-btn">DEL</button>
+          <p>` + comment.comment + `</p>
+        </div>
+      </div>`;
+  }
+
+  return commentStr;
+}
+
+function addDeleteEventHandler(){
+  $(".del-btn").on( "click", function(){
+
+    var targetIds = [];
+
+    if( $(this).parent().parent().parent().attr( "class" ).indexOf( "user-comment-submitted") > -1 ){
+      var targetId = $(this).parent().parent().parent().attr( "id" );
+
+      targetIds.push( targetId );
+
+      $(".user-comment-reply").each( function(){
+        if( targetId == $(this).data( "parent") ){
+          targetIds.push( $(this).attr( "id" ) );
+        }
+      } );
+
+    } else if( $(this).parent().parent().attr( "class" ).indexOf( "user-comment-reply" ) > -1 ){
+      targetIds.push( $(this).parent().parent().attr( "id" ) );
+    }
+
+    $("#password_modal").data( "target", targetIds );
+    $("#password_modal").modal("show");
+
+  } );
 }
 
 // function getBrowserLang(){

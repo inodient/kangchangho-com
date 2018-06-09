@@ -1531,7 +1531,9 @@ nav {
 /* body - article-container > content-body,
           content-embrassed,
           content-hashed,
-          content-footer - Start */
+          content-footer,
+          user-comment,
+          related-post - Start */
 
 .content-body .category {
   font-size: 12px;
@@ -1582,6 +1584,124 @@ nav {
   font-weight: 800;
 }
 
+
+
+.user-comment-assign {
+  margin-bottom: 20px;
+}
+
+.user-comment-image {
+  padding-left: 0px;
+}
+
+.user-comment-image img {
+  max-width: 100%;
+}
+
+.user-comment .form-group {
+  text-align: right;
+}
+
+.user-comment .form-group textarea {
+  border-radius: 0px;
+}
+
+.user-comment .form-group .comment-submit {
+  display: none;
+}
+
+.user-comment .form-group .comment-submit input {
+  max-width: 40%;
+  border: 0px;
+  border-bottom: 1px solid lightgray;
+  padding-left: 10px;
+}
+
+.user-comment-submitted {
+  margin-bottom: 15px;
+  margin-top: 40px;
+}
+
+.user-comment-submitted .comment-content .comment-title {
+  padding-bottom: 12px;
+}
+
+.user-comment-submitted .comment-title .writer {
+  font-weight: 700;
+  font-size: 16.5px;
+}
+
+.user-comment-submitted .comment-title .spent-date {
+  padding-left: 15px;
+  color: darkgray;
+}
+
+.user-comment-submitted .comment-title .del-btn {
+  margin: 0px 0px 0px 20px;
+  padding: 3px 8px 3px 8px;
+  float: right;
+}
+
+.user-comment-submitted .comment-body .comment-submit {
+   text-align: right;
+   display: none;
+}
+
+.user-comment-submitted .comment-body .comment-submit form-group {
+  text-align: right;
+}
+
+.user-comment-submitted .comment-body .comment-submit textarea {
+  border-radius: 0px;
+}
+
+.user-comment-submitted .comment-body .comment-submit input {
+  max-width: 40%; 
+  border: 0px; 
+  border-bottom: 1px solid lightgray; 
+  padding-left:10px;
+}
+
+.user-comment-reply {
+  margin-bottom: 15px;
+}
+
+.user-comment-reply .comment-divider {
+  margin: 0px;
+  padding-top: 8px;
+}
+
+.user-comment-reply i {
+  padding-right: 5px;
+  padding-bottom: 10px;
+  color: gray;
+}
+
+.user-comment-reply .writer {
+  font-weight:700; 
+  font-size:1.3rem;
+}
+
+.user-comment-reply .spent-date {
+  padding-left: 8px; 
+  color:darkgray; 
+  font-size:1.3rem;
+}
+
+.user-comment-reply .del-btn {
+  margin: 0px 0px 0px 20px; 
+  padding: 3px 8px 3px 8px;
+  float: right;
+}
+
+.user-comment-reply p {
+  font-size: 1.4rem;
+}
+
+
+
+
+
 .related-post .row {
   padding-left: 10px;
   padding-right: 10px;
@@ -1614,8 +1734,8 @@ nav {
 
 @media screen and (min-width : 320px) and (max-width : 767px) {
   .user-comment {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
   } 
 
   .user-comment h4 {
@@ -1627,7 +1747,9 @@ nav {
 /* body - article-container > content-body,
           content-embrassed,
           content-hashed,
-          content-footer - End */
+          content-footer,
+          user-comment,
+          related-post - End */
 /* =========================================================== */
 
 /* =========================================================== */

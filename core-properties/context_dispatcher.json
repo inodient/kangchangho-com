@@ -242,6 +242,22 @@
             "controlFunction": "control_send_newsletter",
             "viewPath": "",
             "view": ""
+        },
+        {
+            "id": "comment",
+            "path": "/comment",
+            "controllerJS": "controller_comment.js",
+            "controlFunction": "control_add_comment",
+            "viewPath": "",
+            "view": ""  
+        },
+        {
+            "id": "delcomment",
+            "path": "/delcomment",
+            "controllerJS": "controller_comment.js",
+            "controlFunction": "control_del_comment",
+            "viewPath": "",
+            "view": ""  
         }
     ]
 }

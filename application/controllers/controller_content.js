@@ -1,5 +1,6 @@
 var staticService = require( require("path").join( __runningPath, "application", "services", "service_static.js" ) );
 var contentService = require( require("path").join( __runningPath, "application", "services", "service_content.js" ) );
+var commentService = require( require("path").join( __runningPath, "application", "services", "service_comment.js" ) );
 
 
 
@@ -15,11 +16,12 @@ exports.control = function( req, res, connection ){
       var promises = [];
 
       promises.push( contentService.getContent( connection, targetId, lang ) );
+      promises.push( commentService.getComment( connection, targetId, lang ) );
 
       Promise.all( promises )
       .then( function(){
         var argv = arguments[0];
-        resolve( Object.assign( staticInfo, argv[0] ) );
+        resolve( Object.assign( staticInfo, argv[0], argv[1] ) );
       } )
       .catch( function( _err ){
         reject( _err );

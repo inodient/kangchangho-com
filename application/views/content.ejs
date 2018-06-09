@@ -185,193 +185,78 @@
 
             <!-- -------------------------------------------------------- -->
             <article>
-              <div class="row paragraph-end">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 user-comment">
-                  <h4 class="after-line-block">Comments</h4>
-                  
-                  <div class="col-lg-2 col-md-2 col-sm-2 mobile-hidden">
-                    <img src="/2.png" style="max-width: 100%" />
+              <div class="paragraph-end user-comment">
+                <h4 class="after-line-block">Comments</h4>
+
+                <div class="row user-comment-assign">
+                  <div class="col-lg-2 col-md-2 col-sm-2 user-comment-image mobile-hidden">
+                    <img src="/comment_default.png" />
                   </div>
                   <div class="col-lg-10 col-md-10 col-sm-10">
-                    <div class="form-group" style="text-align: right">
-                      <textarea class="form-control" rows="3" id="comment" style="border-radius: 0px;"></textarea>
-                      <div class="comment-submit" style="display:none">
-                          <input class="input_important" type=text placeholder="NAME" style="max-width: 40%; border: 0px; border-bottom: 1px solid lightgray; padding-left:10px" required />
-                          <input class="input_important" type=password placeholder="PASSWORD" style="max-width: 40%; border: 0px; border-bottom: 1px solid lightgray; padding-left:10px" required />
-                        <button class="btn_important">SUBMIT</button>
+                    <div class="form-group" id="user-comment-info">
+                      <textarea class="form-control" rows="3" id="comment" name="comment"></textarea>
+                      <div class="comment-submit">
+                        <input class="input_important ip_name" type="text" placeholder="NAME" required />
+                        <input class="input_important ip_pw" type="password" placeholder="PASSWORD"required />
+                        <button class="btn_important comment-submit-btn">SUBMIT</button>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div class="row" style="margin-bottom: 15px">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 user-comment-submitted">
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <img src="/2.png" style="max-width: 100%" />
-                  </div>
-                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 comment-content">
-                    <div clsss="row" style="padding-bottom: 15px">
-                        <span style="font-weight:700; font-size:16.5px">강창호</span>
-                        <span style="padding-left: 15px; color:darkgray">1일전</span>
-                    </div>
-                    <div clsss="row comment-body">
-<!--                       <div class="col-lg-12 col-md-12 col-sm-12">
- -->                        <p>안녕하세요, DLI 과정운영 담당 김태정입니다.
-                        (본 메일은 버크만 진단을 완료하지 않은 팀원 분들께 발송됩니다.)
+                <% if( comment.length ){ %>
 
-                        Winning Team DYNAMICS 과정의 입과 사전활동으로 버크만 진단 참여를 요청 드립니다.
-                        아래를 참고하시어 6/4(월)까지 버크만 진단 참여를 완료하여 주시기 바랍니다. ( ※ 진단 안내메일은 5/28(월)에 발송 되었습니다.)
-                         
-                        [버크만 진단 개요]
-                        1) 진단 목적: 구성원의 개별 특성 및 일하는 방식 이해를 위한 효과적 방법 중 하나로 진단 결과를 활용함
-                        2) 진단 참여 안내
-                            - 진단 기간: ’18년 5/29(화) ~ 6/4(월)
-                            - 진단 방법: 개인 별 메일을 통한 온라인 Survey진행(약 30분 소요) 
-                                   > ‘[버크만진단]을 위한 안내메일입니다. (보낸 사람: BirkmanQuestionnaire@birkman.com)’ 제목의 메일에 포함된 온라인 링크를 통해 실시 
-                        (※ 진단은 본 과정을 위한 목적으로만 실시하며, 결과는 외부 전문 기관을 통해 운영/분석됨)
-                         
-                        (끝)
-                        </p>
-                      <!-- </div> -->
-                      <div class="comment-submit" style="text-align:right; display:none">
-                        <button class="btn_important" style="margin: 10px 0px 0px 0px">REPLY</button>
-                        <button class="btn_important" style="margin: 10px 0px 0px 0px">DELETE</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  <% for( var i=0; i<comment.length; i++ ){ %>
 
-              <div class="row" style="margin-bottom: 15px">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 user-comment-reply">
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <!-- <img src="/2.png" style="max-width: 100%" /> -->
-                  </div>
-                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                    <hr>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <i class="fa fa-reply" aria-hidden="true" style="padding-right: 5px; color: gray"></i>
-                        <span style="font-weight:700; font-size:1.3rem">강창호</span>
-                        <span style="padding-left: 8px; color:darkgray; font-size:1.3rem">1일전</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p style="font-size:1.4rem">안녕하세요, DLI 과정운영 담당 김태정입니다.
-                        (본 메일은 버크만 진단을 완료하지 않은 팀원 분들께 발송됩니다.)
-
-                        Winning Team DYNAMICS 과정의 입과 사전활동으로 버크만 진단 참여를 요청 드립니다.
-                        아래를 참고하시어 6/4(월)까지 버크만 진단 참여를 완료하여 주시기 바랍니다. ( ※ 진단 안내메일은 5/28(월)에 발송 되었습니다.)
-                        </p>
-                        <div class="comment-submit" style="text-align:right; display:none">
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">REPLY</button>
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">DELETE</button>
+                    <% if( comment[i].level === 0 ){ %>
+                        <div class="row user-comment-submitted" id="<%- comment[i].id %>">
+                          <div class="col-lg-2 col-md-2 col-sm-2 user-comment-image mobile-hidden">
+                            <img src="/comment_default.png" />
+                          </div>
+                          <div class="col-lg-10 col-md-10 col-sm-12 comment-content">
+                            <div class="comment-title">
+                                <span class="writer"><%- comment[i].name %></span>
+                                <span class="spent-date"><%- comment[i].create_date %></span>
+                                <button class="btn_important del-btn">DEL</button>
+                            </div>
+                            <div class="comment-body">
+                              <p><%- comment[i].comment %></p>
+                              <div class="comment-submit form-group">
+                                <textarea class="form-control" rows="3" id="comment"></textarea>
+                                <div>
+                                  <input class="input_important ip_name" type=text placeholder="NAME"  required />
+                                  <input class="input_important ip_pw" type=password placeholder="PASSWORD" required />
+                                  <button class="btn_important comment-submit-btn">SUBMIT</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row comment-reply" style="margin-bottom: 15px">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 user-comment-reply">
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <!-- <img src="/2.png" style="max-width: 100%" /> -->
-                  </div>
-                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                    <hr>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <i class="fa fa-reply" aria-hidden="true" style="padding-right: 5px; color: gray"></i>
-                        <span style="font-weight:700; font-size:1.3rem">강창호</span>
-                        <span style="padding-left: 8px; color:darkgray; font-size:1.3rem">1일전</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p style="font-size:1.2rem">안녕하세요, DLI 과정운영 담당 김태정입니다.
-                        (본 메일은 버크만 진단을 완료하지 않은 팀원 분들께 발송됩니다.)
-
-                        Winning Team DYNAMICS 과정의 입과 사전활동으로 버크만 진단 참여를 요청 드립니다.
-                        아래를 참고하시어 6/4(월)까지 버크만 진단 참여를 완료하여 주시기 바랍니다. ( ※ 진단 안내메일은 5/28(월)에 발송 되었습니다.)
-                        </p>
-                        <div class="comment-submit" style="text-align:right; display:none">
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">REPLY</button>
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">DELETE</button>
+                    <% } else if( comment[i].level === 1 ){ %>
+                        <div class="row user-comment-reply" id="<%- comment[i].id %>" data-parent="<%- comment[i].parent_id %>">
+                          <div class="col-lg-2 col-md-2 col-sm-1 col-xs-1">
+                          </div>
+                          <div class="col-lg-10 col-md-10 col-sm-11 col-xs-11">
+                            <hr class="comment-divider">
+                            <i class="fa fa-reply" aria-hidden="true"></i>
+                            <span class="writer"><%- comment[i].name %></span>
+                            <span class="spent-date"><%- comment[i].create_date %></span>
+                            <button class="btn_important del-btn">DEL</button>
+                            <p><%- comment[i].comment %></p>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    <% } %>
+                    <% if( i < comment.length-1 && comment[i].level === 1 && comment[i+1].level === 0 ){ %>
+                      
+                    <% } %>
+                  <% } %>
+                <% } %>
               </div>
-
-              <div class="row comment-reply" style="margin-bottom: 15px">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 user-comment-reply">
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <!-- <img src="/2.png" style="max-width: 100%" /> -->
-                  </div>
-                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                    <hr>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <i class="fa fa-reply" aria-hidden="true" style="padding-right: 5px; color: gray"></i>
-                        <span style="font-weight:700; font-size:1.3rem">강창호</span>
-                        <span style="padding-left: 8px; color:darkgray; font-size:1.3rem">1일전</span>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p style="font-size:1.2rem">안녕하세요, DLI 과정운영 담당 김태정입니다.
-                        (본 메일은 버크만 진단을 완료하지 않은 팀원 분들께 발송됩니다.)
-
-                        Winning Team DYNAMICS 과정의 입과 사전활동으로 버크만 진단 참여를 요청 드립니다.
-                        아래를 참고하시어 6/4(월)까지 버크만 진단 참여를 완료하여 주시기 바랍니다. ( ※ 진단 안내메일은 5/28(월)에 발송 되었습니다.)
-                        </p>
-                        <div class="comment-submit" style="text-align:right; display:none">
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">REPLY</button>
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">DELETE</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <hr>
-
-              <div class="row" style="margin-bottom: 15px">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 user-comment-submitted">
-                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <img src="/2.png" style="max-width: 100%" />
-                  </div>
-                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                    <div class="form-group">
-                      <div>
-                        <p>
-                          <span style="font-weight:700; font-size:16.5px">강창호</span>
-                          <span style="padding-left: 15px; color:darkgray">1일전</span>
-                        </p>
-                      </div>
-                      <p>안녕하세요, DLI 과정운영 담당 김태정입니다.
-                      (본 메일은 버크만 진단을 완료하지 않은 팀원 분들께 발송됩니다.)
-
-                      Winning Team DYNAMICS 과정의 입과 사전활동으로 버크만 진단 참여를 요청 드립니다.
-                      아래를 참고하시어 6/4(월)까지 버크만 진단 참여를 완료하여 주시기 바랍니다. ( ※ 진단 안내메일은 5/28(월)에 발송 되었습니다.)
-                      </p>
-                      <div class="comment-submit" style="text-align:right; display:none">
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">REPLY</button>
-                          <button class="btn_important" style="margin: 10px 0px 0px 0px">DELETE</button>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <hr class="section-end">
             </article>
+
+            <% include partials/password_modal.ejs %>
             <!-- ------------------------------------------------------ -->
-
-
 
             <% if( relatedContents && relatedContents.length > 0 ){ %>
 
