@@ -575,7 +575,7 @@ function getCommentHtml( comment ){
         <div class="col-lg-2 col-md-2 col-sm-2 user-comment-image mobile-hidden">
           <img src="/comment_default.png" />
         </div>
-        <div class="col-lg-10 col-md-10 col-sm-12 comment-content">
+        <div class="col-lg-10 col-md-10 col-sm-10 comment-content">
           <div class="comment-title">
               <span class="writer">` + comment.name + `</span>
               <span class="spent-date">` + 'now' + `</span>
@@ -597,9 +597,9 @@ function getCommentHtml( comment ){
   } else {
     commentStr = `
       <div class="row user-comment-reply" id="` + comment.insertId + `" data-parent="` + comment.parentid + `">
-        <div class="col-lg-2 col-md-2 col-sm-1 col-xs-1">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-1">
         </div>
-        <div class="col-lg-10 col-md-10 col-sm-11 col-xs-11">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-11">
           <hr class="comment-divider">
           <i class="fa fa-reply" aria-hidden="true"></i>
           <span class="writer">` + comment.name + `</span>
