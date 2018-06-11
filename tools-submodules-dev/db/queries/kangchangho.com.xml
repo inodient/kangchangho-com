@@ -1511,7 +1511,7 @@
         SELECT #CONTENTID#, #LEVEL#, #COMMENTEN#, #COMMENTKO#, #NAME#, #PASSWORD#, 
           ( select (auto_increment) as lastId
             from information_schema.tables
-            where table_name = 'TB_COMMENT' limit 1 )
+            where TABLE_SCHEMA = 'kangchangho-com-test' and table_name = 'TB_COMMENT' limit 1 )
         , #DATE#
         FROM TB_COMMENT LIMIT 1
       ]]>

@@ -10,6 +10,7 @@ exports.addComment = function(req, lang, connection){
 		current = ( current.toISOString() ).split("T")[0];
 
 		var params = [];
+
 		params.push( {"CONTENTID" : req.body.contentid} );
 		if( lang === "ko" ){
 			params.push( {"COMMENTEN" : ""} );
