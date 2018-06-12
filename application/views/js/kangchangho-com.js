@@ -570,44 +570,44 @@ function getCommentHtml( comment ){
   var commentStr = "";
 
   if( comment.parentid === undefined ){
-    commentStr = `
-      <div class="row user-comment-submitted" id="` + comment.insertId + `">
-        <div class="col-lg-2 col-md-2 col-sm-2 user-comment-image mobile-hidden">
-          <img src="/comment_default.png" />
-        </div>
-        <div class="col-lg-10 col-md-10 col-sm-10 comment-content">
-          <div class="comment-title">
-              <span class="writer">` + comment.name + `</span>
-              <span class="spent-date">` + 'now' + `</span>
-              <button class="btn_important del-btn">DEL</button>
-          </div>
-          <div class="comment-body">
-            <p>` + comment.comment + `</p>
-            <div class="comment-submit form-group">
-              <textarea class="form-control" rows="3" id="comment"></textarea>
-              <div>
-                <input class="input_important ip_name" type=text placeholder="NAME"  required />
-                <input class="input_important ip_pw" type=password placeholder="PASSWORD" required />
-                <button class="btn_important comment-submit-btn">SUBMIT</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`;
+    commentStr = 
+      '<div class="row user-comment-submitted" id="' + comment.insertId + '">'
+        + '<div class="col-lg-2 col-md-2 col-sm-2 user-comment-image mobile-hidden">'
+        + '<img src="/comment_default.png" />'
+        + '</div>'
+        + '<div class="col-lg-10 col-md-10 col-sm-10 comment-content">'
+          + '<div class="comment-title">'
+              + '<span class="writer">' + comment.name + '</span>'
+              + '<span class="spent-date">' + 'now' + '</span>'
+              + '<button class="btn_important del-btn">DEL</button>'
+          + '</div>'
+          + '<div class="comment-body">'
+            + '<p>' + comment.comment + '</p>'
+            + '<div class="comment-submit form-group">'
+              + '<textarea class="form-control" rows="3" id="comment"></textarea>'
+              + '<div>'
+                + '<input class="input_important ip_name" type=text placeholder="NAME"  required />'
+                + '<input class="input_important ip_pw" type=password placeholder="PASSWORD" required />'
+                + '<button class="btn_important comment-submit-btn">SUBMIT</button>'
+              + '</div>'
+            + '</div>'
+          + '</div>'
+        + '</div>'
+      + '</div>';
   } else {
-    commentStr = `
-      <div class="row user-comment-reply" id="` + comment.insertId + `" data-parent="` + comment.parentid + `">
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-1">
-        </div>
-        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-11">
-          <hr class="comment-divider">
-          <i class="fa fa-reply" aria-hidden="true"></i>
-          <span class="writer">` + comment.name + `</span>
-          <span class="spent-date">` + 'NOW' + `</span>
-          <button class="btn_important del-btn">DEL</button>
-          <p>` + comment.comment + `</p>
-        </div>
-      </div>`;
+    commentStr = 
+      '<div class="row user-comment-reply" id="' + comment.insertId + '" data-parent="' + comment.parentid + '">'
+        + '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-1">'
+        + '</div>'
+        + '<div class="col-lg-10 col-md-10 col-sm-10 col-xs-11">'
+          + '<hr class="comment-divider">'
+          + '<i class="fa fa-reply" aria-hidden="true"></i>'
+          + '<span class="writer">' + comment.name + '</span>'
+          + '<span class="spent-date">' + 'NOW' + '</span>'
+          + '<button class="btn_important del-btn">DEL</button>'
+          + '<p>' + comment.comment + '</p>'
+        + '</div>'
+      + '</div>';
   }
 
   return commentStr;
