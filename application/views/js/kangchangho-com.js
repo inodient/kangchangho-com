@@ -427,6 +427,19 @@ $(document).ready( function(){
         $( ".user-comment .user-comment-submitted .comment-submit" ).css( "display", "none" );
 
         addDeleteEventHandler();
+
+        var commentCountStr = ( $(".comment-count").text() ).split("comment")[0];
+        commentCountStr = commentCountStr.replace( " ", "" );
+
+        $(".comment-count").text("");
+
+        commentCount = ( parseInt( commentCountStr ) ) + 1;
+        if( commentCount == 1 ){
+          $(".comment-count").append( '<i class="fa fa-thumbs-up"></i>' + commentCount + " comment" );
+        } else {
+          $(".comment-count").append( '<i class="fa fa-thumbs-up"></i>' + commentCount + " comments" );
+        }
+
         $.LoadingOverlay("hide");
       },
       error: function(){
@@ -480,6 +493,18 @@ $(document).ready( function(){
               if( $(this).attr( "id" ) === targetIds[i] ) $(this).remove();
             } );
           }
+
+          var commentCountStr = ( $(".comment-count").text() ).split("comment")[0];
+          commentCountStr = commentCountStr.replace( " ", "" );
+
+          $(".comment-count").text("");
+
+          commentCount = ( parseInt( commentCountStr ) ) - 1;
+          if( commentCount == 1 ){
+            $(".comment-count").append( '<i class="fa fa-thumbs-up"></i>' + commentCount + " comment" );
+          } else {
+            $(".comment-count").append( '<i class="fa fa-thumbs-up"></i>' + commentCount + " comments" );
+          }
         }
       },
       error: function(){
@@ -499,6 +524,40 @@ $(document).ready( function(){
   } );
   // Comment - End
 
+  // like Count - Start
+  $(".like-count").on( "click", function(){
+
+    var likeCountStr = ( $(this).text() ).split("like")[0];
+    likeCountStr = likeCountStr.replace( " ", "" );
+    
+    var likeCount = ( parseInt( likeCountStr ) ) + 1;
+    
+    if( likeCount == 1 ){
+      likeCountStr = likeCount + " like";
+    } else{
+      likeCountStr = likeCount + " likes";
+    }
+
+    $(this).text( "" );
+    $(this).append( '<i class="fa fa-thumbs-up"></i>' + likeCountStr );
+
+    var contentId = $(location).attr( "href" ).split("/content/")[1];
+
+    $.ajax( {
+      data: { "contentid" : contentId },
+      type: "POST",
+      url: "/increasecontentlikecount",
+
+      success: function(){
+        alert( "Thank you very much!\nYour click is just added in like counts!" );
+      },
+      error: function(){
+        alert( "An error occured when adding like. Please contact adminstrator.");
+      }
+    } );
+
+  } );
+  // like Count - End
 
 } );
 
@@ -638,42 +697,3 @@ function addDeleteEventHandler(){
 
   } );
 }
-
-// function getBrowserLang(){
-//   var userLang = navigator.language || navigator.userLanguage;
-//   return userLang.split("-")[0];
-// }
-
-// function setLanguageChangeModalEvent(){
-//   $("#language_change_modal .modal-dialog").on( "click", function(e){
-//     if( $(e.target).attr( "class" ).indexOf( "modal-dialog" ) < 0 ){
-//       e.stopPropagation();
-//       return;
-//     }
-
-//     $("#language_change_modal").modal( "hide" );
-//   } );
-
-//   $(".modal-dismiss").on( "click", function(){
-//     var modal = $(this).parent().parent().parent().parent();
-//     modal.modal( "hide" );
-//   } );
-
-//   $("#language_change_modal").on("hidden.bs.modal", function(){
-//     location.reload();
-//   } );
-// }
-
-// function setLanguageChangeModalMessage( lang ){
-//   if( lang === "ko" ){
-//     return `<b>언어 설정 변경</b>
-//       <hr>
-//       브라우저 종료 시점의 언어는 영어 입니다.<br>
-//       언어설정을 한국어로 변경합니다.`
-//   } else {
-//     return `<b>Notification</b>
-//       <hr>
-//       The setted language when closed browser is Korean.<br>
-//       Default language will be setted as English.`
-//   }
-// }

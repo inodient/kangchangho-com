@@ -127,6 +127,23 @@ exports.increaseContentHitCount = function( connection, increseHitCount, content
     } );
   } );
 }
+
+exports.increaseContentLikeCount = function( connection, contentId ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "increaseContentLikeCount";
+
+    params.push( {"ID" : contentId} );
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
 // CONTENT PAGE - END
 
 

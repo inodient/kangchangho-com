@@ -225,7 +225,8 @@
                     else comment_ko end as comment,
                image_main,
                image_carousel,
-               hit_count
+               hit_count,
+               like_count
           from TB_CONTENT
          where id = ?
       ]]>
@@ -256,6 +257,14 @@
         update TB_CONTENT
            set hit_count = hit_count + ?
          where id = ?
+      ]]>
+    </query>
+
+    <query id='increaseContentLikeCount'>
+      <![CDATA[
+        Update TB_CONTENT
+           set like_count = like_count + 1
+         where id = #ID#
       ]]>
     </query>
 

@@ -91,6 +91,19 @@ exports.getAboutContent = function( connection, lang ){
   } );
 }
 
+exports.increaseContentLikeCount = function( connection, contentId ){
+  return new Promise( function(resolve, reject){
+
+    dbExecutorContent.increaseContentLikeCount( connection, contentId )
+    .then( function(){
+      resolve( {"STATUS" : "SUCCEED"} );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
 
 
 

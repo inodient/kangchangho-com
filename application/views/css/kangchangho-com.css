@@ -1579,6 +1579,14 @@ nav {
   }
 }
 
+.comment-like-status .content-anchor {
+  padding-right: 20px;
+}
+
+.comment-like-status i {
+  padding-right: 5px;
+}
+
 .content-footer .writer {
   font-size: 16.5px;
   font-weight: 800;

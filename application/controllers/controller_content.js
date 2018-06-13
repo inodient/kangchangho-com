@@ -33,6 +33,20 @@ exports.control = function( req, res, connection ){
 	} );
 }
 
+exports.control_increase_like = function( req, res, connection ){
+  return new Promise( function(resolve, reject){
+    var contentId = req.body.contentid;
+
+    contentService.increaseContentLikeCount( connection, contentId )
+    .then( function(){
+      resolve( {"STATUS" : "SUCCEED"} );
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
 exports.control_about = function( req, res, connection ){
   return new Promise( function(resolve, reject){
 

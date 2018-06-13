@@ -160,6 +160,24 @@
                     <% } %>
                   </div>
 
+                  <div class="comment-like-status small-section-end">
+                    <span>
+                      <% if( comment.length == 1 ){ %>
+                        <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i><%- comment.length %>&nbsp;comments</a>
+                      <% } else if( comment.length > 1 ){ %>
+                        <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i><%- comment.length %>&nbsp;comments</a>
+                      <% } else { %>
+                        <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i>0 comment</a>
+                      <% } %>
+
+                      <% if( contentMaster[0].like_count == 0 || contentMaster[0].like_count == 1 ){ %>
+                        <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;like</a>
+                      <% } else { %>
+                        <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;likes</a>
+                      <% } %>
+                    </span>
+                  </div>
+
                   <div class="content-hashed section-end mobile-show">
                     <ul class="hashed-list" id="id_hashed_list">
                     <% for( var i=0; i<contentHash.length; i++ ){ %>
@@ -171,7 +189,7 @@
                   <hr class="small-section-end">
 
                   <% if( contentWriter[0].name && contentWriter[0].name != "" ){ %>
-                    <div class="content-footer">
+                    <div class="content-footer" id="content-footer">
                       <center class="paragraph-end"><a class="content-anchor writer after-line-block-center"><%- contentWriter[0].name %></a></center>
                       <center><%- contentWriter[0].description %></center>
                     </div>
@@ -182,8 +200,6 @@
               </div>
             </article>
 
-
-            <!-- -------------------------------------------------------- -->
             <article>
               <div class="paragraph-end user-comment">
                 <h4 class="after-line-block">Comments</h4>
@@ -256,7 +272,6 @@
             </article>
 
             <% include partials/password_modal.ejs %>
-            <!-- ------------------------------------------------------ -->
 
             <% if( relatedContents && relatedContents.length > 0 ){ %>
 
