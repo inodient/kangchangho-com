@@ -258,6 +258,14 @@
             "controlFunction": "control_del_comment",
             "viewPath": "",
             "view": ""  
+        },
+        {
+            "id": "increaseContentLikeCount",
+            "path": "/increasecontentlikecount",
+            "controllerJS": "controller_content.js",
+            "controlFunction": "control_increase_like",
+            "viewPath": "",
+            "view": ""  
         }
     ]
 }
