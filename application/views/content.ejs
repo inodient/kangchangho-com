@@ -160,6 +160,14 @@
                     <% } %>
                   </div>
 
+                  <div class="content-hashed section-end mobile-show">
+                    <ul class="hashed-list" id="id_hashed_list">
+                    <% for( var i=0; i<contentHash.length; i++ ){ %>
+                      <li class="hashed-list-item"><a href="/hash/<%- contentHash[i].id %>" class="content-anchor-reverse">#<%- contentHash[i].text %></a></li>
+                    <% } %>
+                    </ul>
+                  </div>
+
                   <div class="comment-like-status small-section-end">
                     <span>
                       <% if( comment.length == 1 ){ %>
@@ -176,14 +184,6 @@
                         <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;likes</a>
                       <% } %>
                     </span>
-                  </div>
-
-                  <div class="content-hashed section-end mobile-show">
-                    <ul class="hashed-list" id="id_hashed_list">
-                    <% for( var i=0; i<contentHash.length; i++ ){ %>
-                      <li class="hashed-list-item"><a href="/hash/<%- contentHash[i].id %>" class="content-anchor-reverse">#<%- contentHash[i].text %></a></li>
-                    <% } %>
-                    </ul>
                   </div>
 
                   <hr class="small-section-end">

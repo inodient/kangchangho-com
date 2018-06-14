@@ -1579,6 +1579,10 @@ nav {
   }
 }
 
+.comment-like-status {
+  text-align: right;
+}
+
 .comment-like-status .content-anchor {
   padding-right: 20px;
 }
