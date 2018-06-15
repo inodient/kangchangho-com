@@ -110,24 +110,6 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                   <div class="content-body section-end">
 
-                    <div class="comment-like-status small-section-end" style="text-align: left">
-                      <span>
-                        <% if( comment.length == 1 ){ %>
-                          <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i><%- comment.length %>&nbsp;comments</a>
-                        <% } else if( comment.length > 1 ){ %>
-                          <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i><%- comment.length %>&nbsp;comments</a>
-                        <% } else { %>
-                          <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i>0 comment</a>
-                        <% } %>
-
-                        <% if( contentMaster[0].like_count == 0 || contentMaster[0].like_count == 1 ){ %>
-                          <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;like</a>
-                        <% } else { %>
-                          <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;likes</a>
-                        <% } %>
-                      </span>
-                    </div>
-
                     <% if( contentMaster[0].title != "" ){ %>
                       <% if( contentCategory[0].display_name ){ %>
                         <center><a href="/category/<%- contentCategory[0].id %>" class="content-anchor category"><%- contentCategory[0].display_name %></a></center>
@@ -149,6 +131,24 @@
                         <% } %>
                       </center>
                     <% } %>
+
+                    <div class="comment-like-status small-section-end">
+                      <span>
+                        <% if( comment.length == 1 ){ %>
+                          <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i><%- comment.length %>&nbsp;comments</a>
+                        <% } else if( comment.length > 1 ){ %>
+                          <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i><%- comment.length %>&nbsp;comments</a>
+                        <% } else { %>
+                          <a class="content-anchor comment-count" href="javascript:$('#comment').focus()"><i class="fa fa-comment"></i>0 comment</a>
+                        <% } %>
+
+                        <% if( contentMaster[0].like_count == 0 || contentMaster[0].like_count == 1 ){ %>
+                          <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;like</a>
+                        <% } else { %>
+                          <a class="content-anchor like-count"><i class="fa fa-thumbs-up"></i><%- contentMaster[0].like_count %>&nbsp;likes</a>
+                        <% } %>
+                      </span>
+                    </div>
 
                     <% if( contentMaster[0].content && contentMaster[0].content != "" ){ %>
                       <p class="content-text">
