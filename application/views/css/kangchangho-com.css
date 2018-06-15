@@ -1581,6 +1581,7 @@ nav {
 
 .comment-like-status {
   text-align: right;
+  font-size: 14px;
 }
 
 .comment-like-status .content-anchor {
