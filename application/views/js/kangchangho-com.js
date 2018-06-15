@@ -628,6 +628,8 @@ function getCommentHtml( comment ){
 
   var commentStr = "";
 
+  comment.comment = comment.comment.replace( /\n/g, "<br />" );
+
   if( comment.parentid === undefined ){
     commentStr = 
       '<div class="row user-comment-submitted" id="' + comment.insertId + '">'

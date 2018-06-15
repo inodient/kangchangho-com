@@ -55,6 +55,11 @@ exports.getComment = function( connection, contentId, lang ){
 
 		dbExecutorComment.getComment( connection, contentId, lang )
 		.then( function(results){
+
+			for( var i=0; i<results.length; i++ ){
+				results[i].comment = results[i].comment.replace( /\n/g, "<br />")	
+			}
+
 			resolve( {"comment" : results} );
 		} )
 		.catch( function(err){
