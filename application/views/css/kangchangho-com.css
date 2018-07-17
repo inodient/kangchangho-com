@@ -1,6 +1,6 @@
-/*@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);*/
+@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
 
-@font-face {
+/*@font-face {
     font-family: Noto Sans TC;
     src: url(NotoSansCJKtc-Bold.otf);
 }
@@ -27,7 +27,7 @@
     src: url(Roboto-BoldItalic.ttf);
     font-weight: bold;
     font-style: italic;
-}
+}*/
 
 
 
@@ -779,7 +779,7 @@ nav {
 .site-title-name {
   font-size: 50px;
   font-weight: bold;
-  font-family: 'Noto Sans TC', san-serif;
+  /*font-family: 'Noto Sans TC', san-serif;*/
 }
 
 .site-title-com {
