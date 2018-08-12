@@ -1378,12 +1378,20 @@ nav {
 
 @media screen and (min-width : 320px) and (max-width : 767px) {
   .content-body .content-table {
-    border: 0;
+    border: 1px solid lightgray;
   }
 }
 
 .content-body .content-table .td-empty-top {
-  border-top: 0;
+  border: 1px solid lightgray;
+}
+
+.content-body .content-table tr {
+  border: 1px solid lightgray;
+}
+
+.content-body .content-table td {
+  border: 1px solid lightgray;
 }
 
 .content-body .note-video-clip {
