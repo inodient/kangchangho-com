@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <% include partials/include.ejs %>
+
+  <!-- opengraph meta - start -->
+  <!-- <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="<%- windowTitle %>" />
+  <meta name="twitter:creator" content="Ino Kang [Changho Kang]" />
+
+  <meta property="og:url"                content="http://www.summermvc.com:4001" />
+  <meta property="og:type"               content="blog" />
+  <meta property="og:title"              content="<%- windowTitle %>" />
+  <meta property="og:description"        content="" />
+  <meta property="og:image"              content="http://www.summermvc.com:4001/1.png" /> -->
+  <!-- opengraph meta - end -->
+
+  <!-- include summernote css/js-->
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
+
+
+  <script>
+    $(document).ready(function() {
+      $("#btn_save").on( "click", function(){
+
+        var data = {};
+        data.task = $("#_task").val()
+        data.date = $("#_date").val()
+        data.start = $("#_start").val()
+        data.end = $("#_end").val()
+        data.operation = $("#_operation").val()
+        data.lesson = $("#_lesson").val()
+        data.tag = $("#_tag").val()
+
+        $.ajax( {
+          data: data,
+          type: "POST",
+          url: "/_uploadtimeline",
+
+          success: function()
+          {
+            var results = arguments[0]
+            // alert( "success " + results.timelineId ); // show response from the php script.
+            //$(location).attr( "href", "/content/" + results.contentId );
+          }
+        } );
+      } )
+
+    } )
+  </script>
+
+  <script src="/write.js"></script>
+
+  <title><%- windowTitle %></title>
+</head>
+
+
+
+<body data-lang="<%- lang %>">
+  <% include partials/front_nav.ejs %>
+
+  <hr class="page-divider">
+
+  <div class="doc">
+    <header>
+      <div class="site-title">
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#site-nav">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+
+          <a style="font-family: 'Roboto', sans-serif, 'Noto Sans TC', sans-serif"class="content-anchor"><span class="site-title-name site-title-span"><%- (headerTitle[0]).displayName %></span><span class="site-title-com site-title-span">&nbsp;<%- (headerTitle[1]).displayName %></span></a>
+
+<!--           <a class="content-anchor"><span class="site-title-name site-title-span"><%- (headerTitle[0]).displayName %></span><span class="site-title-com site-title-span">&nbsp;<%- (headerTitle[1]).displayName %></span></a> -->
+
+
+        <div class="header-search">
+          <i class="fa fa-search"></i>
+        </div>
+
+        <% include partials/search_modal.ejs %>
+      </div>
+
+      <nav class="site-nav navbar">
+        <div class="container-fluid">
+
+          <hr class="page-divider mobile-show">
+
+            <ul class="nav navbar-nav">
+              <% for( var i=0; i<menu.length; i++ ){ %>
+                <% if( i < menu.length-1 && menu[i].group_value === menu[i+1].group_value ){ %>
+                  <% var group_value = menu[i].group_value %>
+                  <% if( menu[i].active == "active" ){ %>
+                    <li class="navbar-item active">
+                  <% } else { %>
+                    <li class="navbar-item">
+                  <% } %>
+                      <a class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].redirectPath %>"><%- menu[i].display_name %><i class="dropdown-arrow fa fa-angle-down" aria-hidden="true"></i></a>
+                      <ul class="dropdown-menu">
+                        <% i++; %>
+                        <% while( i <= menu.length-1 && menu[i].group_value == group_value ){ %>
+                          <% if( menu[i].active == "active" ){ %>
+                            <li class="navbar-item-inner active">
+                          <% } else { %>
+                            <li class="navbar-item-inner">
+                          <% } %>
+                              <a href="<%- menu[i].redirectPath %>" class="site-nav-menu-inner" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                          <% if( i < parseInt(menu.length)-2 && menu[i].group_value != menu[i+1].group_value ){ break; }%>
+                          <% i++; %>
+                        <% } %>
+                      </ul>
+                    </li>
+                <% } else { %>
+                  <% if( menu[i].active == "active" ){ %>
+                    <li class="navbar-item active"><a  href="<%- menu[i].redirectPath %>" class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% } else { %>
+                    <li class="navbar-item"><a  href="<%- menu[i].redirectPath %>" class="site-nav-menu" id="<%- menu[i].id %>" name="<%- menu[i].name %>" data-href="<%- menu[i].event %>"><%- menu[i].display_name %></a></li>
+                  <% } %>
+                <% } %>
+              <% } %>
+            </ul>
+
+            <div class="paragraph-end mobile-show"></div>
+            <hr class="page-divider mobile-show">
+
+        </div>
+      </nav>
+    </header>
+
+    <div class="page-content">
+      <div class="container-fluid content-container">
+        <div class="col-lg-9 col-md-9 write-container">
+
+          <div class="write-sub-container">
+            <h5 class="title before-line">TASK</h5>
+            <table id="table_add_content_" class="table table-responsive table-bordered">
+              <tbody>
+                <tr>
+                  <td class="col-md-3">TASK</td>
+                  <td><textarea style="width:100%; border:0" id="_task"></textarea></td>
+                </tr>
+                <tr>
+                  <td class="col-md-3">DATE</td>
+                  <td><input type="date" id="_date"></td>
+                </tr>
+                <tr>
+                  <td>START</td>
+                  <td><input type="time" id="_start"></td>
+                </tr>
+                <tr>
+                  <td>END</td>
+                  <td><input type="time" id="_end"></td>
+                </tr>
+                <tr>
+                  <td>OPERATION</td>
+                  <td><textarea style="width:100%; border:0" rows=10 id="_operation"></textarea></td>
+                </tr>
+                <tr>
+                  <td>LESSONS & LEARNED</td>
+                  <td><textarea style="width:100%; border:0" rows=10 id="_lesson"></textarea></td>
+                </tr>
+                <tr>
+                  <td>TAG</td>
+                  <td><textarea style="width:100%; border:0" id="_tag"></textarea></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="write-sub-container align-right">
+            <button id="btn_save" class="btn_important">SUBMIT</button>
+            <button id="btn_important" class="btn_important">CANCEL</button>
+          </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-3 banner-container">
+
+            <article class="banner-shortcut">
+              <div id="search_input" class="input-group">
+                <input id="searchword" type="input" class="form-control input_important" placeholder="keyword">
+                <div class="input-group-btn">
+                  <button id="btn_search" class="btn_important">SEARCH</button>
+                </div>
+              </div>
+
+              <hr class="page-divider mobile-hidden">
+
+              <button class="btn_important_banner" onclick="javascript:window.open('https://www.youtube.com/channel/UCmpfNkTMaMR2lw25JFrwC6g?view_as=subscriber') ">
+                YOUTUBE
+                <br>
+                <span class="btn_important_banner_describe">kangchangho.com channel</span>
+              </button>
+
+              <button class="btn_important_banner" onclick="javascript:window.open('http://www.summermvc.com') ">
+                summer-mvc
+                <br>
+                <span class="btn_important_banner_describe">Open Source Project</span>
+              </button>
+
+            </article>
+
+            <hr class="page-divider mobile-hidden tablet-hidden">
+
+            <article class="banner-hashranking">
+              <h4 class="title after-line-block-center">HASH RANKING</h4>
+              <div class="banner-table table table-responsive small-section-end">
+                <table class="hash-ranking table table-hover table-condensed">
+
+                  <% for( var i=0; i<hashRanking.length; i++ ){ %>
+                    <tr>
+                      <td class="ranking mobile-hidden" data-id="<%- hashRanking[i].id %>"><%- hashRanking[i].rank %></td>
+                      <td class="hashed" data-id="<%- hashRanking[i].id %>"><span class="mobile-show-inline"><%- hashRanking[i].rank %>.</span>&nbsp;&nbsp;&nbsp;<%- hashRanking[i].text %></td>
+                      <!-- <td class="changed">-</td> -->
+                    </tr>
+                  <% } %>
+                </table>
+              </div>
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+            <article class="banner-mostrecent">
+              <h4 class="title after-line-block-center">MOST RECENT</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<recentContents.length; i++ ){ %>
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="/<%- recentContents[i].thumbnailFileName %>" />
+                            <figcaption data-href="/content/<%- recentContents[i].id %>" >
+                              <div></div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content/<%- recentContents[i].id %>" class="content-anchor"><%- recentContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( recentContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+                  <% } %>
+                </ul>
+              </div>
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+            <article class="banner-newsletter tablet-hidden">
+              <h4 class="title after-line-block-center">NEWS LETTER</h4>
+              <select id="newsletter_select" class="select_important">
+                <option value="-" data-href="">NEWS LETTER</option>
+                <% for( var i=0; i<newsLetters.length; i++ ){ %>
+                  <option value="<%- newsLetters[i].title %>" data-href="/newsletter/<%- newsLetters[i].id %>"><%- newsLetters[i].title %></option>
+                <% } %>
+                <% if( newsLetters.length >= 5 ){ %>
+                  <option value="Last News Letters" data-href="/newsletterlist">Last News Letters</option>
+                <% } %>
+              </select>
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+            <article class="banner-mostviewed">
+              <h4 class="title after-line-block-center">MOST VIEWED</h4>
+              <div class="banner-list">
+                <ul>
+
+                  <% for( var i=0; i<mostViewedContents.length; i++ ){ %>
+
+                    <li>
+                      <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 left">
+                          <figure>
+                            <img src="/<%- mostViewedContents[i].thumbnailFileName %>" />
+                            <figcaption data-href="/content/<%- mostViewedContents[i].id %>" >
+                              <div></div>
+                              </figcation>
+                          </figure>
+
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 right">
+                          <h4 class="content-title"><a href="/content/<%- mostViewedContents[i].id %>" class="content-anchor"><%- mostViewedContents[i].title %></a></h4>
+                          <span class="date"><%- ( ( mostViewedContents[i].create_date ).toISOString() ).split("T")[0] %></span>
+                        </div>
+                      </div>
+                    </li>
+
+                  <% } %>
+
+                </ul>
+              </div>
+
+            </article>
+
+            <hr class="mobile-hidden small-section-end">
+
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <% include partials/language_change.ejs %>
+
+  <footer style="background-color: black">
+    <div class="jumbotron footer-background">
+      <div class="footer-heading">
+        <h2 class="title"><%- footerTitle %></h2>
+        <div class="description">
+          <%- footerDescription %>
+        </div>
+      </div>
+
+      <form id="newsletter" class="footer-body">
+        <div class="input-group">
+          <input id="email_addr" type="email" class="input_important form-control" placeholder="email">
+          <div class="input-group-btn">
+            <button class="btn_important" type="submit">
+              <%- footerBtnText %>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <% include partials/subscription_modal.ejs %>
+
+        <div class="footer-footer">
+          <hr class="color-weaken">
+          <p class="copyright">
+            Copyright(c) 2018 KANGCHANGHO.COM
+            <br> Created and Maintained by
+            <br class="mobile-show"><a href="mailto:inodient@gmail.com?subject=KANGCHANGHO.COM - OPINITON">Ino Kang [Changho Kang]</a>.
+            <br>
+            <br> This work is using <a href="javascript:getLicenseInfo()">Open Source Projects</a><br class="mobile-show"> and licensed under a <a href="javascript:getLicenseInfo()">MIT License</a>.
+          </p>
+        </div>
+
+      </div>
+
+      <% include partials/license_modal.ejs %>
+  </footer>
+
+  <a class="back-to-top"></a>
+
+</body>
+
+</html>

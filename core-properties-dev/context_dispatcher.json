@@ -119,6 +119,15 @@
             "controlFunction": "control_get_license",
             "viewPath": "",
             "view": ""  
+        },
+
+        {
+            "id": "_timeline",
+            "path": "/_timeline",
+            "controllerJS": "controller_write.js",
+            "controlFunction": "control",
+            "viewPath": "",
+            "view": "_timeline.ejs"
         }
 
     ],
@@ -266,6 +275,15 @@
             "controlFunction": "control_increase_like",
             "viewPath": "",
             "view": ""  
+        },
+
+        {
+            "id": "_uploadtimeline",
+            "path": "/_uploadtimeline",
+            "controllerJS": "_controller_timeline.js",
+            "controlFunction": "control_upload_timeline",
+            "viewPath": "",
+            "view": "_timeline.ejs"
         }
     ]
 }

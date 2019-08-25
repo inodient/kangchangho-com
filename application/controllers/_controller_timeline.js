@@ -8,6 +8,8 @@ var imageService = require( require("path").join( __runningPath, "application", 
 var hashService = require( require("path").join( __runningPath, "application", "services", "service_hash.js" ) );
 
 
+var timelineService = require( require("path").join( __runningPath, "application", "services", "_service_timeline.js" ) );
+
 
 
 exports.control = function( req, res, connection ){
@@ -132,6 +134,32 @@ exports.control_upload_image = function( req, res, connection ){
 		} );
   } );
 }
+
+
+
+
+
+
+exports.control_upload_timeline = function( req, res, connection ){
+	return new Promise( function(resolve, reject){
+
+		timelineService.addTimeline( connection, req.body )
+		.then( function( result ){
+			logger.debug( result )
+			resolve( {"timelineId":result.timelineId} );
+		})
+		.catch( function( err ){
+			reject( err );
+		});
+	} );
+}
+
+
+
+
+
+
+
 
 exports.control_upload_content = function( req, res, connection ){
   return new Promise( function(resolve, reject){

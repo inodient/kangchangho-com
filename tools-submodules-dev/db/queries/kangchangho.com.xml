@@ -1556,4 +1556,14 @@
       ]]>
     </query>
 
+
+    <query id="_addTimeline">
+      <![CDATA[
+        INSERT INTO TB_TIMELINE_MNG (task, date, start, end, operation, lessons, tag)
+        VALUES
+          (?, ?, ?, ?, ?, ?, ?);
+      ]]>
+    </query>
+    
+
   </queries>
