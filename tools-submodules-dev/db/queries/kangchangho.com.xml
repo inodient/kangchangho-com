@@ -1564,6 +1564,17 @@
           (?, ?, ?, ?, ?, ?, ?);
       ]]>
     </query>
+
+
+    <query id="_getTimeline">
+      <![CDATA[
+        SELECT id, task, date, start, end, operation, lessons, tag
+          FROM TB_TIMELINE_MNG
+         ORDER BY DATE DESC, START DESC, END DESC
+         LIMIT 10
+      ]]>
+    </query>
+
     
 
   </queries>

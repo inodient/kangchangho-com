@@ -47,6 +47,7 @@
           success: function()
           {
             var results = arguments[0]
+            location.reload()
             // alert( "success " + results.timelineId ); // show response from the php script.
             //$(location).attr( "href", "/content/" + results.contentId );
           }
@@ -181,6 +182,111 @@
             <button id="btn_important" class="btn_important">CANCEL</button>
           </div>
 
+          <div class="small-section-end"></div>
+
+          <div class="write-sub-container">
+
+            <link rel="stylesheet" href="/style-albe-timeline.css" />
+            <script src="/jquery-albe-timeline.js"></script>
+
+
+            <div id="myTimeline"></div>
+
+
+            <script type="text/javascript">
+
+              var data = [];
+
+              <% for( var i=0; i<tasks.length; i++ ){ %>
+                  var content = {}
+                  content.time = ( "<%- tasks[i].time %>" )
+                  content.header = ( "<%- tasks[i].header %>" )
+
+                  var operation = {tag:"<%- tasks[i].body[0].tag %>", content:"<%- tasks[i].body[0].content %>"}
+                  var lesson = {tag:"<%- tasks[i].body[1].tag %>", content:"<%- tasks[i].body[1].content %>"}
+
+                  content.body = []
+                  content.body.push( operation )
+                  content.body.push( lesson )
+
+                  content.footer = ( "<%- tasks[i].footer %>" )
+
+                  data.push( content );
+              <% } %>
+
+                  // var data = []
+                  // var body = []
+
+                  // for( var i=0; i<results.length; i++ ){
+                  //   var task = {};
+                  //   task.time = (results[i].date.toISOString().split("T")[0] );
+                  //   task.header = (results[i].task);
+
+                  //   var operation = {tag:"p", content:(results[i].operation) };
+                  //   var lesson = {tag:"p", content:(results[i].lessons) };
+                    
+                  //   task.body = [];
+                  //   task.body.push( operation )
+                  //   task.body.push( lesson )
+
+                  //   task.footer = (results[i].tag)
+
+                  //   data.push( task )
+                  // }
+
+
+             //Json object
+             // var data = [{
+             //       time: '2019-04-30 23:59:59',
+             //       header: 'Sample of header',
+             //       body: [{
+             //             tag: 'h1',
+             //             content: 'Lorem ipsum'
+             //          },
+             //          {
+             //             tag: 'p',
+             //             content: 'Lorem ipsum dolor sit amet, nisl lorem.'
+             //       }],
+             //       footer: 'Sample of footer'
+             //    },
+             //    {
+             //       time: '2019-04-30 23:59:59',
+             //       header: 'Sample of header',
+             //       body: [{
+             //             tag: 'h1',
+             //             content: 'Lorem ipsum'
+             //          },
+             //          {
+             //             tag: 'p',
+             //             content: 'Lorem ipsum dolor sit amet, nisl lorem.'
+             //       }],
+             //       footer: 'Sample of footer'
+             //    },
+             //    {
+             //       time: '2019-01-20',
+             //       body: [{
+             //             tag: 'h2',
+             //             content: 'Sample with link'
+             //          },
+             //          {
+             //             tag: 'a',
+             //             content: 'MY LINK',
+             //             attr: {
+             //                href: 'http://albertino.eti.br',
+             //                target: '_blank',
+             //                title: 'Albertino Júnior'
+             //             }
+             //       }]
+             //    }
+             // ];
+
+             $(document).ready(function () {
+                $('#myTimeline').albeTimeline( data );
+            });
+
+          </script>
+
+          </div>
         </div>
 
 

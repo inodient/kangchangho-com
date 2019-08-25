@@ -490,6 +490,21 @@ exports.addTimeline = function( connection, parameter ){
   } );
 }
 
+exports.getTimeline = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    var params = [];
+    var queryId = "_getTimeline";
+
+    mysqlHandler.executeQuery( queryId, params, connection )
+    .then( function( queryResults ){
+      resolve( queryResults.results );
+    } )
+    .catch( function( err ){
+      reject( err );
+    } );
+  } );
+}
+
 
 
 

@@ -124,7 +124,7 @@
         {
             "id": "_timeline",
             "path": "/_timeline",
-            "controllerJS": "controller_write.js",
+            "controllerJS": "_controller_timeline.js",
             "controlFunction": "control",
             "viewPath": "",
             "view": "_timeline.ejs"

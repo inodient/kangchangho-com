@@ -509,6 +509,40 @@ exports.addTimeline = function( connection, parameter ){
 }
 
 
+exports.getTimeline = function( connection, parameter ){
+  return new Promise( function(resolve, reject){
+    dbExecutorTimeline.getTimeline( connection, parameter )
+    .then( function( results ){
+      logger.debug( results )
+
+      var data = []
+      var body = []
+
+      for( var i=0; i<results.length; i++ ){
+        var task = {};
+        task.time = (results[i].date.toISOString().split("T")[0] );
+        task.header = (results[i].task.replace( /\n/gi, "<br>"));
+
+        var operation = {tag:"p", content:(results[i].operation.replace( /\n/gi, "<br>")) };
+        var lesson = {tag:"p", content:(results[i].lessons.replace( /\n/gi, "<br>")) };
+        
+        task.body = [];
+        task.body.push( operation )
+        task.body.push( lesson )
+
+        task.footer = (results[i].tag)
+
+        data.push( task )
+      }
+
+      resolve( {"tasks":data} )
+    } )
+    .catch( function(err){
+      reject( err );
+    } );
+  } );
+}
+
 
 
 

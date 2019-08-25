@@ -22,17 +22,15 @@ exports.control = function( req, res, connection ){
 	      var lang = staticInfo.lang;
 	      var promises = [];
 
-				promises.push( menuService.getMenuList( connection ) );
-	      		promises.push( writerService.getWriterList( connection ) );
-				promises.push( contentService.getAnnounceContentList( connection ) );
-				promises.push( announceService.getNewsletterAnnounceList( connection ) );
-				promises.push( announceService.getAnnounceCategory( connection ) );
-				promises.push( announceService.getAnnounceType( connection ) );
+				promises.push( timelineService.getTimeline( connection ) );
 
 	      Promise.all( promises )
 	      .then( function(){
 	        var argv = arguments[0];
-	        resolve( Object.assign( staticInfo, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5] ) );
+
+	        logger.debug( argv[0] )
+
+	        resolve( Object.assign( staticInfo, argv[0] ) );
 	      } )
 	      .catch( function( _err ){
 	        reject( _err );

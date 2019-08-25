@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "jquery-albe-timeline": "^4.0.0",
     "node-mailer": "^0.1.1",
     "pm2": "^2.9.3",
     "summer-mvc": "file:summer-mvc-2.1.5.tgz",
