@@ -95,7 +95,7 @@ function getBrowserDefaultLang( req ){
 
     logger.debug( "accept-language :", lang );
 
-    if( lang != undefined || lang != "undefined" ){
+    if( lang != undefined && lang != "undefined" ){
       lang = ( ( ( ( ( lang.split(";") )[0] ).split(",") )[0] ).split("-") )[0];  
       return lang;
     } else {
