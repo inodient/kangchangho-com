@@ -94,6 +94,7 @@ function getBrowserDefaultLang( req ){
     var lang = req.headers["accept-language"];
 
     logger.debug( "accept-language :", lang );
+    logger.debug( "accept-language :", typeof(lang) );
 
     if( lang == undefined || lang == "undefined" ){
       logger.debug( "UNDEFINED ACCEPT LANGUAGE" );
