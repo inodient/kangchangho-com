@@ -95,9 +95,12 @@ function getBrowserDefaultLang( req ){
 
     logger.debug( "accept-language :", lang );
 
-
-    lang = ( ( ( ( ( lang.split(";") )[0] ).split(",") )[0] ).split("-") )[0];
-    return lang;
+    if( lang ){
+      lang = ( ( ( ( ( lang.split(";") )[0] ).split(",") )[0] ).split("-") )[0];  
+      return lang;
+    } else {
+      return "ko-KR"
+    }
   } catch( err ){
     throw err;
   }
