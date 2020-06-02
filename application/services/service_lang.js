@@ -98,7 +98,7 @@ function getBrowserDefaultLang( req ){
 
     if( lang == undefined || lang == "undefined" ){
       logger.debug( "UNDEFINED ACCEPT LANGUAGE" );
-      return "ko-KR";
+      return "ko-KR"; //en-US
     }
 
     lang = ( ( ( ( ( lang.split(";") )[0] ).split(",") )[0] ).split("-") )[0];  
