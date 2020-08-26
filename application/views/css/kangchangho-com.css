@@ -1,4 +1,6 @@
 /* @import url(//fonts.googleapis.com/earlyaccess/notosanstc.css); */
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css);
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css);
 
 /*@font-face {
     font-family: Noto Sans TC;
@@ -60,17 +62,20 @@
 /************************************************************************************/
 /* Default Element -  Start */
 html {
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
+  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif' !important;
 }
 
 head {
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
+  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif' !important;
   font-size: 14.5px;
   margin: auto;
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
+  font-family: 'Spoqa Han Sans', 'Spoqa Han Sans JP', 'Sans-serif' !important;
   font-size: 14.5px;
   margin: auto;
 }
