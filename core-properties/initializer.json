@@ -165,6 +165,10 @@
         {
             "url": "/",
             "path": "/var/__upload/kangchangho.com-production/image"
+        },
+        {
+            "url": "/",
+            "path": "/Users/inodient/Desktop/INODIENT/Development/files/kangchangho.com-production/image"
         }
     ]
 }

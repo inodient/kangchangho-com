@@ -1,8 +1,8 @@
 {
   "connectionLimit" : 100,
-  "host" : "kangchangho.com",
+  "host" : "192.168.64.2",
   "user" : "root",
-  "password" : "123Qwer@",
+  "password" : "password",
   "database" : "kangchangho-com",
   "queries" : [
   	"/tools-submodules/db/queries/kangchangho.com.xml"
